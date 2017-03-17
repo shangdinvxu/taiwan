@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="connectfactorylibrary">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/linkloving_ble4.0_lib/libs/connectfactorylibrary.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
