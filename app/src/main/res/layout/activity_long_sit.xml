@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/longsit_layout"
+    android:background="@mipmap/bg_set"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin">
+    <LinearLayout
+        android:id="@+id/longsit_Synchronize_device"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+    <Button
+        android:id="@+id/longsit_btn_Synchronize_device"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+    </LinearLayout>
+    <FrameLayout
+        android:id="@+id/longsit_framelayout"
+        android:layout_below="@+id/longsit_Synchronize_device"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/m00_btn_load_20_more_margin"
+        android:layout_marginRight="@dimen/m00_btn_load_20_more_margin"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/alarm_content_bg"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_longsit"
+            android:layout_gravity="center_vertical|left"
+            android:drawablePadding="10dp"
+            android:gravity="center"
+            android:text="@string/long_sit_text"
+            android:textColor="@color/gray_dark_for_text"
+            android:textSize="@dimen/m00_font_size_30pt" />
+
+        <CheckBox
+            android:id="@+id/longsit_switch_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:background="@drawable/longsit_check_box_selector"
+            android:button="@null"
+            android:checked="false"
+            android:gravity="center" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/longsit_time_ll"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_below="@+id/longsit_framelayout"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="100dp"
+            android:layout_marginLeft="@dimen/m00_btn_load_20_more_margin"
+            android:layout_marginRight="@dimen/m00_btn_load_20_more_margin"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/alarm_setting_content_bg"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <LinearLayout
+                android:id="@+id/long_sit_start_time_one_linear"
+                android:layout_width="fill_parent"
+                android:layout_height="0px"
+                android:layout_weight="1">
+
+                <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp">
+
+                    <TextView
+                        android:id="@+id/long_sit_start_time_one"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|center_vertical"
+                        android:textColor="@color/portal_progress_blue"
+                        android:layout_marginRight="10dp"
+                        android:text="09:00" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/portal_progress_blue"
+                        android:text="@string/long_sit_start_time"></TextView>
+                </FrameLayout>
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/m00_btn_load_20_more_margin"
+                android:layout_marginRight="20dp"
+                android:background="@mipmap/underline_on" />
+
+            <LinearLayout
+                android:id="@+id/long_sit_end_time_one_linear"
+                android:layout_width="fill_parent"
+                android:layout_height="0px"
+                android:layout_weight="1">
+
+                <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp">
+
+                    <TextView
+                        android:id="@+id/long_sit_end_time_one"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|center_vertical"
+                        android:layout_marginRight="10dp"
+                        android:textColor="@color/portal_progress_blue"
+                        android:text="11:30" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/long_sit_end_time"
+                        android:textColor="@color/portal_progress_blue"/>
+
+                </FrameLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="100dp"
+            android:layout_marginLeft="@dimen/m00_btn_load_20_more_margin"
+            android:layout_marginRight="@dimen/m00_btn_load_20_more_margin"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/alarm_setting_content_bg"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <LinearLayout
+                android:id="@+id/long_sit_start_time_two_linear"
+                android:layout_width="fill_parent"
+                android:layout_height="0px"
+                android:layout_weight="1">
+
+                <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp">
+
+                    <TextView
+                        android:id="@+id/long_sit_start_time_two"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|center_vertical"
+                        android:text="13:00"
+                        android:layout_marginRight="10dp"
+                        android:textColor="@color/portal_progress_blue"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/long_sit_start_time"
+                        android:textColor="@color/portal_progress_blue"></TextView>
+
+                </FrameLayout>
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/m00_btn_load_20_more_margin"
+                android:layout_marginRight="20dp"
+                android:background="@mipmap/underline_on" />
+
+            <LinearLayout
+                android:id="@+id/long_sit_end_time_two_linear"
+                android:layout_width="fill_parent"
+                android:layout_height="0px"
+                android:layout_weight="1">
+
+                <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp">
+
+                    <TextView
+                        android:id="@+id/long_sit_end_time_two"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|center_vertical"
+                        android:textColor="@color/portal_progress_blue"
+                        android:layout_marginRight="10dp"
+                        android:text="18:00" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/long_sit_end_time"
+                        android:textColor="@color/portal_progress_blue"/>
+
+                </FrameLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/m00_btn_load_20_more_margin"
+            android:layout_marginRight="@dimen/m00_btn_load_20_more_margin"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/alarm_setting_content_bg"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:text="@string/reminder_step"
+                android:textColor="@color/portal_progress_blue"/>
+
+            <EditText
+                android:id="@+id/long_sit_step_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|right"
+                android:background="@null"
+                android:inputType="number"
+                android:paddingRight="20dp"
+                android:textColor="@color/portal_progress_blue"
+                android:text="60" />
+        </FrameLayout>
+    </LinearLayout>
+
+</RelativeLayout>

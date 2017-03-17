@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:composition="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_height="140dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@mipmap/heart"
+                android:layout_marginLeft="40dp"
+                android:id="@+id/imageView4"
+
+                />
+
+            <TextView
+                android:id="@+id/timeToday"
+                android:layout_marginLeft="40dp"
+                android:text="Dec o6"
+                android:textSize="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/resting"
+                android:gravity="center"
+                android:textSize="30sp"
+                android:text="000"
+                android:layout_weight="1"
+                android:textColor="@color/blue"
+                android:layout_width="80dp"
+                android:layout_height="80dp" />
+            <TextView
+                android:id="@+id/avgerage"
+                android:gravity="center"
+                android:textSize="30sp"
+                android:text="000"
+                android:layout_weight="1"
+                android:textColor="@color/blue"
+                android:layout_width="80dp"
+                android:layout_height="80dp" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:gravity="center"
+                android:textSize="20sp"
+                android:text="@string/Restingbpm"
+                android:layout_weight="1"
+                android:textColor="@color/blue"
+                android:layout_width="match_parent"
+                android:layout_height="80dp" />
+            <TextView
+                android:gravity="center"
+                android:textSize="20sp"
+                android:text="@string/Average"
+                android:layout_weight="1"
+                android:textColor="@color/blue"
+                android:layout_width="match_parent"
+                android:layout_height="80dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/groups_time"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@color/bg_gray"
+        android:gravity="center"
+        android:text="2016/04/25 am.6:00"
+
+        />
+    <LinearLayout
+        android:background="@color/yellow_title"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/middle_framelayout"
+            android:background="@color/yellow_title"
+            android:layout_width="match_parent"
+            android:layout_weight="7"
+            android:layout_height="0dp">
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_height="0dp">
+
+            <RadioGroup
+                android:id="@+id/tw_Heartrate_buttom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+                <RadioButton
+                    android:id="@+id/Heartrate_day"
+                    android:layout_width="100dp"
+                    android:layout_height="35dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:background="@drawable/main_report_page_top_timetype_radio_btn_day_selector"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center"
+                    style="@style/text_darkShadow7"
+                    android:text="@string/report_day_view"
+                    android:textColor="@drawable/main_report_page_top_timetype_radio_btn_textcolor_selector" />
+                <RadioButton
+                    android:id="@+id/Heartrate_week"
+                    android:layout_width="100dp"
+                    android:layout_height="35dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:background="@drawable/main_report_page_top_timetype_radio_btn_week_selector"
+                    android:button="@null"
+                    android:gravity="center"
+                    style="@style/text_darkShadow7"
+                    android:text="@string/report_week_view"
+                    android:textColor="@drawable/main_report_page_top_timetype_radio_btn_textcolor_selector" />
+
+                <RadioButton
+                    android:id="@+id/Heartrate_month"
+                    android:layout_width="100dp"
+                    android:layout_height="35dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:background="@drawable/main_report_page_top_timetype_radio_btn_month_selector"
+                    android:button="@null"
+                    android:gravity="center"
+                    style="@style/text_darkShadow7"
+                    android:text="@string/report_month_view"
+                    android:textColor="@drawable/main_report_page_top_timetype_radio_btn_textcolor_selector" />
+            </RadioGroup>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

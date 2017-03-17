@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="EPC_common_android">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/libs/EPC_common_android.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

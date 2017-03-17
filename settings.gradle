@@ -1,0 +1,3 @@
+include ':app', ':PullToRefreshLibrary', ':greendaolibrary'
+include ':ViewPagerIndicator', ':linkloving_ble4.0_lib'
+//, ':LntsdkResourceFile'

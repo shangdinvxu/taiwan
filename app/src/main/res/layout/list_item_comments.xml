@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <LinearLayout
+        android:id="@+id/linear_message"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:paddingLeft="20dp">
+
+        <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+            <com.linkloving.taiwan.logic.utils.CircleImageView
+                android:layout_centerVertical="true"
+                android:id="@+id/head"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:border_width="2dp"
+                app:border_color="@color/light"
+                android:src="@mipmap/default_avatar_m"
+                android:contentDescription="@string/imageView" />
+            <TextView
+                android:id="@+id/comments_item_unread_text"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/unread_bg"
+                android:layout_gravity="right|top"
+                android:gravity="center"
+                android:text="7"
+                android:layout_marginRight="3dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginBottom="20dp"
+                android:textColor="@color/white"
+                android:textSize="10dp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <LinearLayout
+                android:gravity="center|bottom"
+                android:layout_marginLeft="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <!--昵称,加上群组名称,时间-->
+                <TextView
+                    android:id="@+id/nickName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="happy"
+                    android:textSize="@dimen/m00_font_size_30pt" />
+                <TextView
+                    android:id="@+id/time"
+                    android:gravity="center|right"
+                    android:paddingRight="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <!--最新一条的评论-->
+                <TextView
+                    android:id="@+id/comment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="ddddddddddddddddddddddddddddddddddddddd"
+                    android:textColor="#636363"
+                    android:textSize="@dimen/m00_font_size_20pt" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/menu_deliver"
+        android:contentDescription="@string/imageView"/>
+
+</LinearLayout>

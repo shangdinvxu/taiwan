@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:composition="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/yellow_title"
+    >
+
+    <com.linkloving.taiwan.logic.UI.HeartRate.DayView.BarChartView
+        android:background="@color/yellow_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/Heartrate_day_barchartview"
+        />
+
+        <com.linkloving.taiwan.logic.UI.HeartRate.DayView.DetailChartControl
+            android:id="@+id/activity_detailChartView1"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            composition:baseSlice="3600"
+            composition:deepSleepHeight="100dp"
+            composition:lightSleepHeight="50dp"
+            composition:lineWidth="1dp"
+        />
+   <!-- <TextView
+        android:id="@+id/time"
+    android:layout_gravity="center_horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="12/06 17:20"
+    android:textColor="@color/white"
+    />
+    <TextView
+        android:id="@+id/heartavg"
+        android:layout_marginTop="17dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="12/06 17:20"
+        android:textColor="@color/white"
+        />
+-->
+
+</FrameLayout>

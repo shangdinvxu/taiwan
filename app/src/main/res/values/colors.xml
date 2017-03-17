@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--设备界面颜色  8位代表ARGB-->
+    <color name="yellow_title">#0084ad</color>
+    <color name="portal_progress_blue">#00a1c6</color>
+    <color name="portal_text_blue">#015866</color>
+    <color name="portal_item_bg">#a9e7ff</color>
+    <color name="yellow_title_2">#dd5000</color>
+    <color name="main_color">#0084ad</color>
+    <color name="person_info_color">#2E2829</color>
+    <color name="gray_dark_for_text">#666666</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="orange">#FF7700</color>
+    <color name="blue">#1A2B5F</color>
+
+    <!-- 西红柿色 -->
+    <color name="orangered">#FF4500</color>
+    <color name="chat_view_orange">#ffa737</color>
+    <color name="text_light_green">#22dd22</color>
+    <color name="progress_color">#8000ff22</color>
+    <color name="progress_color_battery">#fffc8004</color>
+
+    <!--排行榜界面颜色-->
+    <color name="m00_text_black_333333_color">#333333</color>
+    <color name="medium_gray2">#ff999999</color>
+    <color name="middle_gray1">#ff798089</color>
+    <color name="gray_for_text2">#C4C4C4</color>
+    <color name="gray_for_background">#e7e6e6</color>
+    <!--更多-->
+    <color name="text_bluesky1">#3A87AD</color> <!-- 天空深蓝 -->
+    <color name="sleep_blue">#30C3F9</color> <!-- 睡眠数据蓝色 -->
+    <color name="bg_gray">#A5A5A5</color>
+    <drawable name="smssdk_dialog_btn_nor">#00000000</drawable>
+    <drawable name="smssdk_dialog_btn_pre">#ff282a2b</drawable>
+    <color name="newyellow">#F99D4E</color>
+    <color name="smssdk_white">#ffffffff</color>
+    <color name="smssdk_gray_press">#fff2f2f2</color>
+    <color name="smssdk_transparent">#00000000</color>
+    <color name="smssdk_lv_tv_color">#ff353535</color>
+    <color name="smssdk_lv_title_color">#ff999999</color>
+    <color name="smssdk_lv_item_selector">#f7fcff</color>
+    <color name="smssdk_lv_item_divider">#ffd9d9da</color>
+    <color name="smssdk_black">#ff000000</color>
+    <color name="smssdk_gray">#ff898989</color>
+
+    <!-- 侧滑栏背景黑 -->
+    <color name="navigation_bcakground">#2f2f2f</color>
+    <!-- 侧滑栏点击换背景 -->
+    <color name="click_true">#444444</color>
+    <!-- 侧滑栏头像 -->
+    <color name="dark">#FF222222</color>
+    <color name="light">#FFEEEEEE</color>
+
+    <!--分割线 -->
+    <color name="middle_gray_alph">#33798089</color>
+    <!--进度条 -->
+    <color name="progress_color_gray">#ffaeacaf</color>
+
+</resources>

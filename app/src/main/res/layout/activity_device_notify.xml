@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin">
+
+    <LinearLayout
+        android:id="@+id/incoming_Synchronize_device"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/incoming_btn_Synchronize_device"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/call_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/alarm_content_bg"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <ImageView
+            android:id="@+id/call_img"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/set_phone_off" />
+
+        <TextView
+            android:id="@+id/call_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:gravity="center"
+            android:text="@string/menu_notify_call"
+            android:textColor="@color/gray_dark_for_text"
+            android:textSize="@dimen/m00_font_size_36pt" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4" />
+
+        <CheckBox
+            android:id="@+id/call_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:background="@drawable/longsit_check_box_selector"
+            android:button="@null"
+            android:checked="false"
+            android:gravity="right" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mesgsae_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/alarm_content_bg"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <ImageView
+            android:id="@+id/mesgsae_img"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/set_message_off" />
+
+        <TextView
+            android:id="@+id/mesgsae_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:gravity="center"
+            android:text="@string/menu_notify_msg"
+            android:textColor="@color/gray_dark_for_text"
+            android:textSize="@dimen/m00_font_size_36pt" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4" />
+        <CheckBox
+            android:id="@+id/mesgsae_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:background="@drawable/longsit_check_box_selector"
+            android:button="@null"
+            android:checked="false"
+            android:gravity="right|center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/QQ_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/alarm_content_bg"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <ImageView
+            android:id="@+id/QQ_img"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/set_qq_off" />
+
+        <TextView
+            android:id="@+id/QQ_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:gravity="center"
+            android:text="@string/menu_notify_qq"
+            android:textColor="@color/gray_dark_for_text"
+            android:textSize="@dimen/m00_font_size_36pt" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4" />
+        <CheckBox
+            android:id="@+id/QQ_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:background="@drawable/longsit_check_box_selector"
+            android:button="@null"
+            android:checked="false"
+            android:gravity="right|center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/WX_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/alarm_content_bg"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <ImageView
+            android:id="@+id/WX_img"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/set_wechact_off" />
+
+        <TextView
+            android:id="@+id/WX_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:gravity="center"
+            android:text="@string/menu_notify_wx"
+            android:textColor="@color/gray_dark_for_text"
+            android:textSize="@dimen/m00_font_size_36pt" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4" />
+        <CheckBox
+            android:id="@+id/WX_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:background="@drawable/longsit_check_box_selector"
+            android:button="@null"
+            android:checked="false"
+            android:gravity="right|center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/Link_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/alarm_content_bg"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <ImageView
+            android:id="@+id/Link_img"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/set_linkloving_off" />
+
+        <TextView
+            android:id="@+id/Link_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:gravity="center"
+            android:text="@string/menu_notify_link"
+            android:textColor="@color/gray_dark_for_text"
+            android:textSize="@dimen/m00_font_size_36pt" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4" />
+        <CheckBox
+            android:id="@+id/Link_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:background="@drawable/longsit_check_box_selector"
+            android:button="@null"
+            android:checked="false"
+            android:gravity="right|center" />
+    </LinearLayout>
+
+</LinearLayout>
