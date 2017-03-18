@@ -70,6 +70,7 @@ import com.linkloving.taiwan.logic.UI.customerservice.serviceItem.Feedback;
 import com.linkloving.taiwan.logic.UI.device.DeviceActivity;
 import com.linkloving.taiwan.logic.UI.device.FirmwareDTO;
 import com.linkloving.taiwan.logic.UI.main.boundwatch.BoundActivity;
+import com.linkloving.taiwan.logic.UI.main.bundband.Band3ListActivity;
 import com.linkloving.taiwan.logic.UI.main.bundband.BandListActivity;
 import com.linkloving.taiwan.logic.UI.main.datachatactivity.WeightActivity;
 import com.linkloving.taiwan.logic.UI.main.materialmenu.Left_viewVO;
@@ -1364,8 +1365,8 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                                     //请求绑定
                                     dialog.dismiss();
                                 }else if(hrBand.isChecked()) {
-                                    //跳转到手环绑定界面
-                                   startActivityForResult(new Intent(PortalActivity.this, BandListActivity.class),20);
+                                    //跳转到心率手环绑定界面
+                                   startActivityForResult(new Intent(PortalActivity.this, Band3ListActivity.class),20);
                                     dialog.dismiss();
                                 }
                             }

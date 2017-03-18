@@ -19,7 +19,9 @@ import com.example.android.bluetoothlegatt.exception.BLENotSupportException;
 import com.example.android.bluetoothlegatt.exception.BLException;
 import com.example.android.bluetoothlegatt.proltrol.ANCSCommand;
 import com.example.android.bluetoothlegatt.proltrol.LPException;
+import com.example.android.bluetoothlegatt.proltrol.LPUtil;
 import com.example.android.bluetoothlegatt.proltrol.LepaoProtocalImpl;
+import com.example.android.bluetoothlegatt.proltrol.ParsedAd;
 import com.example.android.bluetoothlegatt.proltrol.dto.LLTradeRecord;
 import com.example.android.bluetoothlegatt.proltrol.dto.LLXianJinCard;
 import com.example.android.bluetoothlegatt.proltrol.dto.LPDeviceInfo;
@@ -783,8 +785,10 @@ public  class BLEProvider
      	   {
      		   String scanMac = device.getAddress().substring(device.getAddress().length()-11,device.getAddress().length()).toUpperCase();
      		   String myMac = getCurrentDeviceMac().substring(getCurrentDeviceMac().length()-11,getCurrentDeviceMac().length()).toUpperCase();
-     		   /**判断是否是手环设备 23 24*/ 
-     		  if(( ((scanRecord[5] == (byte)0xE1) && (scanRecord[6] == (byte)0xFE)) || ((scanRecord[23] == (byte)0xE1) && (scanRecord[24] == (byte)0xFE)) ) && scanMac.equals(myMac))  //"78:A5:04:84:48:B4"))
+
+			   ParsedAd parsedAd = LPUtil.parseData(scanRecord);
+     		   /**判断是否是手环设备 23 24*/
+     		  if(parsedAd.uuidStrings.contains("fee1"))  //"78:A5:04:84:48:B4"))
      		   {
      			   OwnLog.e(TAG, "【来自扫描】4.3 device address.........................." + device.getAddress());
 //     			   try

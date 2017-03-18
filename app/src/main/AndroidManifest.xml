@@ -375,6 +375,10 @@
             android:name="com.linkloving.taiwan.logic.UI.main.bundband.BandListActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar" />
+        <activity
+            android:name="com.linkloving.taiwan.logic.UI.main.bundband.Band3ListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar" />
     <!--    <activity
             android:name="com.mob.tools.MobUIShell"
             android:configChanges="keyboardHidden|orientation|screenSize"
