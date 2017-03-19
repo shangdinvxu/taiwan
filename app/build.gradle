@@ -13,8 +13,8 @@ android {
         applicationId "com.linkloving.taiwan"
         minSdkVersion 18
         targetSdkVersion 22
-        versionCode 11
-        versionName "1.1.1"
+        versionCode 12
+        versionName "1.1.2"
     }
     //看起来是因为多个 jar 包里包含了同样的文件（NOTICE.txt），导致打包时因为担心相互覆盖问题而提示出错
     packagingOptions {
