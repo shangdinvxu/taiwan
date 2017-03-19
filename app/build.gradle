@@ -4,7 +4,7 @@ android {
     signingConfigs {
     }
     compileSdkVersion 23
-    buildToolsVersion '23.0.2'
+    buildToolsVersion '25.0.0'
     //关闭Android Studio的PNG合法性检查的
     aaptOptions.cruncherEnabled = false
     aaptOptions.useNewCruncher = false
@@ -13,12 +13,18 @@ android {
         applicationId "com.linkloving.taiwan"
         minSdkVersion 18
         targetSdkVersion 22
-        versionCode 10
-        versionName "1.0.10"
+        versionCode 11
+        versionName "1.1.1"
     }
     //看起来是因为多个 jar 包里包含了同样的文件（NOTICE.txt），导致打包时因为担心相互覆盖问题而提示出错
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
     }
 
     sourceSets {

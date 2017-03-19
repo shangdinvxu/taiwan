@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="rtring_s_new_s_watch_utils">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/libs/rtring_s_new_s_watch_utils.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
