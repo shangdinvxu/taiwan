@@ -37,6 +37,7 @@ public class MyApplication extends Application{
     public final static String SERVICE_WATCH = "com.linkloving.taiwan";
     public final static int DEVICE_WATCH = 3;
     public final static int DEVICE_BAND = 2;
+    public final static int DEVICE_BAND3 = 4;
 
     private static MyApplication self = null;
 
@@ -101,6 +102,25 @@ public class MyApplication extends Application{
     {
         this.old_step = old_step;
     }
+
+
+    public int getOld_distance() {
+        return old_distance;
+    }
+
+    public void setOld_distance(int old_distance) {
+        this.old_distance = old_distance;
+    }
+
+    public int getOld_calories() {
+        return old_calories;
+    }
+
+    public void setOld_calories(int old_calories) {
+        this.old_calories = old_calories;
+    }
+    private int old_distance = 0 ;
+    private int old_calories = 0 ;
 
 
     /**app用到的图片信息常量*/

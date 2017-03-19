@@ -527,7 +527,7 @@ public class Band3ListActivity extends ToolBarActivity {
                     Log.e(TAG, "绑定成功！");
 //                    provider.getModelName(BandListActivity.this);
                     MyApplication.getInstance(Band3ListActivity.this).getLocalUserInfoProvider().getDeviceEntity().setLast_sync_device_id(provider.getCurrentDeviceMac());
-                    MyApplication.getInstance(Band3ListActivity.this).getLocalUserInfoProvider().getDeviceEntity().setDevice_type(MyApplication.DEVICE_BAND);
+                    MyApplication.getInstance(Band3ListActivity.this).getLocalUserInfoProvider().getDeviceEntity().setDevice_type(MyApplication.DEVICE_BAND3);
                     if (progressDialog != null && progressDialog.isShowing())
                         progressDialog.dismiss();
                     ToolKits.showCommonTosat(Band3ListActivity.this, true, ToolKits.getStringbyId(Band3ListActivity.this, R.string.portal_main_bound_success), Toast.LENGTH_LONG);
@@ -597,7 +597,7 @@ public class Band3ListActivity extends ToolBarActivity {
                 //***********************************台湾离线版本**********************************************************//
                 UserEntity userEntity = MyApplication.getInstance(Band3ListActivity.this).getLocalUserInfoProvider();
                 userEntity.getDeviceEntity().setLast_sync_device_id(provider.getCurrentDeviceMac());
-                userEntity.getDeviceEntity().setDevice_type(MyApplication.DEVICE_BAND);
+                userEntity.getDeviceEntity().setDevice_type(MyApplication.DEVICE_BAND3);
                 userEntity.getDeviceEntity().setModel_name(modelName);
                 MyApplication.getInstance(Band3ListActivity.this).setLocalUserInfoProvider(userEntity);
                 if (observerAdapter != null)
@@ -644,7 +644,7 @@ public class Band3ListActivity extends ToolBarActivity {
                 PreferencesToolkits.saveInfoBymodelName(Band3ListActivity.this,modelName,modelInfo);
                 MyApplication.getInstance(getApplicationContext()).getLocalUserInfoProvider().getDeviceEntity().setModel_name(modelName);
                 MyApplication.getInstance(getApplicationContext()).getLocalUserInfoProvider().getDeviceEntity().setLast_sync_device_id(provider.getCurrentDeviceMac());
-                MyApplication.getInstance(getApplicationContext()).getLocalUserInfoProvider().getDeviceEntity().setDevice_type(MyApplication.DEVICE_BAND);
+                MyApplication.getInstance(getApplicationContext()).getLocalUserInfoProvider().getDeviceEntity().setDevice_type(MyApplication.DEVICE_BAND3);
                 if (observerAdapter != null)
                     observerAdapter.updateFor_boundInfoSyncToServerFinish(dataFromServer.getErrorCode() + "");
             }

@@ -126,7 +126,7 @@ public class SportGoalActivity extends ToolBarActivity implements View.OnClickLi
         tv_meter = (TextView) findViewById(R.id.tv_meter);
         if (SwitchUnit.getLocalUnit(SportGoalActivity.this) == ToolKits.UNIT_GONG) {
             tv_kg.setText(getString(R.string.unit_kilogramme));
-            tv_meter.setText(getString(R.string.unit_m));
+            tv_meter.setText(getString(R.string.unit_km_metric));
         } else {
 //            if (!CommonUtils.isStringEmpty(sport_mileage.getText().toString()))
 //                sport_mileage.setText(UnitTookits.MChangetoMIRate(Integer.parseInt(sport_mileage.getText().toString())) + "");

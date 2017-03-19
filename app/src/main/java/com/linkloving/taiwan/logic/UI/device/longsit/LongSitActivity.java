@@ -377,6 +377,12 @@ public class LongSitActivity extends ToolBarActivity implements View.OnClickList
      * 根据传入的参数 保存更新数据
      ****/
     private void setNotificition() throws ParseException {
+        if (long_sit_step_edit.getText().toString()!=null&&long_sit_step_edit.getText().toString().length()>0){
+            int i = Integer.parseInt(long_sit_step_edit.getText().toString());
+            if (i>200){
+                Toast.makeText(LongSitActivity.this,R.string.long_sit_step_toast,Toast.LENGTH_SHORT).show();
+            }
+        }
 
         String LongSit_notif_ = start_time_one_hour + ":" + start_time_one_minute + "-"
                 + end_time_one_hour + ":" + end_time_one_minute + "-" + start_time_two_hour + ":"

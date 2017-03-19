@@ -569,7 +569,7 @@ public class BleService extends Service {
                         if (lpDeviceInfo_.timeStamp < 365 * 24 * 3600)  //手表时间为1970年的1年内
                         {
                             lpDeviceInfo_.stepDayTotals = MyApplication.getInstance(BleService.this).getOld_step();
-                            provider.resetStep(BleService.this, lpDeviceInfo_);
+//                            provider.resetStep(BleService.this, lpDeviceInfo_);
                         }
                         /******拿到卡号同时后按情况去设置步数OVER*****/
 
@@ -632,6 +632,12 @@ public class BleService extends Service {
                 PreferencesToolkits.updateLocalDeviceInfo(BleService.this, lpDeviceInfo_);
                 lpDeviceInfo_.step =Integer.parseInt(PreferencesToolkits.getGoalInfo(BleService.this,PreferencesToolkits.KEY_GOAL_STEP));
                 provider.setTarget(BleService.this,lpDeviceInfo_);
+          /*      if (!latestDeviceInfo.modelName.isEmpty()&&latestDeviceInfo.modelName.equals("B100C2")){
+                    lpDeviceInfo_.stepDayTotals = MyApplication.getInstance(BleService.this).getOld_step();
+                    lpDeviceInfo_.distenceDayTotals =MyApplication.getInstance(BleService.this).getOld_distance() ;
+                    lpDeviceInfo_.CaloriesTotals =MyApplication.getInstance(BleService.this).getOld_calories() ;
+                    provider.resetStep(BleService.this, lpDeviceInfo_);
+                }*/
             }
         });
         return provider;

@@ -539,7 +539,7 @@ public class PersonalInfoActivity extends ToolBarActivity implements View.OnClic
                 alertDialog3.setCanceledOnTouchOutside(false);
                 alertDialog3.addContentView(sexLayout, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 alertDialog3.show();*/
-                View layoutsex = inflater.inflate(R.layout.modify_sex_dialog, (ViewGroup) findViewById(R.id.linear_modify_sex));
+                View layoutsex = inflater.inflate(R.layout.modify_sex_dialogfor_two, (ViewGroup) findViewById(R.id.linear_modify_sex));
                 final RadioButton man= (RadioButton) layoutsex.findViewById(R.id.rb_left);
                 man.setText(getString(R.string.general_male));
                 final RadioButton woman=(RadioButton) layoutsex.findViewById(R.id.rb_right);
@@ -565,9 +565,11 @@ public class PersonalInfoActivity extends ToolBarActivity implements View.OnClic
                                             switch (dataU.getUser_sex()){
                                                 case 0:
                                                     sextv.setText(getString(R.string.general_female));
+                                                    user_head.setImageResource(R.mipmap.default_avatar_m);
                                                     break;
                                                 case 1:
                                                     sextv.setText(getString(R.string.general_male));
+                                                    user_head.setImageResource(R.mipmap.default_avatar);
                                                     break;
                                             }
                                             ToolKits.showCommonTosat(PersonalInfoActivity.this, true, ToolKits.getStringbyId(PersonalInfoActivity.this, R.string.changeinfook), Toast.LENGTH_SHORT);

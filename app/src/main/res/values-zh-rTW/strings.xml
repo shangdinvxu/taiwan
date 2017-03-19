@@ -1055,4 +1055,5 @@
     <string name="refresh_time">時間設置成功...</string>
     <string name="refresh_data">數據同步中...剩餘{0}條</string>
     <string name="unit_Kcal">卡路里</string>
+    <string name="long_sit_step_toast">步數不能大於200</string>
 </resources>

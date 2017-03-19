@@ -103,10 +103,10 @@ public class LPDeviceInfo {
 	 * task
 	 */
 	public int step; // 设置的任务总量
-	
-	//老版本信息
+
 	public int stepDayTotals; // 已经完成的任务量
 	public int distenceDayTotals;
+	public int CaloriesTotals ;
 	
 	/**
 	 * 走路信息

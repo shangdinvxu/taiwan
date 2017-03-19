@@ -27,7 +27,7 @@ public interface LepaoProtocol
 	  int registerNew(LPUser userInfo) throws BLException,LPException;
 	
 	/**设置运动数据*/
-	  int resetSportDataNew(int step) throws BLException,LPException;
+	  int resetSportDataNew(int step,int distance,int calories) throws BLException,LPException;
 	
 	/**获取运动数据*/
 	  List<LPSportData> getSportDataNew(int offset, int length,int devicetime) throws BLException,LPException;

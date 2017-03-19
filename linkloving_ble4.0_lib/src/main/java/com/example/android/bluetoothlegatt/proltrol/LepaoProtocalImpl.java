@@ -298,12 +298,13 @@ public class LepaoProtocalImpl implements LepaoProtocol {
 		}
 	}
 
-	@Override
-	public int resetSportDataNew(int step) throws BLException, LPException {
+	public int resetSportDataNew(int step,int distance ,int calories) throws BLException, LPException {
 		WatchRequset req = new WatchRequset();
 		req.appendByte(seq++)
 				.appendByte(LepaoCommand.COMMAND_SET_STEP)
 				.appendInt(step)
+				.appendInt(distance)
+				.appendInt(calories)
 				.makeCheckSum();
 		LPUtil.printData(req.getData(), "重置步数");
 		WatchResponse resp = this.sendData2BLE(req);

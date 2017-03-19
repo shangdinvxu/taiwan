@@ -2042,7 +2042,7 @@ public  class BLEProvider
 				        msg = mHandler.obtainMessage();
 			    	    msg.what = MSG_BLE_DATA;
 			    	    msg.arg1 = INDEX_SEND_STEP;
-			    	    msg.obj = mLepaoProtocalImpl.resetSportDataNew(serverDeviceInfo.stepDayTotals);;
+			    	    msg.obj = mLepaoProtocalImpl.resetSportDataNew(serverDeviceInfo.stepDayTotals,serverDeviceInfo.distenceDayTotals,serverDeviceInfo.CaloriesTotals);;
 			    	    msg.sendToTarget();
 				        break;
 				    case INDEX_SEND_0X5F:

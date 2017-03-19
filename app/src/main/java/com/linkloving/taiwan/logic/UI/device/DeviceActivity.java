@@ -167,7 +167,9 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
             activity_own_control.setVisibility(View.GONE);
             activity_own_power.setVisibility(View.GONE);
             device_img.setImageDrawable(getResources().getDrawable(R.mipmap.band_logo));
-        }else{
+        }else if(MyApplication.getInstance(this).getLocalUserInfoProvider().getDeviceEntity().getDevice_type()==MyApplication.DEVICE_BAND3){
+            device_img.setImageDrawable(getResources().getDrawable(R.mipmap.band3_logo));
+        }else {
             device_img.setImageDrawable(getResources().getDrawable(R.mipmap.device_watch));
         }
         DeviceMac = (TextView) findViewById(R.id.tv_Mac);

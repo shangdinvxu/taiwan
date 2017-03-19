@@ -102,6 +102,7 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import com.yolanda.nohttp.Response;
 import com.zhy.autolayout.AutoLayoutActivity;
 
+import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -338,6 +339,18 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
     protected void onResume() {
         super.onResume();
         inCheckShowHR();
+        /**用户性别*/
+        if (userEntity!=null) {
+            int user_sex = userEntity.getUserBase().getUser_sex();
+            if (user_sex == 0) {
+                //女生
+                user_head.setImageResource(R.mipmap.default_avatar_m);
+            } else {
+                //男生
+                user_head.setImageResource(R.mipmap.default_avatar);
+            }
+        }
+
     }
 
     private void autoInsertWeight() {
@@ -598,6 +611,8 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                 device_img.setImageDrawable(getResources().getDrawable(R.mipmap.device_watch));
             } else if (userEntity.getDeviceEntity().getDevice_type() == MyApplication.DEVICE_BAND) {
                 device_img.setImageDrawable(getResources().getDrawable(R.mipmap.band_logo));
+            }else if (userEntity.getDeviceEntity().getDevice_type() == MyApplication.DEVICE_BAND3) {
+                device_img.setImageDrawable(getResources().getDrawable(R.mipmap.band3_logo));
             }
             if(CommonUtils.isStringEmpty(userEntity.getDeviceEntity().getModel_name())){
                 linear_wallet.setVisibility(View.GONE);
@@ -774,6 +789,9 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         }
         MyLog.i(TAG, "获得的UserEntity的名字=" + u.getUserBase().getNickname());
         user_name.setText(u.getUserBase().getNickname());
+
+
+
         User_avatar_file_name = u.getUserBase().getUser_avatar_file_name();
         if (User_avatar_file_name != null) {
             String url = NoHttpRuquestFactory.getUserAvatarDownloadURL(PortalActivity.this, u.getUser_id() + "", u.getUserBase().getUser_avatar_file_name(), true);
@@ -1022,6 +1040,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                 //跑步 步数
                 int runStep = (int) (CommonUtils.getScaledDoubleValue(Double.valueOf(mDaySynopic.getRun_step()), 0));
                 int step = walkStep + runStep;
+                MyApplication.getInstance(PortalActivity.this).setOld_step(step);
 //daySynopic:[data_date=2016-04-14,data_date2=null,time_zone=480,record_id=null,user_id=null,run_duration=1.0,run_step=68.0,run_distance=98.0
 // ,create_time=null,work_duration=178.0,work_step=6965.0,work_distance=5074.0,sleepMinute=2.0916666984558105,deepSleepMiute=1.25 gotoBedTime=1460645100 getupTime=1460657160]
                 //走路 里程
@@ -1029,6 +1048,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                 //跑步 里程
                 int runDistance = (int) (CommonUtils.getScaledDoubleValue(Double.valueOf(mDaySynopic.getRun_distance()), 0));
                 int distance = walkDistance + runDistance;
+                MyApplication.getInstance(PortalActivity.this).setOld_distance(distance);
 
                 //浅睡 小时
                 double qianleephour = CommonUtils.getScaledDoubleValue(Double.valueOf(mDaySynopic.getSleepMinute()), 1);
@@ -1048,6 +1068,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                 int walkcal = _Utils.calculateCalories(Double.parseDouble(mDaySynopic.getWork_distance()) / (Double.parseDouble(mDaySynopic.getWork_duration())), (int) walktime * 60, userEntity.getUserBase().getUser_weight());
 
                 int calValue = runcal + walkcal;
+                MyApplication.getInstance(PortalActivity.this).setOld_calories(calValue);
 
 //                double speed=(distance)/(worktime*60);
 
@@ -1093,10 +1114,14 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         //提示词
         text_Wallet.setText(getResources().getString(R.string.menu_pay_yuan) + money);
         if (SwitchUnit.getLocalUnit(PortalActivity.this) == ToolKits.UNIT_GONG) {
-            text_Distance.setText(distance + getResources().getString(R.string.unit_m));
+            BigDecimal   b   =   new BigDecimal(distance);
+            double   distanceDouble   =   b.setScale(3,   BigDecimal.ROUND_HALF_UP).doubleValue();
+            text_Distance.setText(distanceDouble + getResources().getString(R.string.unit_km_metric));
             text_Weight.setText(weight + getResources().getString(R.string.unit_kilogramme));
         } else {
-            text_Distance.setText(UnitTookits.MChangetoMIRate(distance) + getResources().getString(R.string.unit_mile));
+            BigDecimal   b   =   new BigDecimal(UnitTookits.MChangetoMIRate(distance));
+            double   distanceDouble   =   b.setScale(3,   BigDecimal.ROUND_HALF_UP).doubleValue();
+            text_Distance.setText(distanceDouble + getResources().getString(R.string.unit_mile));
             text_Weight.setText(weight + getResources().getString(R.string.unit_pound));
 
         }
@@ -1582,6 +1607,9 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
 //            }else{
 //                refreshVISIBLE();
 //            }
+
+
+
             if((System.currentTimeMillis()/1000)-PreferencesToolkits.getOADUpdateTime(getActivity())>86400)
             {
                 // 查询是否要更新固件

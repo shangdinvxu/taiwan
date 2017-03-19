@@ -1116,4 +1116,5 @@
     <!-- 下拉刷新 -->
     <string name="refresh_time">set time success...</string>
     <string name="refresh_data">syncdata...left{0}</string>
+    <string name="long_sit_step_toast">The number of steps can not be greater than 200</string>
 </resources>
