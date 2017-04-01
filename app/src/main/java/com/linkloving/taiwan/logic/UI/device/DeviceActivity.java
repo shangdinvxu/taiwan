@@ -5,15 +5,18 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -59,6 +62,9 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class DeviceActivity extends ToolBarActivity implements View.OnClickListener {
     private static final String TAG = DeviceActivity.class.getSimpleName();
     private LinearLayout activity_own_alarm, activity_own_incoming_tel, activity_own_longsit, activity_own_control,
@@ -99,6 +105,7 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
         userEntity=MyApplication.getInstance(DeviceActivity.this).getLocalUserInfoProvider();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device);
+        ButterKnife.inject(this);
         observerAdapter = new BLEProviderObserverAdapterImpl();
         vo = PreferencesToolkits.getLocalDeviceInfo(DeviceActivity.this);
         provider = BleService.getInstance(this).getCurrentHandlerProvider();
@@ -216,6 +223,32 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
         }
     }
 
+    @OnClick(R.id.bracelet_info_linear)
+    void toSendEmail(View view){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(DeviceActivity.this).inflate(R.layout.alert_dialog_edittext, null);
+        final EditText password = (EditText) dialogView.findViewById(R.id.edit_screet);
+        builder.setTitle("请输入密码").setView(dialogView)
+                .setNegativeButton("取消", null);
+        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                if (password.getText().toString().equals("wisfit")) {
+                    toSendEmail();
+                } else if (password.getText().toString().length() == 0) {
+                    Toast.makeText(DeviceActivity.this, "Please enter code", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(DeviceActivity.this, "Wrong code", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void toSendEmail() {
+        GetDBInfo.getDBInfoToFile(DeviceActivity.this,"HeartRate.txt");
+    }
+
+
     @Override
     protected void onPostResume() {
         super.onPostResume();
@@ -303,8 +336,18 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
                                                 }
                                             }
                                         } else {
-
-                                            MyToast.showLong(DeviceActivity.this, getString(R.string.bracelet_oad_failed_msg));
+                                            new AlertDialog.Builder(DeviceActivity.this).setMessage(R.string.net_work_error)
+                                                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                                        ToolKits.setNetworkMethod(DeviceActivity.this);
+                                                        }
+                                                    }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            }).show();
                                         }
 
 
@@ -339,7 +382,12 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
                                         userEntity.getDeviceEntity().setDevice_type(0);
                                         MyLog.e(TAG, "====HTTP_UNBUND====userEntity=" + userEntity.toString());
                                         //*******模拟断开   不管有没有连接 先执行这个再说
-                                        BleService.getInstance(DeviceActivity.this).releaseBLE();
+                                    try {
+                                        Thread.sleep(1000);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    BleService.getInstance(DeviceActivity.this).releaseBLE();
                                         finish();
                                 }
                             })

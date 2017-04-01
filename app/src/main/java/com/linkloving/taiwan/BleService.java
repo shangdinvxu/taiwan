@@ -114,7 +114,12 @@ public class BleService extends Service {
      * 》成员变量的get/set方法《
      ***********************/
     public static BleService getInstance(Context context) {
-        return self;
+        if(self!=null){
+            return self ;
+        }else {
+            return new BleService();
+        }
+
     }
 
     /**
@@ -185,6 +190,7 @@ public class BleService extends Service {
         SQLiteDatabase readableDatabase = heartrateHelper.getReadableDatabase();
         greendaoUtils = new GreendaoUtils(BleService.this, readableDatabase);
     }
+
 
     /**
      * 主要是检查连接状态并和ble同步数据。
@@ -535,7 +541,6 @@ public class BleService extends Service {
                     //BLE--->设置消息提醒
                     provider.SetHandUp(BleService.this, DeviceInfoHelper.fromUserEntity(BleService.this, userEntity));
                 }
-
                 provider.getSportDataNew(BleService.this);
             }
 
@@ -553,7 +558,6 @@ public class BleService extends Service {
                 //设置时间指令
                 provider.SetDeviceTime(BleService.this);
                 provider.GetHeartrate(BleService.this);
-
             }
 
             //时间设置成功--基本流程完毕
@@ -594,7 +598,8 @@ public class BleService extends Service {
                 MyLog.e(TAG,"notifyforgerHeartListsuccess");
                 super.notifyforgerHeartList(obj);
                 for (LpHeartrateData obj1: obj){
-                    greendaoUtils.add(obj1.getStartTime(),obj1.getMaxRate(),obj1.getAvgRate());
+                    if (obj1.getAvgRate()<=0||obj1.getMaxRate()<=0) return;
+                    greendaoUtils.add(obj1.getStartTime(),obj1.getAvgRate(),obj1.getMaxRate());
                     List<heartrate> search = greendaoUtils.search(obj1.getStartTime());
                     MyLog.e(TAG,search.get(0).getMax()+"");
                     MyLog.e(TAG,"-----------------------");
@@ -669,7 +674,6 @@ public class BleService extends Service {
                 }
                 if (obsForHint != null)
                     obsForHint.update(null, true);
-
             }
         }
     }

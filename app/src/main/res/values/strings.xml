@@ -617,10 +617,10 @@
     <string name="unit_ms">meters</string>
     <string name="unit_mile">英里</string>
     <string name="unit_km">公里</string>
-    <string name="unit_km_metric">千米</string>
+    <string name="unit_km_metric">公里</string>
     <string name="unit_km_en">km</string>
-    <string name="unit_km_per_hour">Km/hr</string>
-    <string name="unit_km_per_hour_metric">Km/hr</string>
+    <string name="unit_km_per_hour">km/hr</string>
+    <string name="unit_km_per_hour_metric">km/hr</string>
     <string name="unit_year">年</string>
     <string name="unit_age">歲</string>
     <string name="unit_year4date">年</string>
@@ -1058,4 +1058,11 @@
     <string name="refresh_time">時間設置成功...</string>
     <string name="refresh_data">數據同步中...剩餘{0}條</string>
     <string name="long_sit_step_toast">步数不能大于200</string>
+
+    <string name="Need_format">该手环在手环端解绑,是否重置</string>
+    <string name="Need_before">是否需要重新绑定前一个装置</string>
+
+    <string name="net_work_error">有一個應用程式要求開啟這個裝置的網路功能</string>
+    <string name="yes">允許</string>
+    <string name="no">拒絕</string>
 </resources>

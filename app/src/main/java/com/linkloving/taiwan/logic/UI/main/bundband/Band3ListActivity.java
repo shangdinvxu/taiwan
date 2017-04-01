@@ -90,6 +90,7 @@ public class Band3ListActivity extends ToolBarActivity {
     private Object[] button_txt = {button_txt_count};
     private Timer timer;
     private BLEHandler.BLEProviderObserverAdapter observerAdapter = null;
+    private android.support.v7.app.AlertDialog.Builder builder;
 
     @Override
     protected void onDestroy() {
@@ -132,6 +133,7 @@ public class Band3ListActivity extends ToolBarActivity {
                     if (v.mac.equals(device.getAddress()))
                         return;
                 }
+                Log.e(TAG,device.getAddress()+"获取的地址是多少？");
                 DeviceVO vo = new DeviceVO();
                 vo.mac = device.getAddress() ;
                 vo.name = device.getName();
@@ -144,6 +146,7 @@ public class Band3ListActivity extends ToolBarActivity {
         mAdapter = new macListAdapter(this, macList);
         initView();
         listProvider.scanDeviceList();
+        builder = new android.support.v7.app.AlertDialog.Builder(Band3ListActivity.this);
     }
 
     @Override
@@ -384,7 +387,36 @@ public class Band3ListActivity extends ToolBarActivity {
                                 finish();
                             }
                         }).create().show();
-            }else{
+            }else if(latestDeviceInfo != null && latestDeviceInfo.recoderStatus == 6){
+                Log.e("BluetoothActivity", "设备未授权");
+                Toast.makeText(Band3ListActivity.this, "设备未授权", Toast.LENGTH_SHORT).show();
+                provider.release();
+                provider.setCurrentDeviceMac(null);
+                provider.setmBluetoothDevice(null);
+                provider.resetDefaultState();
+                provider.clearProess();
+                finish();
+            }else if (latestDeviceInfo!=null&&latestDeviceInfo.recoderStatus==66){
+                if (builder!=null&&!builder.create().isShowing()) {
+                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            provider.unBoundDevice(Band3ListActivity.this);
+                            try {
+                                Thread.sleep(1000);
+                                BleService.getInstance(Band3ListActivity.this).releaseBLE();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).setMessage(getString(R.string.Need_format))
+                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            }).show();
+                }
+            } else{
                 provider.requestbound_fit(Band3ListActivity.this);
             }
 
@@ -450,26 +482,25 @@ public class Band3ListActivity extends ToolBarActivity {
         @Override
         public void updateFor_BoundContinue() {
             super.updateFor_BoundContinue();
-            if(progressDialog!=null && progressDialog.isShowing() )
-                progressDialog.dismiss();
-         /*       if(dialog_bound!=null && !dialog_bound.isShowing() )
-                dialog_bound.show();
-        if (dialog_bound != null && dialog_bound.isShowing()) {
-                    if(timer==null){
-                        timer = new Timer(); // 每1s更新一下
-                        timer.schedule(new TimerTask() {
-                            @Override
-                            public void run() {
+
+//            if(dialog_bound!=null && !dialog_bound.isShowing() )
+//                dialog_bound.show();
+//            if (dialog_bound != null && dialog_bound.isShowing()) {
+//                    if(timer==null){
+//                        timer = new Timer(); // 每1s更新一下
+//                        timer.schedule(new TimerTask() {
+//                            @Override
+//                            public void run() {
                                 boundhandler.post(butttonRunnable);
-                                button_txt_count--;
-                                MyLog.e(TAG, "Timer开始了");
-                                if (button_txt_count < 0) {
-                                    timer.cancel();
-                                }
-                            }
-                        }, 0, 1000);
-                    }
-            }*/
+//                                button_txt_count--;
+//                                MyLog.e(TAG, "Timer开始了");
+//                                if (button_txt_count < 0) {
+//                                    timer.cancel();
+//                                }
+//                            }
+//                        }, 0, 1000);
+//                    }
+//            }
 
             if (sendcount < sendcount_MAX) {
                 boundhandler.postDelayed(boundRunnable, sendcount_time);
@@ -485,6 +516,8 @@ public class Band3ListActivity extends ToolBarActivity {
 
         @Override
         public void updateFor_BoundSucess() {
+            if(progressDialog!=null && progressDialog.isShowing() )
+                progressDialog.dismiss();
             provider.SetDeviceTime(Band3ListActivity.this);
             if (dialog_bound != null && dialog_bound.isShowing()){
                 if(timer!=null)
@@ -727,10 +760,10 @@ public class Band3ListActivity extends ToolBarActivity {
 
         @Override
         protected View initConvertView(int position, View convertView, ViewGroup parent) {
-            String adress = list.get(position).mac;
-            String[] split = adress.split(":");
-            String mac =split[1]+""+split[0];
-            holder.mac.setText("ID:   " + mac);
+//            String adress = list.get(position).mac;
+//            String[] split = adress.split(":");
+//            String mac =split[1]+""+split[0];
+            holder.mac.setText(list.get(position).name);
             return convertView;
         }
 

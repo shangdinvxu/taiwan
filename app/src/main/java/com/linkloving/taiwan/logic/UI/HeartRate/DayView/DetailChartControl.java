@@ -130,28 +130,6 @@ public class DetailChartControl extends RelativeLayout {
 //        timetv = (TextView) findViewById(R.id.time);
         linearLayout.setOnTouchListener(new OnTouchListenerImpl());
     }
-    /**
-     * 点击柱状图出提示框
-     *
-     * @param x
-     */
-    public void showPopupWindow(View view, String number, int x, int y) {
-        timeView.setText(number);
-        popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT, true);
-        popupWindow.setTouchable(true);
-        // 如果不设置PopupWindow的背景，无论是点击外部区域还是Back键都无法dismiss弹框
-        popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));
-        popupWindow.setClippingEnabled(true);
-/*//        有参数的话，就是一view的左下角进行偏移，xoff正的向左，负的向右.
-//        View stepAcitvityLayout = findViewById(R.id.step_activity_layout);*/
-        popupWindow.showAsDropDown(view, x, y);
-        MyLog.e("点击", "调用了popupwindow");
-    }
-
-
-
-
 
     private class OnTouchListenerImpl implements OnTouchListener{
         @Override
@@ -165,20 +143,21 @@ public class DetailChartControl extends RelativeLayout {
                 MyLog.e(TAG,"当前的时间是："+( (long)(event.getX()*xlineScale) * 60+ timeLong ) );
                 nowtime = (long)(event.getX() * xlineScale) * 60+ timeLong;
                 List<heartrate> heartrates = searRecord(nowtime);
+                nowtimeString = TimeUtils.formatTimeHHMM(nowtime);
+                MyLog.e(TAG,"nowtimeString"+nowtimeString);
+                timeView.setText(nowtimeString);
                 if (heartrates.size()==0){
                     MyLog.e(TAG,"heartrates.size()为0");
                     maxView.setText("0");
                     avgView.setText("0");
+                    moveLineViewWithFinger(lineView,event.getX(),false);
                 }else {
                     MyLog.e(TAG,"heartrates.size()不为0");
                     maxView.setText(heartrates.get(0).getMax()+"");
                     avgView.setText(heartrates.get(0).getAvg()+"");
+                    moveLineViewWithFinger(lineView,event.getX(),true);
                 }
-                nowtimeString = TimeUtils.formatTimeHHMM(nowtime);
 
-                MyLog.e(TAG,"nowtimeString"+nowtimeString);
-                timeView.setText(nowtimeString);
-                moveLineViewWithFinger(lineView,event.getX());
             }
             if (event.getAction()==MotionEvent.ACTION_UP){
                 i=0;
@@ -236,7 +215,7 @@ public class DetailChartControl extends RelativeLayout {
      * @param view
      * @param rawX
      */
-    private void moveLineViewWithFinger(View view, float rawX) {
+    private void moveLineViewWithFinger(View view, float rawX,boolean show) {
         AutoRelativeLayout.LayoutParams layoutParams = (AutoRelativeLayout.LayoutParams) view.getLayoutParams();
         layoutParams.leftMargin = (int) rawX - view.getWidth() / 2;
 //        layoutParams.leftMargin = (int) (rawX- screenW*0.15);
@@ -245,7 +224,14 @@ public class DetailChartControl extends RelativeLayout {
             showFirstPopupWindow();
             i++;
         }else{
-            popupWindow.update((int) rawX+(int)(screenW*0.027), (int) (screenH*0.37),-1,-1,false);
+            if (show){
+                popupWindow.dismiss();
+                popupWindow.showAsDropDown(framelayout, 20, 20);
+                popupWindow.update((int) rawX+(int)(screenW*0.027), (int) (screenH*0.37),-1,-1,false);
+            }else {
+                popupWindow.dismiss();
+            }
+
         }
     }
 

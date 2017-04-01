@@ -1192,11 +1192,11 @@ public  class BLEProvider
    }
 
 	public void closeSyncoHeart(Context context, LPDeviceInfo lpDeviceInfo){
-		runIndexProess(context,INDEX_CLOSE_SYNC_HEART);
+		runIndexProess(context,INDEX_CLOSE_SYNC_HEART,lpDeviceInfo);
 	}
 
 	public void openSyncoHeart(Context context,LPDeviceInfo lpDeviceInfo){
-		runIndexProess(context,INDEX_OPEN_SYNC_HEART);
+		runIndexProess(context,INDEX_OPEN_SYNC_HEART,lpDeviceInfo);
 	}
 
 
@@ -1389,7 +1389,6 @@ public  class BLEProvider
 	    	  else
 	    	  {
 	    		if(tmpSportDataList.isEmpty())
-	    			
 	    			return;
 	    		  
 	    		int lastRecordItems =	tmpSportDataList.get(0).getDataLen() - (tmpSportDataList.get(0).getRevLen() - 13) / 6 ;

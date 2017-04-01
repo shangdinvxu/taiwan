@@ -55,6 +55,10 @@ private final static long HALFFIVEMILLIONS=600 ;
         return daoSession.getHeartrateDao();
     }
 
+    public List<heartrate> searchAll(){
+        List<heartrate> heartrates = getHeartrateDao().loadAll();
+        return heartrates;
+    }
 
     /**
      * time是秒数
@@ -84,7 +88,7 @@ private final static long HALFFIVEMILLIONS=600 ;
      * 根据时间来查5分钟的数据
      */
     public List<heartrate> searchDurationFiveMinute(long starttime){
-        Query<heartrate> list = getHeartrateDao().queryBuilder().where(heartrateDao.Properties.StartTime.between(starttime - HALFFIVEMILLIONS, starttime + HALFFIVEMILLIONS))
+        Query<heartrate> list = getHeartrateDao().queryBuilder().where(heartrateDao.Properties.StartTime.between(starttime, starttime + HALFFIVEMILLIONS))
                 .orderAsc(heartrateDao.Properties.Id).build();
         List<heartrate> heartrateList = list.list();
             return heartrateList ;

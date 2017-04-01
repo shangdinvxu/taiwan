@@ -17,7 +17,7 @@
             <ImageView
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:src="@mipmap/heart"
+                android:src="@mipmap/heart_portal"
                 android:layout_marginLeft="40dp"
                 android:id="@+id/imageView4"
 
@@ -52,7 +52,7 @@
                 android:id="@+id/avgerage"
                 android:gravity="center"
                 android:textSize="30sp"
-                android:text="000"
+                android:text="——"
                 android:layout_weight="1"
                 android:textColor="@color/blue"
                 android:layout_width="80dp"

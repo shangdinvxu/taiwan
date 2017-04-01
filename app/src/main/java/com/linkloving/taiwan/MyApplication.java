@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.baidu.mapapi.SDKInitializer;
+import com.facebook.stetho.Stetho;
 import com.linkloving.taiwan.http.basic.HttpCallback;
 import com.linkloving.taiwan.logic.UI.launch.LoginInfo;
 import com.linkloving.taiwan.logic.dto.EntEntity;
@@ -142,7 +143,7 @@ public class MyApplication extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-
+        Stetho.initializeWithDefaults(this);
         //获取进程名称
         String processName = OsUtils.getProcessName(this,android.os.Process.myPid());
         if (processName != null){

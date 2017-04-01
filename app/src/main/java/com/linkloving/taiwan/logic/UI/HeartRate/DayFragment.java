@@ -67,13 +67,21 @@ public class DayFragment extends Fragment {
         heartrateHelper = new DaoMaster.DevOpenHelper(getActivity(), "heartrate", null);
         SQLiteDatabase readableDatabase = heartrateHelper.getReadableDatabase();
         greendaoUtils = new GreendaoUtils(getActivity(), readableDatabase);
-        List<BarChartView.BarChartItemBean> list = getHeartPointoneDay();
-        barchartview.setItems(list);
 //   调滑动的线
         detailChartControl = (DetailChartControl)view.findViewById(R.id.activity_detailChartView1);
         detailChartControl.initDayIndex(parse);
         return view;
     }
+
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+                List<BarChartView.BarChartItemBean> list = getHeartPointoneDay();
+                barchartview.setItems(list);
+    }
+
     private List<BarChartView.BarChartItemBean>  getHeartPointoneDay(){
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_YEAR,-1);

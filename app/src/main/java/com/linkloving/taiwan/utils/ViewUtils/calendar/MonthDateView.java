@@ -91,7 +91,7 @@ public class MonthDateView extends View {
                 float circleX = (float) (mColumnSize * column +	mColumnSize*0.8);
                 float circley = (float) (mRowSize * row + mRowSize*0.2);
                 Bitmap bitmap3 = BitmapFactory.decodeResource(getResources(), R.mipmap.tw_calendar_point);
-                canvas.drawBitmap(bitmap3,circleX-(float)0.55*mColumnSize,  circley - (float)0.07*mRowSize ,mPaint);
+                canvas.drawBitmap(bitmap3,circleX-(float)0.59*mColumnSize,  circley - (float)0.08*mRowSize ,mPaint);
 
                 //记录第几行，即第几周
                 weekRow = row + 1;

@@ -661,9 +661,7 @@ public class CalDataActivity extends ToolBarActivity implements View.OnClickList
         //  柱形图顶端字体大小
         dataSet.setValueTextSize(10f);
         bardata.addDataSet(dataSet);
-
         dataSet.setHighlightEnabled(false);
-
         dataSet.setBarSpacePercent(60);
         dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
         return bardata;
@@ -1775,7 +1773,13 @@ public class CalDataActivity extends ToolBarActivity implements View.OnClickList
             if (cal_goal == 0) {
             } else {
                 //Math.ceil(Float.parseFloat(money) * 100*1.0f/ money_goal))
-                vh.textViewpercent.setText(Math.floor(calory.getCalory() * 100 * 1.0f / cal_goal) + "%");
+                double percent = 0.0 ;
+                if (Math.floor(calory.getCalory() * 100 * 1.0f / cal_goal)>=100){
+                    percent = 100.0 ;
+                }else {
+                    percent = Math.floor(calory.getCalory() * 100 * 1.0f / cal_goal) ;
+                }
+                vh.textViewpercent.setText(percent+ "%");
             }
             return convertView;
         }

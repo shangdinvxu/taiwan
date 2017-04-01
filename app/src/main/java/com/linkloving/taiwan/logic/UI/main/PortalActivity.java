@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -66,6 +67,9 @@ import com.linkloving.taiwan.http.basic.CallServer;
 import com.linkloving.taiwan.http.basic.HttpCallback;
 import com.linkloving.taiwan.http.basic.NoHttpRuquestFactory;
 import com.linkloving.taiwan.http.data.DataFromServer;
+import com.linkloving.taiwan.logic.UI.HeartRate.DayView.BarChartView;
+import com.linkloving.taiwan.logic.UI.HeartRate.GreendaoUtils;
+import com.linkloving.taiwan.logic.UI.HeartRate.HeartRateActivity;
 import com.linkloving.taiwan.logic.UI.customerservice.serviceItem.Feedback;
 import com.linkloving.taiwan.logic.UI.device.DeviceActivity;
 import com.linkloving.taiwan.logic.UI.device.FirmwareDTO;
@@ -104,11 +108,15 @@ import com.zhy.autolayout.AutoLayoutActivity;
 
 import java.math.BigDecimal;
 import java.text.MessageFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import Trace.GreenDao.DaoMaster;
+import Trace.GreenDao.heartrate;
 
 public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter.OnRecyclerViewListener, View.OnClickListener {
 
@@ -125,11 +133,11 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
     private ImageView user_head, device_img;
     //昵称
     private TextView user_name;
-    private TextView text_Battery, text_Wallet, text_Step, text_Distance, text_Cal, text_Run, text_Sleep, text_Weight,
+    private TextView text_Battery, text_Wallet, text_Step, text_Distance, text_Cal, text_Run, text_Sleep, text_Weight,text_heart,
             text_Battery_Progress, text_Wallet_Progress, text_Step_Progress, text_Distance_Progress, text_Cal_Progress, text_Run_Progress, text_Sleep_Progress, text_Weight_Progress;
     private CustomProgressBar Battery_ProgressBar,Wallet_ProgressBar, Step_ProgressBar,
             Distance_ProgressBar, Cal_ProgressBar, Run_ProgressBar, Sleep_ProgressBar, Weight_ProgressBar;
-    private LinearLayout date, linear_unbund, linear_Step, linear_Distance, linear_Cal, linear_Run, linear_Sleep, linear_Battery, linear_wallet, linear_Weight;
+    private LinearLayout date, linear_unbund, linear_Step, linear_Distance, linear_Cal,linear_heartrate, linear_Run, linear_Sleep, linear_Battery, linear_wallet, linear_Weight;
     private TextView time;
     //下拉刷新
     private PullToRefreshScrollView mScrollView;
@@ -175,6 +183,8 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
     private ArrayList<MenuVO> listwithoutHR;
     private ArrayList<MenuVO> listwithHR;
     private ArrayList<MenuVO> list;
+    private AlertDialog.Builder builder;
+    private GreendaoUtils greendaoUtils;
 
 //    private Observer obsForBerforeConnect = new Observer() {
 //        @Override
@@ -227,7 +237,6 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         }
         //刷新企业logo
         refreshEntHead();
-
     }
 
 
@@ -249,6 +258,12 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         AppManager.getAppManager().addActivity(this);
         //主界面开始运行
         isRunning = true;
+
+//        心率工具
+        DaoMaster.DevOpenHelper heartrateHelper = new DaoMaster.DevOpenHelper(PortalActivity.this, "heartrate", null);
+        SQLiteDatabase readableDatabase = heartrateHelper.getReadableDatabase();
+        greendaoUtils = new GreendaoUtils(PortalActivity.this, readableDatabase);
+
         userEntity = MyApplication.getInstance(this).getLocalUserInfoProvider();
         provider = BleService.getInstance(this).getCurrentHandlerProvider();
         bleProviderObserver = new BLEProviderObserverAdapterImpl();
@@ -300,28 +315,9 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
             }
         });
 
-//        new AsyncTask<Object, Object, SportRecordUploadDTO>() {
-//            @Override
-//            protected void onPreExecute() {
-//                super.onPreExecute();
-//            }
-//
-//            @Override
-//            protected SportRecordUploadDTO doInBackground(Object... params) {
-//                // 看看数据库中有多少未同步（到服务端的数据）
-//                ArrayList<SportRecord> listdata = com.linkloving.rtring_c_watch.db.sport.UserDeviceRecord.findHistoryAlldata(PortalActivity.this,MyApplication.getInstance(PortalActivity.this).getLocalUserInfoProvider().getUser_id()+"");
-//                for (SportRecord sp:listdata){
-//                    MyLog.e("查询出来的原始数据"+sp.toString());
-//                }
-//                return null;
-//            }
-//
-//            @Override
-//            protected void onPostExecute(SportRecordUploadDTO sportRecordUploadDTO) {
-//                super.onPostExecute(sportRecordUploadDTO);
-//            }
-//        }.execute();
         inCheckShowHR();
+        builder = new AlertDialog.Builder(PortalActivity.this);
+
     }
 
     private void inCheckShowHR() {
@@ -438,6 +434,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         linear_Step = (LinearLayout) findViewById(R.id.linear_step);
         linear_Sleep = (LinearLayout) findViewById(R.id.linear_sleep);
         linear_Cal = (LinearLayout) findViewById(R.id.linear_cal);
+        linear_heartrate = (LinearLayout) findViewById(R.id.linear_heartrate);
         linear_Run = (LinearLayout) findViewById(R.id.linear_run);
         linear_Distance = (LinearLayout) findViewById(R.id.linear_distance);
         linear_Battery = (LinearLayout) findViewById(R.id.linear_battery);
@@ -452,6 +449,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         text_Run = (TextView) findViewById(R.id.text_run);
         text_Sleep = (TextView) findViewById(R.id.text_sleep);
         text_Weight = (TextView) findViewById(R.id.text_weight);
+        text_heart = (TextView) findViewById(R.id.text_heart);
         //进度条
         Battery_ProgressBar = (CustomProgressBar) findViewById(R.id.progressBar_battery);//progressBar_battery
         Wallet_ProgressBar = (CustomProgressBar) findViewById(R.id.progressBar_wallet);
@@ -599,9 +597,11 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
             linear_Battery.setVisibility(View.GONE);
             linear_wallet.setVisibility(View.GONE);
             BleService.getInstance(this).releaseBLE();
+            linear_heartrate.setVisibility(View.GONE);
         } else {
             //刷新电量
             refreshBatteryUI();
+            linear_heartrate.setVisibility(View.GONE);
             //绑定时候
             linear_unbund.setVisibility(View.GONE);   //未绑定提示消失
             linear_Battery.setVisibility(View.VISIBLE);
@@ -625,6 +625,61 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
 //                linear_wallet.setVisibility(View.VISIBLE);
 //            }
         }
+
+    }
+
+    private String getOneDayHeartrate(){
+        Date parse = null;
+        try {
+            parse = sdf.parse(timeNow);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(parse);
+        calendar.set(Calendar.HOUR,0);
+        calendar.set(Calendar.MINUTE,0);
+        calendar.set(Calendar.SECOND,0);
+        calendar.set(Calendar.MILLISECOND,0);
+        long dayStart = calendar.getTime().getTime();
+        MyLog.e("开始时间："+calendar.getTime());
+        calendar.set(Calendar.HOUR,23);
+        calendar.set(Calendar.MINUTE,59);
+        calendar.set(Calendar.SECOND,59);
+        calendar.set(Calendar.MILLISECOND,999);
+        long dayEnd = calendar.getTime().getTime();
+        MyLog.e("结束时间："+calendar.getTime());
+        List<heartrate> heartrates = greendaoUtils.searchOneDay(dayStart, dayEnd);
+        ArrayList<BarChartView.BarChartItemBean> list = new ArrayList<>();
+        int rest = 0 ;
+        int avg = 0 ;
+        for (heartrate record : heartrates){
+            BarChartView.BarChartItemBean barChartItemBean = new BarChartView.BarChartItemBean
+                    (record.getStartTime(), record.getMax(), record.getAvg());
+            list.add(barChartItemBean);
+            rest = rest+record.getMax();
+            avg = avg+record.getAvg();
+        }
+        int resting,avging = 0;
+        String result = "" ;
+        if (list.size()==0){
+            resting = 0 ;
+            avging = 0 ;
+        }else{
+            resting = rest / list.size();
+            avging = avg/list.size();
+        }
+        result = avging +" Avg.bpm" ;
+        if (avging==0){
+            UserEntity localUserInfoProvider = MyApplication.getInstance(PortalActivity.this).getLocalUserInfoProvider();
+            String birthdate = localUserInfoProvider.getUserBase().getBirthdate();
+            String[] split = birthdate.split("-");
+            int i = Integer.parseInt(split[0]);
+            int year = Calendar.getInstance().get(Calendar.YEAR);
+            int restings = (int) ((220 - (year - i)) * 0.4);
+            result = restings +" Resting.bpm";
+        }
+        return result;
     }
 
     private void getServerInfo() {
@@ -734,7 +789,6 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                         }
                     }
                 }
-
                 break;
             //点击体重
             case R.id.linear_weight:
@@ -964,6 +1018,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
             @Override
             protected DaySynopic doInBackground(Object... params) {
                 DaySynopic mDaySynopic = null;
+
                 if (timeNow.equals(sdf.format(new Date()))) {
                     ArrayList<DaySynopic> mDaySynopicArrayList = new ArrayList<DaySynopic>();
                     MyLog.e(TAG, "endDateString:" + endDateString);
@@ -1088,6 +1143,14 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                 if (progressDialog != null && progressDialog.isShowing())
                     progressDialog.dismiss();
                 AsyncTaskManger.getAsyncTaskManger().removeAsyncTask(this);
+                //// TODO: 2017/4/1
+                UserEntity userEntity = MyApplication.getInstance(PortalActivity.this).getLocalUserInfoProvider();
+                linear_heartrate.setVisibility(View.GONE);
+                if (userEntity.getDeviceEntity().getDevice_type() == MyApplication.DEVICE_BAND3) {
+                    linear_heartrate.setVisibility(View.VISIBLE);
+                    String oneDayHeartrate = getOneDayHeartrate();
+                    text_heart.setText(oneDayHeartrate);
+                }
             }
         };
         // 确保当前只有一个AsyncTask在运行，否则用户恶心切换会OOM
@@ -1113,13 +1176,14 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         MyLog.e(TAG, step_goal + " " + distace_goal + " " + runtime_goal + " " + sleeptime_goal + " " + weight_goal);
         //提示词
         text_Wallet.setText(getResources().getString(R.string.menu_pay_yuan) + money);
+        double distance1 = (double) distance / 1000;
         if (SwitchUnit.getLocalUnit(PortalActivity.this) == ToolKits.UNIT_GONG) {
-            BigDecimal   b   =   new BigDecimal(distance);
+            BigDecimal   b   =   new BigDecimal(distance1);
             double   distanceDouble   =   b.setScale(3,   BigDecimal.ROUND_HALF_UP).doubleValue();
             text_Distance.setText(distanceDouble + getResources().getString(R.string.unit_km_metric));
             text_Weight.setText(weight + getResources().getString(R.string.unit_kilogramme));
         } else {
-            BigDecimal   b   =   new BigDecimal(UnitTookits.MChangetoMIRate(distance));
+            BigDecimal   b   =   new BigDecimal((double) UnitTookits.MChangetoMIRate(distance)/1000);
             double   distanceDouble   =   b.setScale(3,   BigDecimal.ROUND_HALF_UP).doubleValue();
             text_Distance.setText(distanceDouble + getResources().getString(R.string.unit_mile));
             text_Weight.setText(weight + getResources().getString(R.string.unit_pound));
@@ -1162,7 +1226,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
             if (provider.isConnectedAndDiscovered()) {  //蓝牙连接上的
                 LocalInfoVO LocalInfoVO = PreferencesToolkits.getLocalDeviceInfo(PortalActivity.this);
                 if (!LocalInfoVO.userId.equals("-1")) {
-                    int battery = LocalInfoVO.getBattery();
+                    int battery = LocalInfoVO.getBattery() >= 100 ? 100 : LocalInfoVO.getBattery() ;
                     MyLog.e(TAG, "LocalInfoVO电量:" + LocalInfoVO.getBattery());
                     if (battery < LOW_BATTERY) {
                         //电量低于30的时候 弹出低电量警告框
@@ -1178,7 +1242,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                                         }).create();
                         dialog_battery.show();
                     }
-                    text_Battery.setText("Power "+battery + "%");//根据电量显示不同的文字提示
+                    text_Battery.setText("Power "+ battery + "%");//根据电量显示不同的文字提示
                     Battery_ProgressBar.setCurProgress((int) (Math.floor(battery * 100 * 1.0f / 100)));
                     text_Battery_Progress.setText((int) (Math.floor(battery * 100 * 1.0f / 100)) + "%");
                 }
@@ -1491,6 +1555,36 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                                 provider.resetDefaultState();
                             }
                         }).create().show();
+            }
+
+
+            if (latestDeviceInfo!=null&&latestDeviceInfo.recoderStatus==66){
+                if (!CommonUtils.isStringEmpty(MyApplication.getInstance(PortalActivity.this)
+                        .getLocalUserInfoProvider().getDeviceEntity().getLast_sync_device_id())){
+                    if (builder!=null&&!builder.create().isShowing()) {
+                        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                provider.unBoundDevice(PortalActivity.this);
+                                try {
+                                    Thread.sleep(1000);
+                                    BleService.getInstance(PortalActivity.this).releaseBLE();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+//                                IntentFactory.start_Bluetooth(PortalActivity.this);
+                            }
+                        }).setMessage(getString(R.string.Need_before))
+                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                }).show();
+                    }
+                }else {
+                    provider.unBoundDevice(PortalActivity.this);
+                }
             }
 //            //保存localvo
 //            PreferencesToolkits.updateLocalDeviceInfo(PortalActivity.this, latestDeviceInfo);

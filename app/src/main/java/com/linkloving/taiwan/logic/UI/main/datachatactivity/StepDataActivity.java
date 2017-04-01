@@ -944,7 +944,13 @@ public class StepDataActivity extends ToolBarActivity implements View.OnClickLis
 
             }else {
                 //Math.floor(Float.parseFloat(money) * 100*1.0f/ money_goal))
-                vh.textViewpercent.setText(Math.floor(step*100*1.0f/ step_goal)+"%");
+                double percent = 0.0 ;
+                if (Math.floor(step*100*1.0f/ step_goal)>=100){
+                    percent = 100.0 ;
+                }else {
+                    percent = Math.floor(step*100*1.0f/ step_goal) ;
+                }
+                vh.textViewpercent.setText(percent+"%");
             }
 
             return convertView;

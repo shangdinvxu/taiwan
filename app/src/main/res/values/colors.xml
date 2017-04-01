@@ -13,6 +13,7 @@
     <color name="black">#000000</color>
     <color name="orange">#FF7700</color>
     <color name="blue">#1A2B5F</color>
+    <color name="weight_color">#92f0ff</color>
 
     <!-- 西红柿色 -->
     <color name="orangered">#FF4500</color>

@@ -48,6 +48,7 @@ public class BarChartView extends View {
         linePaint = new Paint();
         lineStrokeWidth = ScreenUtils.dp2px(context, 1);
         linePaint.setStrokeWidth(lineStrokeWidth);
+        linePaint.setAntiAlias(true);
         textPaint = new Paint();
         textPaint.setAntiAlias(true);
         barRect = new Rect(0, 0, 0, 0);
@@ -80,6 +81,7 @@ public class BarChartView extends View {
         transformToPoint();
         for (int i = 0; i < mItems.size(); i++) {
             if (i<mItems.size()-1){
+                if (mItems.get(i).itemDeepValue==0||mItems.get(i+1).itemDeepValue==0) break;
                     canvas.drawLine( (float) (screenW * (0.2 + 0.023+i * 0.023)),
                             (float)(oneHourHight*28- (mItems.get(i).itemDeepValue*1000/200*oneHourHight * 24)/1000),
                             (float) (screenW * (0.2 + (i+2) * 0.023)),
@@ -103,7 +105,7 @@ public class BarChartView extends View {
         for (int i = 0; i < 11; i++) {
             String typeText = week[i];
             float texttypeStartx = (float) (screenW * (0.18 + i * 0.072));
-            float texttypeStarty = (float) (oneHourHight * 31);
+            float texttypeStarty = (float) (oneHourHight * 29.5);
             MyLog.e(TAG,texttypeStartx+"------"+texttypeStarty);
             canvas.drawText(typeText, texttypeStartx, texttypeStarty, textPaint);
         }

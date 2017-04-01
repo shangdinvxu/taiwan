@@ -627,17 +627,17 @@
     <string name="unit_step">steps</string>
     <string name="Step">Step</string>
     <string name="unit_cal">Calories</string>
-    <string name="unit_Kcal">Kcal</string>
+    <string name="unit_Kcal">kcal</string>
     <string name="unit_cal_big">Kcal.</string>
-    <string name="unit_cm">Cm</string>
+    <string name="unit_cm">cm</string>
     <string name="unit_m">m</string>
-    <string name="unit_ms">Meter</string>
+    <string name="unit_ms">meter</string>
     <string name="unit_mile">Mile</string>
-    <string name="unit_km">Km</string>
-    <string name="unit_km_metric">Km</string>
-    <string name="unit_km_en">Km</string>
-    <string name="unit_km_per_hour">Km/hr</string>
-    <string name="unit_km_per_hour_metric">Km/hr</string>
+    <string name="unit_km">km</string>
+    <string name="unit_km_metric">km</string>
+    <string name="unit_km_en">km</string>
+    <string name="unit_km_per_hour">km/hr</string>
+    <string name="unit_km_per_hour_metric">km/hr</string>
     <string name="unit_year">Year</string>
     <!--<string name="unit_kg">kg</string>-->
     <string name="unit_pound">lb</string>
@@ -1117,4 +1117,7 @@
     <string name="refresh_time">set time success...</string>
     <string name="refresh_data">syncdata...left{0}</string>
     <string name="long_sit_step_toast">The number of steps can not be greater than 200</string>
+    <string name="net_work_error">An app wants to turn cellular data or Wi-Fi on for this device.</string>
+    <string name="yes">Allow</string>
+    <string name="no">Deny</string>
 </resources>

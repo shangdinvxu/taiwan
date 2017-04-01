@@ -46,7 +46,7 @@ public class heartrateDao extends AbstractDao<heartrate, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'HEARTRATE' (" + //
                 "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
-                "'START_TIME' INTEGER," + // 1: startTime
+                "'START_TIME' INTEGER UNIQUE ," + // 1: startTime
                 "'MAX' INTEGER," + // 2: max
                 "'AVG' INTEGER);"); // 3: avg
     }

@@ -202,6 +202,11 @@ public class LepaoProtocalImpl implements LepaoProtocol {
 			LPDeviceInfo lpDeviceInfo = new LPDeviceInfo();
 			lpDeviceInfo.recoderStatus = 5;
 			return lpDeviceInfo;
+		}else if(resp.getData()[4]==0x01 && resp.getData()[5]==0x06){
+			OwnLog.e(TAG, "0x13 ...已经在手环端解绑了");
+			LPDeviceInfo lpDeviceInfo = new LPDeviceInfo();
+			lpDeviceInfo.recoderStatus = 66;
+			return lpDeviceInfo;
 		}else {
 			OwnLog.e(TAG, "null返回了");
 			return null;
@@ -963,14 +968,28 @@ public class LepaoProtocalImpl implements LepaoProtocol {
 		List<LpHeartrateData> list = new ArrayList<>();
 		WatchResponse resp = getHeartrate(0xff, 0x7f);
 		int itemLeft;
+		int itemCnt;
 		if (resp.getData()[4]==0){
 			itemLeft = (int)resp.getData()[5];
 			list.addAll(resp.toLPHeartrateDataList(resp));
-			while (itemLeft>10) {
-				WatchResponse heartrate = getHeartrate(itemLeft - 10, 0);
+			itemCnt = resp.toLPHeartrateDataList(resp).size();
+			while (itemLeft - itemCnt != 0)
+			{
+			    WatchResponse heartrate = getHeartrate(itemLeft - itemCnt, 0);
 				itemLeft =heartrate.getData()[5];
+				itemCnt = heartrate.toLPHeartrateDataList(heartrate).size();
 				list.addAll(heartrate.toLPHeartrateDataList(heartrate));
 			}
+//			while (itemLeft>10) {
+//				WatchResponse heartrate = getHeartrate(itemLeft - 10, 0);
+//				itemLeft =heartrate.getData()[5];
+//				list.addAll(heartrate.toLPHeartrateDataList(heartrate));
+//			}
+//			if (itemLeft > 0) {
+//				WatchResponse heartrate = getHeartrate(itemLeft, 0);
+////				itemLeft =heartrate.getData()[5];
+//				list.addAll(heartrate.toLPHeartrateDataList(heartrate));
+//			}
 		}
 		return list;
 	}

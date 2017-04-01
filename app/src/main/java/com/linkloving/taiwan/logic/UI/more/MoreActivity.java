@@ -311,14 +311,37 @@ public class MoreActivity extends ToolBarActivity implements View.OnClickListene
                     LPDeviceInfo lpDeviceInfo = new LPDeviceInfo();
                     if (isChecked){
                         provider.openSyncoHeart(MoreActivity.this,lpDeviceInfo);
+                        wearable.setChecked(false);
                     }else {
                         provider.closeSyncoHeart(MoreActivity.this,lpDeviceInfo);
+                        wearable.setChecked(true);
                     }
                 }else {
                         Toast.makeText(MoreActivity.this,getString(R.string.keepthe),Toast.LENGTH_SHORT).show();
+                    realtime.setChecked(!isChecked);
                 }
             }
         });
+
+        wearable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (provider.isConnectedAndDiscovered()){
+                    LPDeviceInfo lpDeviceInfo = new LPDeviceInfo();
+                    if (isChecked){
+                        provider.closeSyncoHeart(MoreActivity.this,lpDeviceInfo);
+                        realtime.setChecked(false);
+                    }else {
+                        provider.openSyncoHeart(MoreActivity.this,lpDeviceInfo);
+                        realtime.setChecked(true);
+                    }
+                }else {
+                    Toast.makeText(MoreActivity.this,getString(R.string.keepthe),Toast.LENGTH_SHORT).show();
+                    wearable.setChecked(!isChecked);
+                }
+            }
+        });
+
 
     }
 

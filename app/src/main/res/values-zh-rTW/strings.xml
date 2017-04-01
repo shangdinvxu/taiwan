@@ -345,7 +345,7 @@
 
     <string name="login_form_forgot_password">找回密碼 >></string>
     <string name="register_form_title">註冊帳號</string>
-    <string name="register_form_view_nickname">昵稱</string>
+    <string name="register_form_view_nickname">暱稱</string>
     <string name="register_form_view_eMail">登錄郵箱</string>
     <string name="register_form_view_password">密碼</string>
     <string name="register_form_view_confirmpsw">確認密碼</string>
@@ -357,7 +357,7 @@
     <string name="register_form_view_agreelisence">我已經閱讀並同意條款</string>
     <string name="register_form_view_look_caluse">《服務條款》</string>
     <string name="register_form_btn_submit">註冊</string>
-    <string name="register_form_valid_nick_name">昵稱不能為空！ </string>
+    <string name="register_form_valid_nick_name">暱稱不能為空！ </string>
     <string name="register_form_valid_mail">郵箱不能為空！</string>
     <string name="register_form_valid_psw">密碼不能為空</string>
     <string name="register_form_valid_psw_notenouph">密碼長度應大於或等於6個字元！</string>
@@ -463,7 +463,7 @@
     <string name="main_about_title">更多</string>
     <string name="main_about_us">關於WisFit</string>
     <string name="user_info_profile_photo">頭像</string>
-    <string name="user_info_nick_name">昵稱</string>
+    <string name="user_info_nick_name">暱稱</string>
     <string name="user_info_password">密碼</string>
     <string name="user_info_body">身體資訊</string>
     <string name="user_info_what_s_up">個性簽名</string>
@@ -481,8 +481,8 @@
     <string name="user_info_main_account_desc">健康隊隊長</string>
     <string name="user_info_mail">郵箱</string>
     <string name="user_info_title">個人資訊</string>
-    <string name="user_info_update_nick_name_title">修改昵稱</string>
-    <string name="user_info_update_nick_name_validate">昵稱不能為空!</string>
+    <string name="user_info_update_nick_name_title">修改暱稱</string>
+    <string name="user_info_update_nick_name_validate">暱稱不能為空!</string>
     <string name="user_info_update_user_height">身高(cm)</string>
     <string name="user_info_update_user_height_not_valid">請輸入有效身高值!</string>
     <string name="user_info_update_user_weight">體重(kg)</string>
@@ -511,7 +511,7 @@
     <string name="user_info_avatar_upload_faild4">抱歉，頭像上傳失敗！</string>
     <string name="user_info_avatar_upload_sucess">頭像更新成功.</string>
     <string name="user_info_avatar_image_not_exists">頭像圖片沒找到！</string>
-    <string name="user_info_child_account">輸入隊員帳號昵稱</string>
+    <string name="user_info_child_account">輸入隊員帳號暱稱</string>
     <string name="getting_started">入門指南</string>
     <string name="privacy_setting">隱私設置</string>
     <string name="unit_settings">單位設置</string>
@@ -900,7 +900,7 @@
     <string name="relationship_attention">關注</string>
     <string name="relationship_cancel_attention">取消關注</string>
     <string name="relationship_search_empty">沒有匹配的用戶！</string>
-    <string name="relationship_search_hint">輸入對方郵件或昵稱（可模糊查找）</string>
+    <string name="relationship_search_hint">輸入對方郵件或暱稱（可模糊查找）</string>
     <string name="relationship_hot_comments">熱門評論</string>
 
     <!-- 附件的人 -->

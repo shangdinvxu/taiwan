@@ -309,8 +309,8 @@ public class WeightActivity extends ToolBarActivity implements View.OnClickListe
         lineDataSet.setLineWidth(1.75f); // 线宽
         lineDataSet.setDrawValues(false);
         lineDataSet.setCircleSize(3f);// 显示的圆形大小
-        lineDataSet.setColor(Color.BLUE);// 显示颜色
-        lineDataSet.setCircleColor(Color.BLUE);// 圆形的颜色
+        lineDataSet.setColor(Color.WHITE);// 显示颜色
+        lineDataSet.setCircleColor(Color.WHITE);// 圆形的颜色
         lineDataSet.setHighLightColor(Color.WHITE); // 高亮的线的颜色
         lineDataSet.setHighlightEnabled(false);
         ArrayList<LineDataSet> lineDataSets = new ArrayList<LineDataSet>();
@@ -1243,9 +1243,9 @@ public class WeightActivity extends ToolBarActivity implements View.OnClickListe
                 yAxis.setAxisMaxValue(weight_goal+10);
             }
             LimitLine limitLine2 = new LimitLine(weight_goal, weight_goal+"");
-            limitLine2.setLineColor(Color.WHITE);
+            limitLine2.setLineColor(R.color.weight_color);
             limitLine2.setLineWidth(1f);
-            limitLine2.setTextColor(Color.BLACK);
+            limitLine2.setTextColor(R.color.weight_color);
             limitLine2.setTextSize(12f);
             limitLine2.setLabelPosition(LimitLine.LimitLabelPosition.LEFT_TOP);
             yAxis.addLimitLine(limitLine2);

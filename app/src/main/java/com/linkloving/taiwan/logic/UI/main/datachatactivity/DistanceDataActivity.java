@@ -1228,7 +1228,14 @@ public class DistanceDataActivity extends ToolBarActivity implements View.OnClic
             if(distace_goal==0){
             }else {
                 //Math.ceil(Float.parseFloat(money) * 100*1.0f/ money_goal))
-                vh.textViewpercent.setText(Math.floor(distance*100*1.0f/ distace_goal)+"%");
+                double percent = 0.0 ;
+                if (Math.floor(distance*100*1.0f/ distace_goal)>=100){
+                    percent = 100.0 ;
+                }else {
+                    percent =Math.floor(distance*100*1.0f/ distace_goal) ;
+                }
+
+                vh.textViewpercent.setText(percent+"%");
             }
             return convertView;
         }
