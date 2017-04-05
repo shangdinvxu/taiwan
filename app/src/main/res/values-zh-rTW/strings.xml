@@ -608,7 +608,7 @@
     <string name="unit_ms">meters</string>
     <string name="unit_mile">英里</string>
     <string name="unit_km">公里</string>
-    <string name="unit_km_metric">千米</string>
+    <string name="unit_km_metric">公里</string>
     <string name="unit_km_en">km</string>
     <string name="unit_km_per_hour">Km/hr</string>
     <string name="unit_km_per_hour_metric">Km/hr</string>

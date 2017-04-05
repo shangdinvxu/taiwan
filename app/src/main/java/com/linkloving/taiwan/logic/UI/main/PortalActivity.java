@@ -439,6 +439,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         linear_Distance = (LinearLayout) findViewById(R.id.linear_distance);
         linear_Battery = (LinearLayout) findViewById(R.id.linear_battery);
         linear_Weight = (LinearLayout) findViewById(R.id.linear_weight);
+        linear_heartrate = (LinearLayout) findViewById(R.id.linear_heartrate);
 //        linear_Weight.setVisibility(View.GONE);
         //提示词
         text_Battery = (TextView) findViewById(R.id.text_battery);
@@ -573,6 +574,8 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         linear_Distance.setOnClickListener(this);
         linear_Battery.setOnClickListener(this);
         linear_Weight.setOnClickListener(this);
+        linear_heartrate.setOnClickListener(this);
+
     }
 
     //获取目标值
@@ -671,13 +674,14 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         }
         result = avging +" Avg.bpm" ;
         if (avging==0){
-            UserEntity localUserInfoProvider = MyApplication.getInstance(PortalActivity.this).getLocalUserInfoProvider();
-            String birthdate = localUserInfoProvider.getUserBase().getBirthdate();
-            String[] split = birthdate.split("-");
-            int i = Integer.parseInt(split[0]);
-            int year = Calendar.getInstance().get(Calendar.YEAR);
-            int restings = (int) ((220 - (year - i)) * 0.4);
-            result = restings +" Resting.bpm";
+//            UserEntity localUserInfoProvider = MyApplication.getInstance(PortalActivity.this).getLocalUserInfoProvider();
+//            String birthdate = localUserInfoProvider.getUserBase().getBirthdate();
+//            String[] split = birthdate.split("-");
+//            int i = Integer.parseInt(split[0]);
+//            int year = Calendar.getInstance().get(Calendar.YEAR);
+//            int restings = (int) ((220 - (year - i)) * 0.4);
+//            result = restings +" Resting.bpm";
+            result = "--"+" Avg.bpm";
         }
         return result;
     }
@@ -796,6 +800,9 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                 intent5.putExtra("time", time.getText());
                 startActivity(intent5);
                 break;
+            //点击心率
+            case R.id.linear_heartrate:
+                IntentFactory.startHeartRateActivity(PortalActivity.this);
         }
     }
 

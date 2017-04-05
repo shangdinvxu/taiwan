@@ -202,7 +202,7 @@ public class WeightActivity extends ToolBarActivity implements View.OnClickListe
         //设置下标字体的大小
         //xAxis.setTextSize(5);
         // 隐藏左Y坐标轴
-        mLineChat.getAxisLeft().setEnabled(false);
+        mLineChat.getAxisLeft().setEnabled(true);
         // 隐藏右Y坐标轴
         mLineChat.getAxisRight().setEnabled(false);
         // 显示表格颜色
@@ -1242,13 +1242,13 @@ public class WeightActivity extends ToolBarActivity implements View.OnClickListe
             }else {
                 yAxis.setAxisMaxValue(weight_goal+10);
             }
-            LimitLine limitLine2 = new LimitLine(weight_goal, weight_goal+"");
-            limitLine2.setLineColor(R.color.weight_color);
-            limitLine2.setLineWidth(1f);
-            limitLine2.setTextColor(R.color.weight_color);
-            limitLine2.setTextSize(12f);
-            limitLine2.setLabelPosition(LimitLine.LimitLabelPosition.LEFT_TOP);
-            yAxis.addLimitLine(limitLine2);
+//            LimitLine limitLine2 = new LimitLine(weight_goal, weight_goal+"");
+//            limitLine2.setLineColor(R.color.weight_color);
+//            limitLine2.setLineWidth(1f);
+//            limitLine2.setTextColor(R.color.weight_color);
+//            limitLine2.setTextSize(12f);
+//            limitLine2.setLabelPosition(LimitLine.LimitLabelPosition.LEFT_TOP);
+//            yAxis.addLimitLine(limitLine2);
         }
 
     }

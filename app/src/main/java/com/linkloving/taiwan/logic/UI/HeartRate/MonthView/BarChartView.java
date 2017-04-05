@@ -77,16 +77,16 @@ public class BarChartView extends View {
             }
         }
         textPaint.setTextSize(ScreenUtils.dp2px(getContext(), 16));
-        /** 先调用一下下面这方法将开始时间装换成相应的百分比*/
+        /* 先调用一下下面这方法将开始时间装换成相应的百分比*/
         transformToPoint();
         for (int i = 0; i < mItems.size(); i++) {
             if (i<mItems.size()-1){
-                if (mItems.get(i).itemDeepValue==0||mItems.get(i+1).itemDeepValue==0) break;
-                    canvas.drawLine( (float) (screenW * (0.2 + 0.023+i * 0.023)),
-                            (float)(oneHourHight*28- (mItems.get(i).itemDeepValue*1000/200*oneHourHight * 24)/1000),
-                            (float) (screenW * (0.2 + (i+2) * 0.023)),
+                if (mItems.get(i).itemDeepValue==0||mItems.get(i+1).itemDeepValue==0) continue;
+                    canvas.drawLine( (float) (screenW * (0.2 +i * 0.023)),
+                            (float)(oneHourHight*28- (mItems.get(i).itemLightValue*1000/200*oneHourHight * 24)/1000),
+                            (float) (screenW * (0.2 + (i+1) * 0.023)),
 //                            (float) ((mItems.get(i+1).starttime *1000/288)*(screenW * 0.72)/1000+0.2*screenW),
-                            (float)(oneHourHight*28-(mItems.get(i+1).itemDeepValue*1000/200 *oneHourHight * 24)/1000),
+                            (float)(oneHourHight*28-(mItems.get(i+1).itemLightValue*1000/200 *oneHourHight * 24)/1000),
                             linePaint);
             }
         }

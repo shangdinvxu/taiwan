@@ -72,9 +72,7 @@ public class WeekDatefragment extends Fragment{
             @Override
             public void onSelected(int selectedIndex, String item) {
                 Log.e(TAG, "onSelected-------" + item);
-
                 dataChangeListener.onDataChange(item);
-
             }
         });
         return view ;

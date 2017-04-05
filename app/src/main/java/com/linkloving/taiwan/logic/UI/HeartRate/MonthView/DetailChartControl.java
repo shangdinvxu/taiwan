@@ -168,8 +168,14 @@ public class DetailChartControl extends RelativeLayout {
                             avgView.setText("0");
                         } else {
                             MyLog.e(TAG, "heartrates.size()不为0");
-                            maxView.setText(heartrates.get(0).getMax() + "");
-                            avgView.setText(heartrates.get(0).getAvg() + "");
+                            int avg = 0 ;
+                            int max = 0 ;
+                            for (heartrate h :heartrates){
+                                avg = h.getAvg()+avg ;
+                                max = h.getMax()+max ;
+                            }
+                            maxView.setText(max/heartrates.size()+ "");
+                            avgView.setText(avg/heartrates.size() + "");
                         }
                         timeView.setText(format);
                         MyLog.e(TAG, "时间是+" + format);

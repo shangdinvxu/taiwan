@@ -4,11 +4,11 @@
     android:id="@+id/linear_modify_sex"
     android:layout_marginTop="20dp"
     android:layout_width="350dp"
-    android:layout_height="300dp">
+    android:layout_height="200dp">
     <RadioGroup
         android:id="@+id/rg_person"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/m06_price_max_width"
         android:layout_marginRight="@dimen/m06_price_max_width"
         android:orientation="horizontal"
@@ -16,41 +16,22 @@
         <RadioButton
             android:id="@+id/Hrband"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:checked="true"
             />
         <RadioButton
             android:id="@+id/rb_left"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             />
         <RadioButton
             android:id="@+id/rb_right"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             />
     </RadioGroup>
-  <!--  <LinearLayout
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_width="match_parent"
-        android:layout_height="50dp">
-        <Button
-            android:id="@+id/no"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:text="@string/general_cancel"/>
-        <Button
-            android:id="@+id/ok"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:text="@string/general_ok"/>
-    </LinearLayout>-->
 
 </LinearLayout>

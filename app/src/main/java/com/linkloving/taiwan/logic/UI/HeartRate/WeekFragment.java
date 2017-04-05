@@ -83,39 +83,38 @@ public class WeekFragment extends Fragment {
         int totalAvg = 0 ;
         int times = 0 ;
         for (int i = 0; i < 7; i++) {
-            long Daystarttime =time +ONEDAYMILLIONS*i;
-        long timeEnd = Daystarttime + ONEDAYMILLIONS;
-        List<heartrate> heartrates = greendaoUtils.searchOneDay(Daystarttime, timeEnd);
-        int onedayAvg = 0;
-        int onedayMax = 0;
-        for (heartrate record : heartrates) {
-            Integer avg = record.getAvg();
-            Integer max = record.getMax();
-            totalAvg = record.getAvg()+totalAvg ;
-            times = times++ ;
-            onedayAvg = avg + onedayAvg;
-            onedayMax = max + onedayMax;
+            long Daystarttime = time + ONEDAYMILLIONS * i;
+            long timeEnd = Daystarttime + ONEDAYMILLIONS;
+            List<heartrate> heartrates = greendaoUtils.searchOneDay(Daystarttime, timeEnd);
+            int onedayAvg = 0;
+            int onedayMax = 0;
+            for (heartrate record : heartrates) {
+                Integer avg = record.getAvg();
+                Integer max = record.getMax();
+                totalAvg = record.getAvg() + totalAvg;
+                times++;
+                onedayAvg = avg + onedayAvg;
+                onedayMax = max + onedayMax;
+            }
+            if (heartrates.size() == 0) {
+                onedayAvg = 0;
+                onedayMax = 0;
+            } else {
+                onedayAvg = onedayAvg / heartrates.size();
+                onedayMax = onedayMax / heartrates.size();
+            }
+            BarChartView.BarChartItemBean barChartItemBean = new BarChartView.BarChartItemBean(0, onedayMax, onedayAvg);
+            beanArrayList.add(barChartItemBean);
+            restmonth = onedayMax + restmonth;
+            avgmonth = onedayAvg + avgmonth;
         }
-        if (heartrates.size() == 0) {
-            onedayAvg = 0;
-            onedayMax = 0;
-        } else {
-            onedayAvg = onedayAvg / heartrates.size();
-            onedayMax = onedayMax / heartrates.size();
-        }
-        BarChartView.BarChartItemBean barChartItemBean = new BarChartView.BarChartItemBean(0, onedayMax, onedayAvg);
-        beanArrayList.add(barChartItemBean);
-            restmonth = onedayMax+restmonth ;
-            avgmonth = onedayAvg+avgmonth ;
-    }
         int  resting = restmonth/7 ;
         int avging = 0 ;
         if (times !=0){
             avging = totalAvg/times ;
         }
         HeartRateActivity activity = (HeartRateActivity) getActivity();
-        activity.setAvgText( avging) ;
-//        restingBpm.setAvg(avging);
+        activity.setAvgText(avging) ;
         return beanArrayList ;
     }
 

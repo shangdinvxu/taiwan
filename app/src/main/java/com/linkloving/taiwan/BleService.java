@@ -472,10 +472,15 @@ public class BleService extends Service {
 
                         //BLE--->设置身体信息
                         startSetBody();
+
                         if(userEntity.getDeviceEntity().getDevice_type()==MyApplication.DEVICE_WATCH){
                             //BLE--->设置消息提醒
                             startSetANCS();
                         }
+
+
+                        //BLE--->设置运动目标
+                        startSetSportGoal();
 
                         MyLog.e(TAG, "notifyFor0x13ExecSucess_D======进入了");
                     } else {
@@ -496,6 +501,20 @@ public class BleService extends Service {
                     UserEntity userEntity = MyApplication.getInstance(BleService.this).getLocalUserInfoProvider();
                     MyLog.e(TAG, "设置身体信息的userId:"+userEntity.getUser_id());
                     provider.regiesterNew(BleService.this, DeviceInfoHelper.fromUserEntity(BleService.this, userEntity));
+            }
+
+            /**
+             * 设置身体信息
+             */
+            private void startSetSportGoal() {
+                String goalStep = PreferencesToolkits.getGoalInfo(BleService.this, PreferencesToolkits.KEY_GOAL_STEP);
+                String goalDistance = PreferencesToolkits.getGoalInfo(BleService.this, PreferencesToolkits.KEY_GOAL_DISTANCE);
+                String goalCalories = PreferencesToolkits.getGoalInfo(BleService.this, PreferencesToolkits.KEY_GOAL_CAL);
+                LPDeviceInfo lpDeviceInfo = new LPDeviceInfo();
+                lpDeviceInfo.stepDayTotals = Integer.parseInt(goalStep);
+                lpDeviceInfo.distenceDayTotals = Integer.parseInt(goalDistance);
+                lpDeviceInfo.CaloriesTotals = Integer.parseInt(goalCalories);
+                provider.setTarget(BleService.this,lpDeviceInfo);
             }
 
 
@@ -598,7 +617,7 @@ public class BleService extends Service {
                 MyLog.e(TAG,"notifyforgerHeartListsuccess");
                 super.notifyforgerHeartList(obj);
                 for (LpHeartrateData obj1: obj){
-                    if (obj1.getAvgRate()<=0||obj1.getMaxRate()<=0) return;
+                    if (obj1.getAvgRate()<=0||obj1.getMaxRate()<=0) continue;
                     greendaoUtils.add(obj1.getStartTime(),obj1.getAvgRate(),obj1.getMaxRate());
                     List<heartrate> search = greendaoUtils.search(obj1.getStartTime());
                     MyLog.e(TAG,search.get(0).getMax()+"");
@@ -635,8 +654,8 @@ public class BleService extends Service {
                 //==========================初始化数据OVER==========================//
                 //保存localvo
                 PreferencesToolkits.updateLocalDeviceInfo(BleService.this, lpDeviceInfo_);
-                lpDeviceInfo_.step =Integer.parseInt(PreferencesToolkits.getGoalInfo(BleService.this,PreferencesToolkits.KEY_GOAL_STEP));
-                provider.setTarget(BleService.this,lpDeviceInfo_);
+//                lpDeviceInfo_.step =Integer.parseInt(PreferencesToolkits.getGoalInfo(BleService.this,PreferencesToolkits.KEY_GOAL_STEP));
+//                provider.setTarget(BleService.this,lpDeviceInfo_);
           /*      if (!latestDeviceInfo.modelName.isEmpty()&&latestDeviceInfo.modelName.equals("B100C2")){
                     lpDeviceInfo_.stepDayTotals = MyApplication.getInstance(BleService.this).getOld_step();
                     lpDeviceInfo_.distenceDayTotals =MyApplication.getInstance(BleService.this).getOld_distance() ;

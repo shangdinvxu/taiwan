@@ -152,8 +152,8 @@ public class WatchResponse {
 				LpHeartrateData lpHeartrateData = new LpHeartrateData();
 				int startTime = LPUtil.makeInt(data[8 * i + 10], data[8 * i + 9], data[8 * i + 8], data[8 * i + 7]);
 				lpHeartrateData.setStartTime(startTime);
-				lpHeartrateData.setMaxRate(data[8 * i + 11]);
-				lpHeartrateData.setAvgRate(data[8 * i + 12]);
+				lpHeartrateData.setMaxRate(data[8 * i + 11]&0xff);
+				lpHeartrateData.setAvgRate(data[8 * i + 12]&0xff);
 				list.add(lpHeartrateData);
 			}
 		}

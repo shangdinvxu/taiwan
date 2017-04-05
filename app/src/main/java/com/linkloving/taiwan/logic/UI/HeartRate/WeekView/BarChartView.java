@@ -83,11 +83,11 @@ public class BarChartView extends View {
 //        transformToPoint();
         for (int i = 0; i < mItems.size(); i++) {
             if (i<mItems.size()-1){
-                if (mItems.get(i).itemDeepValue==0||mItems.get(i+1).itemDeepValue==0) break;
+                if (mItems.get(i).itemDeepValue==0||mItems.get(i+1).itemDeepValue==0) continue;
                     canvas.drawLine( (float) (screenW * (0.2 + i * 0.12)),
-                            (float)(oneHourHight*28- (mItems.get(i).itemDeepValue*1000/200*oneHourHight * 24)/1000),
+                            (float)(oneHourHight*28- (mItems.get(i).itemLightValue*1000/200*oneHourHight * 24)/1000),
                             (float) (screenW * (0.2 + (i+1) * 0.12)),
-                            (float)(oneHourHight*28-(mItems.get(i+1).itemDeepValue*1000/200 *oneHourHight * 24)/1000),
+                            (float)(oneHourHight*28-(mItems.get(i+1).itemLightValue*1000/200 *oneHourHight * 24)/1000),
                             linePaint);
             }
         }

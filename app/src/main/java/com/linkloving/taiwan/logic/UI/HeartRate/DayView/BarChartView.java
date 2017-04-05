@@ -104,7 +104,7 @@ public class BarChartView extends View {
                             null, Shader.TileMode.CLAMP);
 
                     lineGradientPaint.setShader(mShader);
-                    lineGradientPaint.setStrokeWidth(3);
+                    lineGradientPaint.setStrokeWidth(2);
                     /**将开始时间装换成相应的百分比*/
                     canvas.drawLine((float) (((((double) (mItems.get(i).starttime ) / ONE_DAY_MILLISECOND) * (screenW * 0.72)) + 0.2 * screenW)),
                             (float) (oneHourHight * 28 - (mItems.get(i).itemDeepValue * 1000 / 200 * oneHourHight * 24) / 1000),

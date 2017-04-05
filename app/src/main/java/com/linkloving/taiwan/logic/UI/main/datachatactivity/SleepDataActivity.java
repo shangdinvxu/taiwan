@@ -538,7 +538,7 @@ public class SleepDataActivity extends ToolBarActivity implements View.OnClickLi
         //X坐标点描述的颜色
         xAxis.setTextColor(Color.WHITE);
         // 隐藏左Y坐标轴
-        barChart.getAxisLeft().setEnabled(false);
+        barChart.getAxisLeft().setEnabled(true);
         // 隐藏右Y坐标轴
         barChart.getAxisRight().setEnabled(false);
         // 显示表格颜色
@@ -863,14 +863,14 @@ public class SleepDataActivity extends ToolBarActivity implements View.OnClickLi
                 }else {
                     yAxis.setAxisMaxValue(f+5);
                 }
-                MyLog.e(TAG, yAxis.getAxisMaxValue() + "最大值");
-                LimitLine limitLine = new LimitLine(10,10+"");
-                limitLine.setLineColor(Color.WHITE);
-                limitLine.setLineWidth(1f);
-                limitLine.setTextColor(Color.BLACK);
-                limitLine.setTextSize(12f);
-                limitLine.setLabelPosition(LimitLine.LimitLabelPosition.LEFT_TOP);
-                yAxis.addLimitLine(limitLine);
+//                MyLog.e(TAG, yAxis.getAxisMaxValue() + "最大值");
+//                LimitLine limitLine = new LimitLine(10,10+"");
+//                limitLine.setLineColor(Color.WHITE);
+//                limitLine.setLineWidth(1f);
+//                limitLine.setTextColor(Color.BLACK);
+//                limitLine.setTextSize(12f);
+//                limitLine.setLabelPosition(LimitLine.LimitLabelPosition.LEFT_TOP);
+//                yAxis.addLimitLine(limitLine);
                 break;
             case R.id.report_page_activity_circleviews_monthRb:
                 break;

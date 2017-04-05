@@ -139,7 +139,7 @@ public class StepDataActivity extends ToolBarActivity implements View.OnClickLis
         xPaint.setColor(Color.rgb(255, 255, 255));
         barChart.setPaint(xPaint,0);
         // 隐藏左Y坐标轴
-        barChart.getAxisLeft().setEnabled(false);
+        barChart.getAxisLeft().setEnabled(true);
         // 隐藏右Y坐标轴
         barChart.getAxisRight().setEnabled(false);
         // 显示表格颜色
@@ -1201,21 +1201,21 @@ public class StepDataActivity extends ToolBarActivity implements View.OnClickLis
                 }else {
                     yAxis.setAxisMaxValue(f+500);
                 }
-                MyLog.e(TAG, (int)yAxis.getAxisMaxValue() + "最大值");
-                LimitLine limitLine1 = new LimitLine(1000,1000+"");
-                limitLine1.setLineColor(Color.WHITE);
-                limitLine1.setLineWidth(1f);
-                limitLine1.setTextColor(Color.WHITE);
-                limitLine1.setTextSize(12f);
-                limitLine1.setLabelPosition(LimitLine.LimitLabelPosition.LEFT_TOP);
-                LimitLine limitLine2 = new LimitLine(500,500+"");
-                limitLine2.setLineColor(Color.WHITE);
-                limitLine2.setLineWidth(1f);
-                limitLine2.setTextColor(Color.WHITE);
-                limitLine2.setTextSize(12f);
-                limitLine2.setLabelPosition(LimitLine.LimitLabelPosition.LEFT_TOP);
-                yAxis.addLimitLine(limitLine2);
-                yAxis.addLimitLine(limitLine1);
+//                MyLog.e(TAG, (int)yAxis.getAxisMaxValue() + "最大值");
+//                LimitLine limitLine1 = new LimitLine(1000,1000+"");
+//                limitLine1.setLineColor(Color.WHITE);
+//                limitLine1.setLineWidth(1f);
+//                limitLine1.setTextColor(Color.WHITE);
+//                limitLine1.setTextSize(12f);
+//                limitLine1.setLabelPosition(LimitLine.LimitLabelPosition.LEFT_TOP);
+//                LimitLine limitLine2 = new LimitLine(500,500+"");
+//                limitLine2.setLineColor(Color.WHITE);
+//                limitLine2.setLineWidth(1f);
+//                limitLine2.setTextColor(Color.WHITE);
+//                limitLine2.setTextSize(12f);
+//                limitLine2.setLabelPosition(LimitLine.LimitLabelPosition.LEFT_TOP);
+//                yAxis.addLimitLine(limitLine2);
+//                yAxis.addLimitLine(limitLine1);
                 break;
             case R.id.report_page_activity_circleviews_weekRb:
                 //紧界线
@@ -1224,13 +1224,13 @@ public class StepDataActivity extends ToolBarActivity implements View.OnClickLis
                 }else {
                     yAxis.setAxisMaxValue(f+500);
                 }
-                LimitLine limitLine = new LimitLine(12000,12000+"");
-                limitLine.setLineColor(Color.WHITE);
-                limitLine.setLineWidth(1f);
-                limitLine.setTextColor(Color.WHITE);
-                limitLine.setTextSize(12f);
-                limitLine.setLabelPosition(LimitLine.LimitLabelPosition.LEFT_TOP);
-                yAxis.addLimitLine(limitLine);
+//                LimitLine limitLine = new LimitLine(12000,12000+"");
+//                limitLine.setLineColor(Color.WHITE);
+//                limitLine.setLineWidth(1f);
+//                limitLine.setTextColor(Color.WHITE);
+//                limitLine.setTextSize(12f);
+//                limitLine.setLabelPosition(LimitLine.LimitLabelPosition.LEFT_TOP);
+//                yAxis.addLimitLine(limitLine);
                 break;
             case R.id.report_page_activity_circleviews_monthRb:
 

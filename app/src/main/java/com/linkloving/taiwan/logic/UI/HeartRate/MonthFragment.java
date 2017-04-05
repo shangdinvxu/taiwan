@@ -97,7 +97,7 @@ public class MonthFragment extends Fragment {
                 onedayAvg = avg + onedayAvg;
                 onedayMax = max + onedayMax;
                 totalAvg = record.getAvg()+totalAvg ;
-                times = times++ ;
+                times++ ;
             }
             if (heartrates.size() == 0) {
                 onedayAvg = 0;
