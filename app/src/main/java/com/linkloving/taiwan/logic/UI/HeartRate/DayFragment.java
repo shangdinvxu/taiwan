@@ -67,9 +67,6 @@ public class DayFragment extends Fragment {
         heartrateHelper = new DaoMaster.DevOpenHelper(getActivity(), "heartrate", null);
         SQLiteDatabase readableDatabase = heartrateHelper.getReadableDatabase();
         greendaoUtils = new GreendaoUtils(getActivity(), readableDatabase);
-//   调滑动的线
-//        detailChartControl = (DetailChartControl)view.findViewById(R.id.activity_detailChartView1);
-//        detailChartControl.initDayIndex(parse);
         barchartview.initDayIndex(parse);
         return view;
     }

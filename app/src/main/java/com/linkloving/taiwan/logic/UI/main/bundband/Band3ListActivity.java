@@ -48,6 +48,7 @@ import com.linkloving.taiwan.utils.ToolKits;
 import com.linkloving.taiwan.utils.logUtils.MyLog;
 import com.yolanda.nohttp.Response;
 
+import java.security.Provider;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -402,19 +403,26 @@ public class Band3ListActivity extends ToolBarActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             provider.unBoundDevice(Band3ListActivity.this);
-                            try {
-                                Thread.sleep(1000);
-                                BleService.getInstance(Band3ListActivity.this).releaseBLE();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+                            provider.connect();
+//                            try {
+//                                Thread.sleep(1000);
+//                                BleService.getInstance(Band3ListActivity.this).releaseBLE();
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
                         }
                     }).setMessage(getString(R.string.Need_format))
                             .setNegativeButton(R.string.general_cancel, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    provider.disConnect();
+                                    if (progressDialog != null && progressDialog.isShowing()){
+                                        progressDialog.dismiss();
+                                    }
                                 }
-                            }).show();
+                            })
+                            .setCancelable(false)
+                            .show();
                 }
             } else{
                 provider.requestbound_fit(Band3ListActivity.this);

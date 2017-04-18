@@ -255,13 +255,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
 
         //自动下拉刷新
         mScrollView.autoRefresh();
-        mScrollViewRefreshingHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                Message ms = new Message();
-                mScrollViewRefreshingHandler.sendMessageDelayed(ms, 1500);
-            }
-        });
+
         inCheckShowHR();
         builder = new AlertDialog.Builder(PortalActivity.this);
 
@@ -283,14 +277,6 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
             }
         }
 
-
-        boolean background = IsBackgroundUtils.isBackground(PortalActivity.this);
-        Log.d("BaseActivity", "===onResume");
-        Log.d("BaseActivity", "background:" + background);
-        if (flag) {
-            flag = false;
-            mScrollView.autoRefresh();
-        }
 
     }
 
@@ -344,9 +330,16 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         //运动目标重置一下
         initGoal();
         getInfoFromDB();
-        if(!CommonUtils.isStringEmpty(userEntity.getDeviceEntity().getLast_sync_device_id())){
-            if(provider.isConnectedAndDiscovered())
-                BleService.getInstance(PortalActivity.this).syncAllDeviceInfoAuto(PortalActivity.this, false, null);
+//        if(!CommonUtils.isStringEmpty(userEntity.getDeviceEntity().getLast_sync_device_id())){
+//            if(provider.isConnectedAndDiscovered())
+//                BleService.getInstance(PortalActivity.this).syncAllDeviceInfoAuto(PortalActivity.this, false, null);
+//        }
+        boolean background = IsBackgroundUtils.isBackground(PortalActivity.this);
+        Log.d("BaseActivity", "===onResume");
+        Log.d("BaseActivity", "background:" + background);
+        if (flag) {
+            flag = false;
+            mScrollView.autoRefresh();
         }
 
         if (userEntity.getUserBase().getUser_avatar_file_name() == null){
@@ -517,7 +510,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                         @Override
                         public void run() {
                             Message ms = new Message();
-                            mScrollViewRefreshingHandler.sendMessageDelayed(ms, 30000);
+                            mScrollViewRefreshingHandler.sendMessageDelayed(ms, 15000);
                         }
                     });
                 }

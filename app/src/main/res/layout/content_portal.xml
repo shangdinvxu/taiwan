@@ -186,7 +186,7 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:paddingRight="20dp"
-                            android:text="100%"
+                            android:text="0%"
                             android:textColor="@color/portal_progress_blue"
                             android:textStyle="bold" />
                     </LinearLayout>
