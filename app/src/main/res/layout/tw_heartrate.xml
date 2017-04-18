@@ -27,7 +27,7 @@
                 android:id="@+id/timeToday"
                 android:layout_marginLeft="40dp"
                 android:text="Dec o6"
-                android:textSize="20sp"
+                android:textSize="13sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 

@@ -260,8 +260,8 @@ private final static String TAG = ToolKits.class.getSimpleName();
 		Calendar c = Calendar.getInstance();
 		c.setTime(date);
 		int day_of_week = c.get(Calendar.DAY_OF_WEEK) - 1;
-		if (day_of_week == 0)
-			day_of_week = 7;
+//		if (day_of_week == 0)
+//			day_of_week = 7;
 		/**日期改动*/
 		c.set(Calendar.HOUR_OF_DAY, 0);
 		c.set(Calendar.MINUTE, 0);
@@ -277,8 +277,8 @@ private final static String TAG = ToolKits.class.getSimpleName();
 		c.setTime(date);
 		int day_of_week = c.get(Calendar.DAY_OF_WEEK) - 1;
 		MyLog.i(TAG, "day_of_week=" + day_of_week);
-		if (day_of_week ==0)
-			day_of_week=7;
+//		if (day_of_week ==0)
+//			day_of_week=7;
 		c.add(Calendar.DATE, 7 - day_of_week-1);
 		return c.getTime();
 	}

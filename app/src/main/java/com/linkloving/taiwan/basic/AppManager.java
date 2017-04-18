@@ -27,7 +27,7 @@ public class AppManager {
     public void addActivity(Activity activity)
     {
         if (activityStack == null) {
-            activityStack = new Stack();
+                activityStack = new Stack();
         }
         Log.d(TAG, "【AM+】activity" + activity.getClass().getCanonicalName() + "正在被加入全局管理列表.");
         activityStack.add(activity);

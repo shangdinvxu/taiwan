@@ -702,10 +702,10 @@ public class PreferencesToolkits
 				MyLog.e(TAG,"取出步数目标："+jString);
 			}
 			else if(type.equals(KEY_GOAL_DISTANCE)){
-				jString = sharedPreferences.getString(type, "8500");//目标值
+				jString = sharedPreferences.getString(type, "5000");//目标值
 			}
 			else if(type.equals(KEY_GOAL_CAL)){
-				jString = sharedPreferences.getString(type, "2800");//目标值
+				jString = sharedPreferences.getString(type, "2000");//目标值
 			}
 			else if(type.equals(KEY_GOAL_RUN)){
 				jString = sharedPreferences.getString(type, "30");//目标值

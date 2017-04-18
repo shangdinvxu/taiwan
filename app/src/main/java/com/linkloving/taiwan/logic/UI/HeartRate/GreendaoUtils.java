@@ -60,6 +60,10 @@ private final static long HALFFIVEMILLIONS=600 ;
         return heartrates;
     }
 
+    public void deleteAll(){
+        getHeartrateDao().deleteAll();
+    }
+
     /**
      * time是秒数
      * @param starttime
@@ -67,7 +71,7 @@ private final static long HALFFIVEMILLIONS=600 ;
      * @param avg
      */
     public void add(int starttime , int  max ,int avg){
-        heartrate heartrate = new heartrate(null, starttime, max, avg);
+        heartrate heartrate = new heartrate(null, starttime,  avg,max);
         getHeartrateDao().insertOrReplace(heartrate);
 
     }

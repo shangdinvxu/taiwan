@@ -108,7 +108,9 @@ public class SportGoalActivity extends ToolBarActivity implements View.OnClickLi
         sport_stored_value.setText(PreferencesToolkits.getGoalInfo(this,PreferencesToolkits.KEY_GOAL_MONEY)+"");
 
         sport_mileage = (TextView) findViewById(R.id.sport_mileage);
-        sport_mileage.setText(PreferencesToolkits.getGoalInfo(this,PreferencesToolkits.KEY_GOAL_DISTANCE)+"");
+        //取出来的的是米
+        int i = Integer.parseInt(PreferencesToolkits.getGoalInfo(this, PreferencesToolkits.KEY_GOAL_DISTANCE) + "");
+        sport_mileage.setText(i/1000+"");
 
         sport_calories = (TextView) findViewById(R.id.sport_calories);
         sport_calories.setText(PreferencesToolkits.getGoalInfo(this,PreferencesToolkits.KEY_GOAL_CAL)+"");
@@ -305,17 +307,17 @@ public class SportGoalActivity extends ToolBarActivity implements View.OnClickLi
                                             target_step.setText(stepEdittext.getText().toString());
                                             PreferencesToolkits.setGoalInfo(SportGoalActivity.this, PreferencesToolkits.KEY_GOAL_STEP, stepEdittext.getText().toString());
                                             MyLog.e(TAG,provider.isConnectedAndDiscovered()+"");
-                                            if(provider.isConnectedAndDiscovered()){
-                                                /**
-                                                 * 发送步数
-                                                 */
-                                                LPDeviceInfo lpDeviceInfo = new LPDeviceInfo();
-                                                MyLog.e(TAG,provider.isConnectedAndDiscovered()+"");
-                                                lpDeviceInfo.step = Integer.parseInt(stepEdittext.getText().toString());
-                                                provider.setTarget(SportGoalActivity.this, lpDeviceInfo);
-                                            }else{
-                                                BleService.getInstance(SportGoalActivity.this).syncAllDeviceInfoAuto(SportGoalActivity.this, false, null);
-                                            }
+//                                            if(provider.isConnectedAndDiscovered()){
+//                                                /**
+//                                                 * 发送步数
+//                                                 */
+//                                                LPDeviceInfo lpDeviceInfo = new LPDeviceInfo();
+//                                                MyLog.e(TAG,provider.isConnectedAndDiscovered()+"");
+//                                                lpDeviceInfo.step = Integer.parseInt(stepEdittext.getText().toString());
+//                                                provider.setTarget(SportGoalActivity.this, lpDeviceInfo);
+//                                            }else{
+//                                                BleService.getInstance(SportGoalActivity.this).syncAllDeviceInfoAuto(SportGoalActivity.this, false, null);
+//                                            }
                                             CountCalUtil.allowCloseDialog(dialog, true);//对话框消失
                                         }
                                     }
@@ -386,7 +388,8 @@ public class SportGoalActivity extends ToolBarActivity implements View.OnClickLi
                                             return;
                                         }else {
                                             sport_mileage.setText(mileageEdittext.getText().toString());
-                                            PreferencesToolkits.setGoalInfo(SportGoalActivity.this, PreferencesToolkits.KEY_GOAL_DISTANCE, mileageEdittext.getText().toString());
+                                            int i = Integer.parseInt(mileageEdittext.getText().toString());
+                                            PreferencesToolkits.setGoalInfo(SportGoalActivity.this, PreferencesToolkits.KEY_GOAL_DISTANCE,i*1000+"");
                                             CountCalUtil.allowCloseDialog(dialog, true);//对话框消失
                                         }
                                     }

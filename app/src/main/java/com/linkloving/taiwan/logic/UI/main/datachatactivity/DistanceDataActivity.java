@@ -36,6 +36,7 @@ import com.linkloving.taiwan.logic.dto.UserEntity;
 import com.linkloving.taiwan.prefrences.PreferencesToolkits;
 import com.linkloving.taiwan.utils.CommonUtils;
 import com.linkloving.taiwan.utils.DateSwitcher;
+import com.linkloving.taiwan.utils.MathUtils;
 import com.linkloving.taiwan.utils.SwitchUnit;
 import com.linkloving.taiwan.utils.ToolKits;
 import com.linkloving.taiwan.utils.UnitTookits;
@@ -290,7 +291,7 @@ public class DistanceDataActivity extends ToolBarActivity implements View.OnClic
             TextView title= (TextView) view.findViewById(R.id.title);
 
             if(SwitchUnit.getLocalUnit(DistanceDataActivity.this)==ToolKits.UNIT_GONG){
-                title.setText(getString(R.string.unit_mileage)+"("+getString(R.string.unit_m)+")");
+                title.setText(getString(R.string.unit_mileage)+"("+getString(R.string.unit_km)+")");
             }else{
                 title.setText(getString(R.string.unit_mileage)+"("+getString(R.string.unit_mile)+")");
             }
@@ -310,10 +311,13 @@ public class DistanceDataActivity extends ToolBarActivity implements View.OnClic
                     nulldata.setVisibility(View.GONE);
 
                     if(SwitchUnit.getLocalUnit(DistanceDataActivity.this)==ToolKits.UNIT_GONG){
-                        data.setText(distance+"");
+                        double v = (double) distance / 1000;
+                        data.setText(MathUtils.doubleWithTwo(v)+"");
                     }else{
                        // text_Distance.setText(UnitTookits.MChangetoMIRate(distance) + getResources().getString(R.string.unit_mile));
-                        data.setText(UnitTookits.MChangetoMIRate(distance)+"");
+                        double distanceUnit = UnitTookits.MChangetoMIRate(distance);
+                        double v = MathUtils.doubleWithTwo(distanceUnit / 1000);
+                        data.setText(v+"");
                     }
                 }
             }
@@ -347,9 +351,9 @@ public class DistanceDataActivity extends ToolBarActivity implements View.OnClic
                     nulldata.setVisibility(View.GONE);
 
                     if(SwitchUnit.getLocalUnit(DistanceDataActivity.this)==ToolKits.UNIT_GONG){
-                        data.setText(count+"("+getString(R.string.unit_m)+")");
+                        data.setText(MathUtils.doubleWithTwo((double) count/1000)+"("+getString(R.string.unit_km)+")");
                     }else{
-                        data.setText(UnitTookits.MChangetoMIRate(count)+"("+getResources().getString(R.string.unit_mile)+")");
+                        data.setText(MathUtils.doubleWithTwo(UnitTookits.MChangetoMIRate(count)/1000)+"("+getResources().getString(R.string.unit_mile)+")");
                     }
 
                     MyDaitanceAdapter adapter=new MyDaitanceAdapter(DistanceDataActivity.this, (ArrayList<DaySynopic>) daySynopicList);
@@ -1214,12 +1218,12 @@ public class DistanceDataActivity extends ToolBarActivity implements View.OnClic
 
 
             if(SwitchUnit.getLocalUnit(DistanceDataActivity.this)==ToolKits.UNIT_GONG){
-                vh.textViewcount.setText(distance+"");
-                vh.unit_step.setText(getString(R.string.unit_m));
+                vh.textViewcount.setText(MathUtils.doubleWithTwo((double) distance/1000)+"");
+                vh.unit_step.setText(getString(R.string.unit_km));
 
             }else{
                 // text_Distance.setText(UnitTookits.MChangetoMIRate(distance) + getResources().getString(R.string.unit_mile));
-                vh.textViewcount.setText(UnitTookits.MChangetoMIRate(distance)+"");
+                vh.textViewcount.setText(MathUtils.doubleWithTwo(UnitTookits.MChangetoMIRate(distance)/1000)+"");
                 vh.unit_step.setText(getString(R.string.unit_mile));
             }
 

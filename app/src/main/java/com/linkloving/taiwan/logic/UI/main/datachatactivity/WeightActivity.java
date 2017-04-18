@@ -1242,13 +1242,13 @@ public class WeightActivity extends ToolBarActivity implements View.OnClickListe
             }else {
                 yAxis.setAxisMaxValue(weight_goal+10);
             }
-//            LimitLine limitLine2 = new LimitLine(weight_goal, weight_goal+"");
-//            limitLine2.setLineColor(R.color.weight_color);
-//            limitLine2.setLineWidth(1f);
-//            limitLine2.setTextColor(R.color.weight_color);
-//            limitLine2.setTextSize(12f);
-//            limitLine2.setLabelPosition(LimitLine.LimitLabelPosition.LEFT_TOP);
-//            yAxis.addLimitLine(limitLine2);
+            LimitLine limitLine2 = new LimitLine(weight_goal);
+            limitLine2.setLineColor(R.color.weight_color);
+            limitLine2.setLineWidth(1f);
+            limitLine2.setTextColor(R.color.weight_color);
+            limitLine2.setTextSize(12f);
+            limitLine2.setLabelPosition(LimitLine.LimitLabelPosition.LEFT_TOP);
+            yAxis.addLimitLine(limitLine2);
         }
 
     }

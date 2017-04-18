@@ -398,7 +398,7 @@ public class Band3ListActivity extends ToolBarActivity {
                 finish();
             }else if (latestDeviceInfo!=null&&latestDeviceInfo.recoderStatus==66){
                 if (builder!=null&&!builder.create().isShowing()) {
-                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton(R.string.general_ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             provider.unBoundDevice(Band3ListActivity.this);
@@ -410,7 +410,7 @@ public class Band3ListActivity extends ToolBarActivity {
                             }
                         }
                     }).setMessage(getString(R.string.Need_format))
-                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            .setNegativeButton(R.string.general_cancel, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                 }

@@ -656,7 +656,10 @@ public class LepaoProtocalImpl implements LepaoProtocol {
 			throws BLException, LPException {
 		WatchRequset req = new WatchRequset();
 		req.appendByte(seq++).appendByte(LepaoCommand.COMMAND_SET_TASK)
-				.appendInt(deviceInfo.step).makeCheckSum();
+				.appendInt(deviceInfo.stepDayTotals)
+				.appendInt(deviceInfo.distenceDayTotals)
+				.appendInt(deviceInfo.CaloriesTotals)
+				.makeCheckSum();
 		WatchResponse resp = this.sendData2BLE(req);
 		LPUtil.printData(req.getData(), "setSportTarget");
 		if (resp.getData()[4]==1&&resp.getData()[3]==LepaoCommand.COMMAND_SET_TASK){
@@ -980,16 +983,7 @@ public class LepaoProtocalImpl implements LepaoProtocol {
 				itemCnt = heartrate.toLPHeartrateDataList(heartrate).size();
 				list.addAll(heartrate.toLPHeartrateDataList(heartrate));
 			}
-//			while (itemLeft>10) {
-//				WatchResponse heartrate = getHeartrate(itemLeft - 10, 0);
-//				itemLeft =heartrate.getData()[5];
-//				list.addAll(heartrate.toLPHeartrateDataList(heartrate));
-//			}
-//			if (itemLeft > 0) {
-//				WatchResponse heartrate = getHeartrate(itemLeft, 0);
-////				itemLeft =heartrate.getData()[5];
-//				list.addAll(heartrate.toLPHeartrateDataList(heartrate));
-//			}
+			getHeartrate(0,0);
 		}
 		return list;
 	}

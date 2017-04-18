@@ -66,6 +66,7 @@ public class DayDatefragment extends Fragment {
                     bundle.putString("checkDate", checkDate);
                     dayFragment.setArguments(bundle);
                     transaction.replace(R.id.middle_framelayout, dayFragment);
+                    fragmentManager.popBackStack(null,1);
                     transaction.addToBackStack(null);
                     transaction.commit();
                 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -21,6 +22,8 @@ import android.widget.TextView;
 import com.linkloving.band.dto.SportRecord;
 import com.linkloving.band.ui.BRDetailData;
 import com.linkloving.taiwan.R;
+import com.linkloving.taiwan.logic.UI.HeartRate.DayView.*;
+import com.linkloving.taiwan.logic.UI.HeartRate.DayView.BarChartView;
 import com.linkloving.taiwan.logic.UI.HeartRate.GreendaoUtils;
 import com.linkloving.taiwan.utils.ViewUtils.ChartParameter;
 import com.linkloving.taiwan.utils.ViewUtils.DetailBitmapCreator;
@@ -67,6 +70,7 @@ public class DetailChartControl extends RelativeLayout {
     private int screenW,screenH ;
     public PopupWindow popupWindow = new PopupWindow();
     private String nowtimeString;
+    private double barItemWidth, barSpace, oneHourHight;
 
     int dayindexNow;
     String timeNow;
@@ -76,9 +80,10 @@ public class DetailChartControl extends RelativeLayout {
     private TextView timeView;
     private TextView avgView;
     private TextView maxView;
-    private View popupView;
+    private View popupView,pointPopupView;
     private GreendaoUtils greendaoUtils;
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    public PopupWindow pointPopupWindow = new PopupWindow();
 
     public DetailChartControl(Context context) {
         super(context);
@@ -116,10 +121,13 @@ public class DetailChartControl extends RelativeLayout {
         InitView();
         getViewHigh();
         popupView = LayoutInflater.from(getContext()).inflate(R.layout.tw_heartrate_popupwindow, null);
+        pointPopupView = LayoutInflater.from(getContext()).inflate(R.layout.tw_heartrate_point_popupwindow, null);
         timeView = (TextView) popupView.findViewById(R.id.popuptime);
         avgView = (TextView) popupView.findViewById(R.id.avg);
         maxView = (TextView) popupView.findViewById(R.id.max);
         greendaoUtils = new GreendaoUtils(context);
+//        设置一个一小时的高度
+        oneHourHight = screenH * 0.017;
     }
     private void InitView()
     {
@@ -150,7 +158,7 @@ public class DetailChartControl extends RelativeLayout {
 
 
 
-
+    int point = -1 ;
 
     private class OnTouchListenerImpl implements OnTouchListener{
         @Override
@@ -160,10 +168,12 @@ public class DetailChartControl extends RelativeLayout {
 //            //获取今天开始时间的long值
 //            long timeLong = TimeUtils.stringToLong(time, "yyyy-MM-dd");
 //            MyLog.e(TAG,"firstSundayOfThisWeek:"+timeLong);//图表日期的-6点
-            int point = -1 ;
+
+            boolean flagShow = false ;
             if(event.getX()> 0 && event.getX()<dataView.getWidth()) {
                 for (int i = 0; i < 7; i++) {
-                    if ((screenW * (i * 0.12 - 0.02)) < event.getX() && event.getX() < (screenW * (0.02 + i * 0.12))) {
+                    MyLog.e(TAG+"weekview",(screenW * (i * 0.12 - 0.02))+"      "+ screenW * (0.02 + i * 0.12)+ "          "+event.getX());
+                    if ((screenW * (i * 0.12 - 0.005)) < event.getX() && event.getX() < (screenW * (0.005 + i * 0.12))) {
                         point = i;
                         long time = firstSundayOfThisWeek.getTime();
                         time = time + 86400000 * i;
@@ -180,6 +190,7 @@ public class DetailChartControl extends RelativeLayout {
                                 avg = h.getAvg()+avg ;
                                 max = h.getMax()+max ;
                             }
+                            flagShow = true ;
                             maxView.setText(max/heartrates.size()+ "");
                             avgView.setText(avg/heartrates.size() + "");
                         }
@@ -192,10 +203,12 @@ public class DetailChartControl extends RelativeLayout {
                         MyLog.e(TAG, "point是" + point);
                     }
                 }
-                moveLineViewWithFinger(lineView,event.getX());
+                moveLineViewWithFinger(lineView,event.getX(),event.getRawX(),flagShow);
             }
             if (event.getAction()==MotionEvent.ACTION_UP){
                 i=0;
+                popupWindow.dismiss();
+                pointPopupWindow.dismiss();
             }
             return true;
         }
@@ -229,6 +242,22 @@ public class DetailChartControl extends RelativeLayout {
 
 
     }
+
+    public void showPointFirstPopupWindow() {
+//        View popupView = LayoutInflater.from(getContext()).inflate(R.layout.tw_heartrate_popupwindow, null);
+//        TextView time_popupwindow = (TextView) popupView.findViewById(R.id.popuptime);
+        pointPopupWindow = new PopupWindow(pointPopupView, LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT, true);
+        pointPopupWindow.setTouchable(true);
+        // 如果不设置PopupWindow的背景，无论是点击外部区域还是Back键都无法dismiss弹框
+        pointPopupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));
+        pointPopupWindow.setClippingEnabled(false);
+/*//        有参数的话，就是一view的左下角进行偏移，xoff正的向左，负的向右.
+//        View stepAcitvityLayout = findViewById(R.id.step_activity_layout);*/
+        pointPopupWindow.showAsDropDown(framelayout, 20, 20);
+        MyLog.e("点击", "调用了popupwindow");
+    }
+
     public void showFirstPopupWindow() {
 //        View popupView = LayoutInflater.from(getContext()).inflate(R.layout.tw_heartrate_popupwindow, null);
 //        TextView time_popupwindow = (TextView) popupView.findViewById(R.id.popuptime);
@@ -251,16 +280,30 @@ public class DetailChartControl extends RelativeLayout {
      * @param view
      * @param rawX
      */
-    private void moveLineViewWithFinger(View view, float rawX) {
+    private void moveLineViewWithFinger(View view, float rawX,float rawleftX ,boolean show) {
         AutoRelativeLayout.LayoutParams layoutParams = (AutoRelativeLayout.LayoutParams) view.getLayoutParams();
         layoutParams.leftMargin = (int) rawX - view.getWidth() / 2;
 //        layoutParams.leftMargin = (int) (rawX- screenW*0.15);
         view.setLayoutParams(layoutParams);
         if (i ==0 ){
             showFirstPopupWindow();
+            showPointFirstPopupWindow();
             i++;
         }else{
-            popupWindow.update((int) rawX+(int)(screenW*0.027), (int) (screenH*0.37),-1,-1,false);
+            if (show){
+                popupWindow.dismiss();
+                popupWindow.showAsDropDown(framelayout, 20, 20);
+                popupWindow.update((int) rawX+(int)(screenW*0.027), (int) (screenH*0.37),-1,-1,false);
+                //圆点
+                pointPopupWindow.dismiss();
+                pointPopupWindow.showAsDropDown(framelayout, 20, 20);
+                pointPopupWindow.update((int) rawleftX-10,
+                        (int) ((oneHourHight * 28 - (mItems.get(point).itemLightValue * 1000 / 200 * oneHourHight * 24) / 1000)+screenH*0.37)
+                        ,-1,-1,false);
+            }else {
+                popupWindow.dismiss();
+                pointPopupWindow.dismiss();
+            }
         }
     }
 
@@ -274,7 +317,8 @@ public class DetailChartControl extends RelativeLayout {
     {
         DisplayMetrics dm = new DisplayMetrics();
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int width = dm.widthPixels;//用屏幕的宽度
+        int width = dm.widthPixels;//用
+        // 屏幕的宽度
         imageWidth =dataView.getWidth();
         xScale = (float) imageWidth / (120*24f);// 24小时一屏,120是一个小时的时间片(30s一片)  每个时间片所占的像素
         xlineScale = (60*24f) / (float) imageWidth;// 每个像素xxx分钟
@@ -320,8 +364,20 @@ public class DetailChartControl extends RelativeLayout {
         dataView.setImageBitmap(null);
         this.firstSundayOfThisWeek = firstSundayOfThisWeek;
 
-
     }
+
+
+    public List<com.linkloving.taiwan.logic.UI.HeartRate.WeekView.BarChartView.BarChartItemBean> getmItems() {
+        return mItems;
+    }
+
+    public void setmItems(List<com.linkloving.taiwan.logic.UI.HeartRate.WeekView.BarChartView.BarChartItemBean> mItems) {
+        this.mItems = mItems;
+    }
+
+    private List<com.linkloving.taiwan.logic.UI.HeartRate.WeekView.BarChartView.BarChartItemBean> mItems =
+            new ArrayList<>();
+
 
 
 

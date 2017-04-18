@@ -1120,4 +1120,6 @@
     <string name="net_work_error">An app wants to turn cellular data or Wi-Fi on for this device.</string>
     <string name="yes">Allow</string>
     <string name="no">Deny</string>
+    <string name="Need_format">The bracelet in the wrist end unbundled, whether to reset</string>
+    <string name="Need_before">Whether you need to re-bind the previous device</string>
 </resources>

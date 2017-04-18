@@ -68,8 +68,9 @@ public class DayFragment extends Fragment {
         SQLiteDatabase readableDatabase = heartrateHelper.getReadableDatabase();
         greendaoUtils = new GreendaoUtils(getActivity(), readableDatabase);
 //   调滑动的线
-        detailChartControl = (DetailChartControl)view.findViewById(R.id.activity_detailChartView1);
-        detailChartControl.initDayIndex(parse);
+//        detailChartControl = (DetailChartControl)view.findViewById(R.id.activity_detailChartView1);
+//        detailChartControl.initDayIndex(parse);
+        barchartview.initDayIndex(parse);
         return view;
     }
 
@@ -78,8 +79,8 @@ public class DayFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-                List<BarChartView.BarChartItemBean> list = getHeartPointoneDay();
-                barchartview.setItems(list);
+        List<BarChartView.BarChartItemBean> list = getHeartPointoneDay();
+        barchartview.setItems(list);
     }
 
     private List<BarChartView.BarChartItemBean>  getHeartPointoneDay(){
@@ -105,6 +106,7 @@ public class DayFragment extends Fragment {
         for (heartrate record : heartrates){
             BarChartView.BarChartItemBean barChartItemBean = new BarChartView.BarChartItemBean
                     (record.getStartTime(), record.getMax(), record.getAvg());
+            if (record.getMax()>200)continue;
             list.add(barChartItemBean);
             rest = rest+record.getMax();
             avg = avg+record.getAvg();

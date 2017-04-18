@@ -68,6 +68,8 @@ public class MonthDatefragment extends Fragment {
                 bundle.putString("monthDate", seletedItem);
                 monthFragment.setArguments(bundle);
                 transaction.replace(R.id.middle_framelayout, monthFragment);
+                fragmentManager.popBackStack(null,1);
+                transaction.addToBackStack(null);
                 transaction.commit();
             }
         });

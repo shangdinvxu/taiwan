@@ -1056,4 +1056,6 @@
     <string name="refresh_data">數據同步中...剩餘{0}條</string>
     <string name="unit_Kcal">卡路里</string>
     <string name="long_sit_step_toast">步數不能大於200</string>
+    <string name="Need_format">該手環在手環端解綁,是否重置</string>
+    <string name="Need_before">是否需要重新綁定前一個裝置</string>
 </resources>

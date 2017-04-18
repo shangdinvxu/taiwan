@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -49,6 +50,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -92,6 +95,7 @@ public class CalDataActivity extends ToolBarActivity implements View.OnClickList
     public static final int WALKING = 1;
     public static final int RUNNING = 2;
     public final static int ACTIVE = 3;
+    private SimpleDateFormat simpleDateFormatDefult = new SimpleDateFormat("yyyy-MM-dd");
     ProgressDialog pd;
 
     @Override
@@ -1000,6 +1004,10 @@ public class CalDataActivity extends ToolBarActivity implements View.OnClickList
                     shuju.setVisibility(View.VISIBLE);
                     nulldata.setVisibility(View.GONE);
                     data.setText(count + "(" + getString(R.string.unit_cal) + ")");
+
+                    //转换顺序
+                    sortList((ArrayList<Calory>) caloryList);
+
                     MyCalAdapter adapter = new MyCalAdapter(CalDataActivity.this, (ArrayList<Calory>) caloryList);
                     listviewstep.setAdapter(adapter);
                 }
@@ -1010,6 +1018,23 @@ public class CalDataActivity extends ToolBarActivity implements View.OnClickList
 
         }
 
+    }
+
+    private void sortList(ArrayList<Calory> caloryList){
+        Comparator<Calory> caloryComparator = new Comparator<Calory>() {
+            @Override
+            public int compare(Calory lhs, Calory rhs) {
+                try {
+                    Date date1 = simpleDateFormatDefult.parse(lhs.date);
+                    Date date2 = simpleDateFormatDefult.parse(rhs.date);
+                    return date1.compareTo(date2);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return 0;
+            }
+        };
+        Collections.sort(caloryList,caloryComparator);
     }
 
     //处理数据,主要是判断截止日期,如果日期是今天的日期,后面的数据就不要了

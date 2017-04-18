@@ -71,6 +71,7 @@ public class BleService extends Service {
     private BLEProvider provider;
     private UserEntity userEntity;
     private static BleService self = null;
+    private static boolean needToScan = false ;
 
     /**
      * APP是否退出
@@ -616,6 +617,7 @@ public class BleService extends Service {
             protected void notifyforgerHeartList(ArrayList<com.example.android.bluetoothlegatt.bean.LpHeartrateData> obj) {
                 MyLog.e(TAG,"notifyforgerHeartListsuccess");
                 super.notifyforgerHeartList(obj);
+//                greendaoUtils.add(1491456945,55,55);
                 for (LpHeartrateData obj1: obj){
                     if (obj1.getAvgRate()<=0||obj1.getMaxRate()<=0) continue;
                     greendaoUtils.add(obj1.getStartTime(),obj1.getAvgRate(),obj1.getMaxRate());
@@ -656,12 +658,12 @@ public class BleService extends Service {
                 PreferencesToolkits.updateLocalDeviceInfo(BleService.this, lpDeviceInfo_);
 //                lpDeviceInfo_.step =Integer.parseInt(PreferencesToolkits.getGoalInfo(BleService.this,PreferencesToolkits.KEY_GOAL_STEP));
 //                provider.setTarget(BleService.this,lpDeviceInfo_);
-          /*      if (!latestDeviceInfo.modelName.isEmpty()&&latestDeviceInfo.modelName.equals("B100C2")){
+                if (!latestDeviceInfo.modelName.isEmpty()&&userEntity.getDeviceEntity().getDevice_type()==MyApplication.DEVICE_BAND3){
                     lpDeviceInfo_.stepDayTotals = MyApplication.getInstance(BleService.this).getOld_step();
                     lpDeviceInfo_.distenceDayTotals =MyApplication.getInstance(BleService.this).getOld_distance() ;
                     lpDeviceInfo_.CaloriesTotals =MyApplication.getInstance(BleService.this).getOld_calories() ;
                     provider.resetStep(BleService.this, lpDeviceInfo_);
-                }*/
+                }
             }
         });
         return provider;

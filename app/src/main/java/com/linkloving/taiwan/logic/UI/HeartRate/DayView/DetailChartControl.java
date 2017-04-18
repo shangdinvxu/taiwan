@@ -131,6 +131,7 @@ public class DetailChartControl extends RelativeLayout {
         linearLayout.setOnTouchListener(new OnTouchListenerImpl());
     }
 
+
     private class OnTouchListenerImpl implements OnTouchListener{
         @Override
         public boolean onTouch(View v, MotionEvent event) {
@@ -157,7 +158,6 @@ public class DetailChartControl extends RelativeLayout {
                     avgView.setText(heartrates.get(0).getAvg()+"");
                     moveLineViewWithFinger(lineView,event.getX(),true);
                 }
-
             }
             if (event.getAction()==MotionEvent.ACTION_UP){
                 i=0;
@@ -251,7 +251,7 @@ public class DetailChartControl extends RelativeLayout {
         xlineScale = (60*24f) / (float) imageWidth;// 每个像素xxx分钟
         yScale = imageHeight / 80;
     }
-        private void  getViewHigh(){
+    private void  getViewHigh(){
         final ViewTreeObserver vto = linearLayout.getViewTreeObserver();
         vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {

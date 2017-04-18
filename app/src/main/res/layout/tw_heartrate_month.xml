@@ -13,15 +13,15 @@
         android:id="@+id/Heartrate_day_barchartview"
         />
 
-        <com.linkloving.taiwan.logic.UI.HeartRate.MonthView.DetailChartControl
-            android:id="@+id/activity_detailChartView1"
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            composition:baseSlice="3600"
-            composition:deepSleepHeight="100dp"
-            composition:lightSleepHeight="50dp"
-            composition:lineWidth="1dp" />
+        <!--<com.linkloving.taiwan.logic.UI.HeartRate.MonthView.DetailChartControl-->
+            <!--android:id="@+id/activity_detailChartView1"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--composition:baseSlice="3600"-->
+            <!--composition:deepSleepHeight="100dp"-->
+            <!--composition:lightSleepHeight="50dp"-->
+            <!--composition:lineWidth="1dp" />-->
 
 
 </FrameLayout>

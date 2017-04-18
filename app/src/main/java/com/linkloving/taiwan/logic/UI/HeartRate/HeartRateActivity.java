@@ -2,27 +2,35 @@ package com.linkloving.taiwan.logic.UI.HeartRate;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Scroller;
 import android.widget.TextView;
 
 import com.linkloving.taiwan.MyApplication;
 import com.linkloving.taiwan.R;
 import com.linkloving.taiwan.basic.toolbar.ToolBarActivity;
+import com.linkloving.taiwan.logic.UI.HeartRate.DayView.BarChartView;
 import com.linkloving.taiwan.logic.dto.UserEntity;
 import com.linkloving.taiwan.utils.DateSwitcher;
 import com.linkloving.taiwan.utils.ToolKits;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
+import Trace.GreenDao.DaoMaster;
+import Trace.GreenDao.heartrate;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -57,6 +65,7 @@ public class HeartRateActivity extends ToolBarActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tw_heartrate);
         ButterKnife.inject(this);
+
         HeartrateDay.setOnClickListener(this);
         HeartrateMonth.setOnClickListener(this);
         HeartrateWeek.setOnClickListener(this);
@@ -70,7 +79,69 @@ public class HeartRateActivity extends ToolBarActivity implements View.OnClickLi
         restingText.setText(resting + "");
         //中间的时间和心率的时间
         initTimeToday();
+        //显示今天的平均心率。
+        initAvgHeartrate();
+//        initTestData();
     }
+
+    /**
+     * 插入测试数据供测试使用
+     */
+    private void initTestData() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                DaoMaster.DevOpenHelper heartrateHelper = new DaoMaster.DevOpenHelper(HeartRateActivity.this, "heartrate", null);
+                SQLiteDatabase readableDatabase = heartrateHelper.getReadableDatabase();
+                GreendaoUtils greendaoUtils = new GreendaoUtils(HeartRateActivity.this, readableDatabase);
+                greendaoUtils.deleteAll();
+                for (int i = 0; i < 500; i++) {
+                    greendaoUtils.add(1492235115 + i * 2000, (int) (Math.random()*100),  (int) (Math.random()*200));
+                }
+            }
+        }).start();
+    }
+
+    private void initAvgHeartrate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR,0);
+        calendar.set(Calendar.MINUTE,0);
+        calendar.set(Calendar.SECOND,0);
+        calendar.set(Calendar.MILLISECOND,0);
+        long dayStart = calendar.getTime().getTime();
+        System.out.println("开始时间："+calendar.getTime());
+        calendar.set(Calendar.HOUR,23);
+        calendar.set(Calendar.MINUTE,59);
+        calendar.set(Calendar.SECOND,59);
+        calendar.set(Calendar.MILLISECOND,999);
+        long dayEnd = calendar.getTime().getTime();
+        System.out.println("结束时间："+calendar.getTime());
+        DaoMaster.DevOpenHelper heartrateHelper = new DaoMaster.DevOpenHelper(HeartRateActivity.this, "heartrate", null);
+        SQLiteDatabase readableDatabase = heartrateHelper.getReadableDatabase();
+        GreendaoUtils greendaoUtils = new GreendaoUtils(HeartRateActivity.this, readableDatabase);
+        List<heartrate> heartrates = greendaoUtils.searchOneDay(dayStart, dayEnd);
+        ArrayList<BarChartView.BarChartItemBean> list = new ArrayList<>();
+        int rest = 0 ;
+        int avg = 0 ;
+        for (heartrate record : heartrates){
+            BarChartView.BarChartItemBean barChartItemBean = new BarChartView.BarChartItemBean
+                    (record.getStartTime(), record.getMax(), record.getAvg());
+            if (record.getMax()>200)continue;
+            list.add(barChartItemBean);
+            rest = rest+record.getMax();
+            avg = avg+record.getAvg();
+        }
+        int resting,avging = 0;
+        if (list.size()==0){
+            resting = 0 ;
+            avging = 0 ;
+        }else{
+            resting = rest / list.size();
+            avging = avg/list.size();
+        }
+        setAvgText( avging) ;
+    }
+
     private void initTimeToday(){
         Date date = new Date();
         Calendar calendar = Calendar.getInstance();
@@ -79,7 +150,8 @@ public class HeartRateActivity extends ToolBarActivity implements View.OnClickLi
         String s = DateSwitcher.monthSwitch(calendarMonth);
         String dateformat = dateFormat.format(date);
         timeToday.setText(s+" "+dateformat);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd a HH:mm", Locale.US);
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd a HH:mm", Locale.US);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         String format = simpleDateFormat.format(date);
         groupsTime.setText(format);
     }
@@ -121,6 +193,7 @@ public class HeartRateActivity extends ToolBarActivity implements View.OnClickLi
             @Override
             public void onDataChange(String data) {
                 groupsTime.setText(data);
+                timeToday.setText(data);
             }
         });
 
@@ -155,7 +228,9 @@ public class HeartRateActivity extends ToolBarActivity implements View.OnClickLi
                 SimpleDateFormat simYearMonth = new SimpleDateFormat("MM/dd");
                 String startData = sdf.format(mondayOfThisWeek);
                 String endData = simYearMonth.format(sundayofThisWeek);
+                String monday = simYearMonth.format(mondayOfThisWeek);
                 groupsTime.setText(startData + " - " + endData);
+                timeToday.setText(monday + " - " + endData);
             }
         });
     }
@@ -170,7 +245,7 @@ public class HeartRateActivity extends ToolBarActivity implements View.OnClickLi
             @Override
             public void onDataChange(String data) {
                 groupsTime.setText(data);
-
+                timeToday.setText(data);
             }
         });
       /*  DayFragment dayFragment = new DayFragment();
@@ -206,6 +281,11 @@ public class HeartRateActivity extends ToolBarActivity implements View.OnClickLi
     }
 
     public void setAvgText(int avging) {
-        avgerageText.setText(avging + "");
+        if (avging==0){
+            avgerageText.setText("--");
+        }else {
+            avgerageText.setText(avging + "");
+        }
     }
+
 }

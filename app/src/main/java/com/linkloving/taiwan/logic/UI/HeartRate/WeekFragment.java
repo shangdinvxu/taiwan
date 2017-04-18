@@ -32,8 +32,6 @@ public class WeekFragment extends Fragment {
     private final static String TAG = WeekFragment.class.getSimpleName();
     @InjectView(R.id.Heartrate_day_barchartview)
     BarChartView HeartrateDayBarchartview;
-    @InjectView(R.id.activity_detailChartView1)
-    DetailChartControl activityDetailChartView1;
     private GreendaoUtils greendaoUtils;
     private final static long ONEDAYMILLIONS = 86400000;
     private ArrayList<BarChartView.BarChartItemBean> beanArrayList;
@@ -69,7 +67,7 @@ public class WeekFragment extends Fragment {
         greendaoUtils = new GreendaoUtils(getActivity());
         beanArrayList = getOneWeekRecord();
         HeartrateDayBarchartview.setItems(beanArrayList);
-        activityDetailChartView1.initDayIndex(firstSundayOfThisWeek);
+        HeartrateDayBarchartview.initDayIndex(firstSundayOfThisWeek);
         return view;
     }
 

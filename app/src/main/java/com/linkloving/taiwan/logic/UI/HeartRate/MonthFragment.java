@@ -31,8 +31,6 @@ public class MonthFragment extends Fragment {
     private final static String TAG = MonthFragment.class.getSimpleName();
     @InjectView(R.id.Heartrate_day_barchartview)
     BarChartView HeartrateDayBarchartview;
-    @InjectView(R.id.activity_detailChartView1)
-    DetailChartControl activityDetailChartView1;
     private GreendaoUtils greendaoUtils;
     private final static long ONEDAYMILLIONS = 86400000;
     private ArrayList<BarChartView.BarChartItemBean> beanArrayList;
@@ -63,7 +61,7 @@ public class MonthFragment extends Fragment {
         greendaoUtils = new GreendaoUtils(getActivity());
         beanArrayList = getOneMonthRecord();
         HeartrateDayBarchartview.setItems(beanArrayList);
-        activityDetailChartView1.initDayIndex(getfirstDayOfMonth);
+        HeartrateDayBarchartview.initDayIndex(getfirstDayOfMonth);
         return view;
     }
 

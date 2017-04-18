@@ -718,6 +718,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="10dp"
                             android:gravity="center_vertical"
+                            android:text="-- Avg.bpm"
                             android:textColor="@color/portal_text_blue"
                             android:textSize="20dp" />
                 </LinearLayout>
@@ -781,6 +782,7 @@
                             android:layout_weight="1">
 
                             <com.linkloving.taiwan.basic.CustomProgressBar
+                                android:visibility="gone"
                                 android:id="@+id/progressBar_weight"
                                 android:layout_width="0dp"
                                 android:layout_height="10dp"

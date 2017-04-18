@@ -115,10 +115,7 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
         dialog = new ProgressDialog(this);
         dialog.setMessage(getString(R.string.getting_version_information));
         dialog_connect=new ProgressDialog(this);
-//        blereciver = new Blereciver();
-//        IntentFilter filter = new IntentFilter();
-//        filter.addAction(BleService.BLE_SYN_SUCCESS);
-//        registerReceiver(blereciver, filter);
+
     }
 
 //    private class Blereciver extends BroadcastReceiver {
@@ -223,7 +220,7 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
         }
     }
 
-    @OnClick(R.id.bracelet_info_linear)
+    @OnClick(R.id.device_img)
     void toSendEmail(View view){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(DeviceActivity.this).inflate(R.layout.alert_dialog_edittext, null);
@@ -236,6 +233,7 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
                     toSendEmail();
                 } else if (password.getText().toString().length() == 0) {
                     Toast.makeText(DeviceActivity.this, "Please enter code", Toast.LENGTH_SHORT).show();
+
                 } else {
                     Toast.makeText(DeviceActivity.this, "Wrong code", Toast.LENGTH_SHORT).show();
                 }
