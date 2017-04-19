@@ -620,10 +620,8 @@ public class BleService extends Service {
 //                greendaoUtils.add(1491456945,55,55);
                 for (LpHeartrateData obj1: obj){
                     if (obj1.getAvgRate()<=0||obj1.getMaxRate()<=0) continue;
+                    if (obj1.getAvgRate()>220||obj1.getMaxRate()>220) continue;
                     greendaoUtils.add(obj1.getStartTime(),obj1.getAvgRate(),obj1.getMaxRate());
-                    List<heartrate> search = greendaoUtils.search(obj1.getStartTime());
-                    MyLog.e(TAG,search.get(0).getMax()+"");
-                    MyLog.e(TAG,"-----------------------");
                 }
             }
 
