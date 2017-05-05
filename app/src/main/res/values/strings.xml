@@ -1065,4 +1065,5 @@
     <string name="net_work_error">有一個應用程式要求開啟這個裝置的網路功能</string>
     <string name="yes">允許</string>
     <string name="no">拒絕</string>
+    <string name="dfu_service_title">nRF Toolbox DFU Proxy</string>
 </resources>

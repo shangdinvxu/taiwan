@@ -27,6 +27,8 @@ public class heartrateDao extends AbstractDao<heartrate, Long> {
         public final static Property StartTime = new Property(1, Integer.class, "startTime", false, "START_TIME");
         public final static Property Max = new Property(2, Integer.class, "max", false, "MAX");
         public final static Property Avg = new Property(3, Integer.class, "avg", false, "AVG");
+        public final static Property FakeMaxRate = new Property(4, Integer.class, "fakeMaxRate", false, "FAKE_MAX_RATE");
+        public final static Property FakeAvgRate = new Property(5, Integer.class, "fakeAvgRate", false, "FAKE_AVG_RATE");
     };
 
     private DaoSession daoSession;
@@ -48,7 +50,9 @@ public class heartrateDao extends AbstractDao<heartrate, Long> {
                 "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "'START_TIME' INTEGER UNIQUE ," + // 1: startTime
                 "'MAX' INTEGER," + // 2: max
-                "'AVG' INTEGER);"); // 3: avg
+                "'AVG' INTEGER," + // 3: avg
+                "'FAKE_MAX_RATE' INTEGER," + // 4: fakeMaxRate
+                "'FAKE_AVG_RATE' INTEGER);"); // 5: fakeAvgRate
     }
 
     /** Drops the underlying database table. */
@@ -81,6 +85,16 @@ public class heartrateDao extends AbstractDao<heartrate, Long> {
         if (avg != null) {
             stmt.bindLong(4, avg);
         }
+ 
+        Integer fakeMaxRate = entity.getFakeMaxRate();
+        if (fakeMaxRate != null) {
+            stmt.bindLong(5, fakeMaxRate);
+        }
+ 
+        Integer fakeAvgRate = entity.getFakeAvgRate();
+        if (fakeAvgRate != null) {
+            stmt.bindLong(6, fakeAvgRate);
+        }
     }
 
     @Override
@@ -102,7 +116,9 @@ public class heartrateDao extends AbstractDao<heartrate, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getInt(offset + 1), // startTime
             cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // max
-            cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3) // avg
+            cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // avg
+            cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4), // fakeMaxRate
+            cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5) // fakeAvgRate
         );
         return entity;
     }
@@ -114,6 +130,8 @@ public class heartrateDao extends AbstractDao<heartrate, Long> {
         entity.setStartTime(cursor.isNull(offset + 1) ? null : cursor.getInt(offset + 1));
         entity.setMax(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
         entity.setAvg(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
+        entity.setFakeMaxRate(cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4));
+        entity.setFakeAvgRate(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
      }
     
     /** @inheritdoc */

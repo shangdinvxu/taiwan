@@ -8,13 +8,6 @@ public class LpHeartrateData {
     public LpHeartrateData() {
     }
 
-    public int getMaxRate() {
-        return MaxRate;
-    }
-
-    public int getAvgRate() {
-        return avgRate;
-    }
 
     public int getStartTime() {
         return startTime;
@@ -24,30 +17,61 @@ public class LpHeartrateData {
         this.startTime = startTime;
     }
 
-    public void setAvgRate(int avgRate) {
-        this.avgRate = avgRate;
+    public int getFakeMaxRate() {
+        return fakeMaxRate;
+    }
+
+    public void setFakeMaxRate(int fakeMaxRate) {
+        this.fakeMaxRate = fakeMaxRate;
+    }
+
+    public int getFakeAvgRate() {
+        return fakeAvgRate;
+    }
+
+    public void setFakeAvgRate(int fakeAvgRate) {
+        this.fakeAvgRate = fakeAvgRate;
+    }
+
+    public int getMaxRate() {
+        return MaxRate;
     }
 
     public void setMaxRate(int maxRate) {
         MaxRate = maxRate;
     }
 
-    public LpHeartrateData(int avgRate, int maxRate, int startTime) {
+    public int getAvgRate() {
+        return avgRate;
+    }
+
+    public void setAvgRate(int avgRate) {
         this.avgRate = avgRate;
-        MaxRate = maxRate;
+    }
+
+    public LpHeartrateData(int startTime, int fakeMaxRate, int fakeAvgRate, int maxRate, int avgRate) {
         this.startTime = startTime;
+        this.fakeMaxRate = fakeMaxRate;
+        this.fakeAvgRate = fakeAvgRate;
+        MaxRate = maxRate;
+        this.avgRate = avgRate;
     }
 
     @Override
     public String toString() {
         return "LpHeartrateData{" +
-                "avgRate=" + avgRate +
-                ", startTime=" + startTime +
+                "startTime=" + startTime +
+                ", fakeMaxRate=" + fakeMaxRate +
+                ", fakeAvgRate=" + fakeAvgRate +
                 ", MaxRate=" + MaxRate +
+                ", avgRate=" + avgRate +
                 '}';
     }
 
     private int startTime ;
+    private int fakeMaxRate ;
+    private int fakeAvgRate ;
     private int MaxRate ;
     private int avgRate ;
+
 }

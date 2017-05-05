@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Shader;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -89,6 +91,7 @@ public class BarChartView extends RelativeLayout {
     public PopupWindow pointPopupWindow = new PopupWindow();
     private int locationY = 0;
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private Paint lineGradientPaint;
 
     public BarChartView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -310,6 +313,7 @@ public class BarChartView extends RelativeLayout {
         barSpace = screenW * 0.035;
 //        设置一个一小时的高度
         oneHourHight = screenH * 0.017;
+        lineGradientPaint = new Paint();
 
     }
 
@@ -337,11 +341,26 @@ public class BarChartView extends RelativeLayout {
         for (int i = 0; i < mItems.size(); i++) {
             if (i<mItems.size()-1){
                 if (mItems.get(i).itemDeepValue==0||mItems.get(i+1).itemDeepValue==0) continue;
-                    canvas.drawLine( (float) (screenW * (0.2 + i * 0.12)),
+                double startX =(float) (screenW * (0.2 + i * 0.12));
+                double startY =  (float)(oneHourHight*28- (mItems.get(i).itemLightValue*1000/200*oneHourHight * 24)/1000);
+                double endX =  (float) (screenW * (0.2 + (i+1) * 0.12));
+                double endY =   (float)(oneHourHight*28-(mItems.get(i+1).itemLightValue*1000/200 *oneHourHight * 24)/1000);
+                int startColor = switchIntToColor((int) mItems.get(i).itemDeepValue);
+                int endColor = switchIntToColor((int) mItems.get(i + 1).itemDeepValue);
+                Shader mShader = new LinearGradient((int) startX, (int) startY, (int) endX, (int) endY,
+
+                        new int[]{startColor, endColor},
+
+                        null, Shader.TileMode.CLAMP);
+                lineGradientPaint.setShader(mShader);
+                lineGradientPaint.setStrokeWidth(2);
+                lineGradientPaint.setAntiAlias(true);
+                canvas.drawLine( (float) (screenW * (0.2 + i * 0.12)),
                             (float)(oneHourHight*28- (mItems.get(i).itemLightValue*1000/200*oneHourHight * 24)/1000),
                             (float) (screenW * (0.2 + (i+1) * 0.12)),
                             (float)(oneHourHight*28-(mItems.get(i+1).itemLightValue*1000/200 *oneHourHight * 24)/1000),
-                            linePaint);
+                        lineGradientPaint);
+                mShader = null;
             }
         }
 
@@ -363,6 +382,21 @@ public class BarChartView extends RelativeLayout {
             MyLog.e(TAG,texttypeStartx+"------"+texttypeStarty);
             canvas.drawText(typeText, texttypeStartx, texttypeStarty, textPaint);
         }
+    }
+
+
+    private int switchIntToColor(int value) {
+        int color = 0;
+        if (value > 130) {
+            color = Color.rgb(255, 0, 0);
+        } else if (value > 100) {
+            color = Color.rgb(250, 238, 0);
+        } else if (value > 80) {
+            color = Color.rgb(55, 216, 150);
+        } else {
+            color = Color.rgb(0, 255, 255);
+        }
+        return color;
     }
 
     /**

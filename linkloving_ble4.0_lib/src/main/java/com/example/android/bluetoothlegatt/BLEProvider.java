@@ -240,6 +240,8 @@ public  class BLEProvider
 	public static final int INDEX_CLOSE_SYNC_HEART= INDEX_GET_HEART_RATE + 1;
 	/** 指令代码：发送开自动同步心率的指令 */
 	public static final int INDEX_OPEN_SYNC_HEART= INDEX_CLOSE_SYNC_HEART + 1;
+	/**获取异常信息的指令*/
+	public static final int INDEX_GET_EXCEPTION_INFO= INDEX_OPEN_SYNC_HEART + 1;
 	// Stops scanning after 10 seconds.
 	private static final long SCAN_PERIOD = 10000;
 
@@ -1241,6 +1243,14 @@ public  class BLEProvider
 	   runIndexProess(context, INDEX_GET_DEVICEID);
    }
 
+
+	/* 获取异常信息*/
+	public void get_exceptionInfo(Context context)
+	{
+		OwnLog.i(TAG, "..................get_cardnum Thread........................");
+		runIndexProess(context, INDEX_GET_EXCEPTION_INFO);
+	}
+
    public void runIndexProess(Context context,int index,LPDeviceInfo deviceInfo)
    {
 	   	   
@@ -1672,6 +1682,10 @@ public  class BLEProvider
 						msg.obj = mLepaoProtocalImpl.getAllDeviceInfoNew(serverDeviceInfo.userId);
 			    		msg.sendToTarget();
 						break;
+					case INDEX_GET_EXCEPTION_INFO:
+						msg = mHandler.obtainMessage(INDEX_GET_EXCEPTION_INFO,mLepaoProtocalImpl.getExceptionInfo());
+						msg.sendToTarget();
+						break;
 				    case INDEX_GET_MODEL:
 				    	Log.d(TAG, ".................INDEX_GET_MODEL................");
 				    	msg = mHandler.obtainMessage();
@@ -1869,6 +1883,7 @@ public  class BLEProvider
 				    	msg = mHandler.obtainMessage(INDEX_XIANJIN_RECORD,getXianJinRecordList(mHandler,serverDeviceInfo));
 				    	msg.sendToTarget();
 				    	break;
+
 				    	
 				    case INDEX_OPEN_FEIJIE:
 				    	msg = mHandler.obtainMessage();

@@ -12,7 +12,7 @@ import java.io.File;
 /**
  * Created by zkx on 2016/3/2.
  */
-public class CommParams {
+    public class CommParams {
     //app网络请求队列
     public final static int HTTP_RANK = 0;
     public final static int HTTP_REGISTERED_EMAIL = 1;

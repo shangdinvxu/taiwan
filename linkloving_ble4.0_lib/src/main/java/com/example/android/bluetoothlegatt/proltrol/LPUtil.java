@@ -406,4 +406,21 @@ public class LPUtil {
 		OwnLog.e(TAG, sb.toString());
 	}
 
+	public static String  printLogData(byte[] data, String label) {
+		StringBuffer sb = new StringBuffer();
+		sb.append(label + "[");
+		for (int i = 0; i < data.length; i++) {
+//			if(i<3) continue;
+//			if(i>data.length-3) continue;
+			String msg = Integer.toHexString((data[i] & 0xff));
+			if(msg.length()<2){
+				msg = "0"+msg;
+			}
+			msg = "0x"+msg.toUpperCase();
+			sb.append(msg + " ");
+		}
+		sb.append("]");
+		return  sb.toString();
+	}
+
 }

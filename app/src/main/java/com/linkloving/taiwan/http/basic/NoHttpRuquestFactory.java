@@ -35,6 +35,21 @@ public class NoHttpRuquestFactory {
     public final static String url= CommParams.SERVER_CONTROLLER_URL_ROOT+"MyControllerJSON";//服务器的根地址
 
     public final static String url_new= CommParams.SERVER_CONTROLLER_URL_NEW;//服务器的根地址（新）
+    public final static String checkFirmwareVersion = "http://www.robotime.com/check/";
+
+    //OAD最新版本信息获取
+    public static Request<String> creat_New_OAD_Request(String modelName,int version_int) {
+        MyJsonRequest httpsRequest = new MyJsonRequest(checkFirmwareVersion);
+        httpsRequest.setContentTypeJson();
+        HashMap<Object, Object> objectObjectHashMap = new HashMap<>();
+        objectObjectHashMap.put("model_name",modelName);
+        objectObjectHashMap.put("version_code",version_int);
+        httpsRequest.setRequestBody(JSON.toJSONString(objectObjectHashMap));
+        MyLog.e(TAG,httpsRequest.toString());
+        MyLog.e(TAG,"JSON.toJSONString(objectObjectHashMap)."+JSON.toJSONString(objectObjectHashMap));
+        return httpsRequest;
+    }
+
 
     /**
      * 生成查看我关注的人接口参数

@@ -94,6 +94,37 @@ public class Band3ListActivity extends ToolBarActivity {
     private android.support.v7.app.AlertDialog.Builder builder;
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_blelist);
+        progressDialog = new ProgressDialog(this);
+        observerAdapter = new BLEProviderObserver();
+        provider = BleService.getInstance(this).getCurrentHandlerProvider();
+        provider.setBleProviderObserver(observerAdapter);
+        handler = new BLEListHandler(Band3ListActivity.this) {
+            @Override
+            protected void handleData(BluetoothDevice device) {
+                for (DeviceVO v : macList) {
+                    if (v.mac.equals(device.getAddress()))
+                        return;
+                }
+                Log.e(TAG,device.getAddress()+"获取的地址是多少？"+device.getName());
+                DeviceVO vo = new DeviceVO();
+                vo.mac = device.getAddress() ;
+                vo.name = device.getName();
+                vo.bledevice = device;
+                macList.add(vo);
+                mAdapter.notifyDataSetChanged();
+            }
+        };
+        listProvider = new BLEListProvider(this, handler);
+        mAdapter = new macListAdapter(this, macList);
+        initView();
+        listProvider.scanDeviceList();
+        builder = new android.support.v7.app.AlertDialog.Builder(Band3ListActivity.this);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         listProvider.stopScan();
@@ -111,43 +142,6 @@ public class Band3ListActivity extends ToolBarActivity {
                 provider.setBleProviderObserver(observerAdapter);
             }
         }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_blelist);
-        //Integer.parseInt(getString(R.string.general_loading))
-//        dialog_server = new Dialog(getApplicationContext());
-//        dialog_server.setTitle(getString(R.string.general_loading));
-        progressDialog = new ProgressDialog(this);
-//        progressDialog.setMessage(getString(R.string.general_loading));//载入中
-//        progressDialog.setMessage(getString(R.string.portal_main_state_connecting)); //连接中
-
-        observerAdapter = new BLEProviderObserver();
-        provider = BleService.getInstance(this).getCurrentHandlerProvider();
-        provider.setBleProviderObserver(observerAdapter);
-        handler = new BLEListHandler(Band3ListActivity.this) {
-            @Override
-            protected void handleData(BluetoothDevice device) {
-                for (DeviceVO v : macList) {
-                    if (v.mac.equals(device.getAddress()))
-                        return;
-                }
-                Log.e(TAG,device.getAddress()+"获取的地址是多少？");
-                DeviceVO vo = new DeviceVO();
-                vo.mac = device.getAddress() ;
-                vo.name = device.getName();
-                vo.bledevice = device;
-                macList.add(vo);
-                mAdapter.notifyDataSetChanged();
-            }
-        };
-        listProvider = new BLEListProvider(this, handler);
-        mAdapter = new macListAdapter(this, macList);
-        initView();
-        listProvider.scanDeviceList();
-        builder = new android.support.v7.app.AlertDialog.Builder(Band3ListActivity.this);
     }
 
     @Override

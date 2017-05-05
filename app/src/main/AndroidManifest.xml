@@ -63,6 +63,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="net.hockeyapp.android.appIdentifier"
+            android:value="ace08a6e5e4f4e578b1ed17172975937" />
 
         <meta-data android:name="design_width" android:value="1080">
         </meta-data>
@@ -454,6 +457,17 @@
             android:name="com.linkloving.taiwan.logic.UI.more.GuideActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar" />
+        <service
+            android:name=".logic.UI.OAD.DfuService"
+            android:exported="true"
+            android:label="@string/dfu_service_title">
+            <intent-filter>
+                <action android:name="no.nordicsemi.android.action.DFU_UPLOAD" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
+
+        <activity android:name=".logic.UI.OAD.NotificationActivity" />
 
     </application>
 

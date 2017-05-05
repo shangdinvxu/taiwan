@@ -24,11 +24,13 @@ import com.linkloving.band.dto.SportRecord;
 import com.linkloving.taiwan.db.sport.UserDeviceRecord;
 import com.linkloving.taiwan.db.summary.DaySynopicTable;
 import com.linkloving.taiwan.logic.UI.HeartRate.GreendaoUtils;
+import com.linkloving.taiwan.logic.UI.device.GetDBInfo;
 import com.linkloving.taiwan.logic.UI.device.incomingtel.IncomingTelActivity;
 import com.linkloving.taiwan.logic.dto.UserEntity;
 import com.linkloving.taiwan.prefrences.LocalUserSettingsToolkits;
 import com.linkloving.taiwan.prefrences.PreferencesToolkits;
 import com.linkloving.taiwan.prefrences.devicebean.DeviceSetting;
+import com.linkloving.taiwan.prefrences.devicebean.LocalInfoVO;
 import com.linkloving.taiwan.utils.CommonUtils;
 import com.linkloving.taiwan.utils.DeviceInfoHelper;
 import com.linkloving.taiwan.utils.MyToast;
@@ -456,6 +458,7 @@ public class BleService extends Service {
                 if(CommonUtils.isStringEmpty(MyApplication.getInstance(BleService.this).getLocalUserInfoProvider().getDeviceEntity().getLast_sync_device_id())){
                     return;
                 }
+
                 if (!IS_SYNING) { // 判断app是否存在状态
                     if (latestDeviceInfo != null && latestDeviceInfo.recoderStatus!=5) {
                         IS_SYNING = true;  //正在同步 不然用户再次刷新 会发两次指令
@@ -469,7 +472,7 @@ public class BleService extends Service {
                         //==========================初始化数据OVER==========================//
                         //保存localvo
                         PreferencesToolkits.updateLocalDeviceInfo(BleService.this, lpDeviceInfo_);
-//                        LocalInfoVO LocalInfoVO = PreferencesToolkits.getLocalDeviceInfo(BleService.this);
+                        LocalInfoVO LocalInfoVO = PreferencesToolkits.getLocalDeviceInfo(BleService.this);
 
                         //BLE--->设置身体信息
                         startSetBody();
@@ -620,12 +623,19 @@ public class BleService extends Service {
 //                greendaoUtils.add(1491456945,55,55);
                 for (LpHeartrateData obj1: obj){
                     if (obj1.getAvgRate()<=0||obj1.getMaxRate()<=0) continue;
-                    if (obj1.getAvgRate()>220||obj1.getMaxRate()>220) continue;
-                    greendaoUtils.add(obj1.getStartTime(),obj1.getAvgRate(),obj1.getMaxRate());
+//                    if (obj1.getAvgRate()>220||obj1.getMaxRate()>220) continue;
+                    greendaoUtils.addwhole(obj1.getStartTime(),obj1.getAvgRate(),obj1.getMaxRate(),
+                            obj1.getFakeAvgRate(),obj1.getFakeMaxRate());
                 }
+                provider.get_exceptionInfo(BleService.this);
             }
 
-
+            /**获取到异常信息*/
+            @Override
+            protected void handleExceptionInfo(byte[] bytes) {
+                super.handleExceptionInfo(bytes);
+                GetDBInfo.writeException(bytes,BleService.this);
+            }
 
             @Override
             protected void notifyForgetDeviceId_D(String obj) {

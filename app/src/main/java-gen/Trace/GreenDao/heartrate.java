@@ -16,6 +16,8 @@ public class heartrate {
     private Integer startTime;
     private Integer max;
     private Integer avg;
+    private Integer fakeMaxRate;
+    private Integer fakeAvgRate;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
@@ -34,11 +36,13 @@ public class heartrate {
         this.id = id;
     }
 
-    public heartrate(Long id, Integer startTime, Integer max, Integer avg) {
+    public heartrate(Long id, Integer startTime, Integer max, Integer avg, Integer fakeMaxRate, Integer fakeAvgRate) {
         this.id = id;
         this.startTime = startTime;
         this.max = max;
         this.avg = avg;
+        this.fakeMaxRate = fakeMaxRate;
+        this.fakeAvgRate = fakeAvgRate;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -77,6 +81,22 @@ public class heartrate {
 
     public void setAvg(Integer avg) {
         this.avg = avg;
+    }
+
+    public Integer getFakeMaxRate() {
+        return fakeMaxRate;
+    }
+
+    public void setFakeMaxRate(Integer fakeMaxRate) {
+        this.fakeMaxRate = fakeMaxRate;
+    }
+
+    public Integer getFakeAvgRate() {
+        return fakeAvgRate;
+    }
+
+    public void setFakeAvgRate(Integer fakeAvgRate) {
+        this.fakeAvgRate = fakeAvgRate;
     }
 
     /** Convenient call for {@link AbstractDao#delete(Object)}. Entity must attached to an entity context. */

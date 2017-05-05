@@ -47,6 +47,8 @@ public interface LepaoCommand {
 	static final byte COMMAND_AID_CARD = (byte) 0x91;       //AID
 	
 	static final byte COMMAND_FORMAT_DEVICE = 0x5E;         // 初始化设备(解除绑定)
+
+	static final byte COMMAND_EXCEPTION_INFO = (byte) 0xf5;         // 获取异常信息的指令
 	
 	static final byte COMMAND_FACTORY_TEST = 0x00;          // 工厂测试命令
 }

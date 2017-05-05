@@ -32,12 +32,17 @@ import com.linkloving.taiwan.CommParams;
 import com.linkloving.taiwan.IntentFactory;
 import com.linkloving.taiwan.MyApplication;
 import com.linkloving.taiwan.R;
+import com.linkloving.taiwan.RetrofitUtils.Bean.CheckFirmwareVersionReponse;
+import com.linkloving.taiwan.RetrofitUtils.FirmwareRetrofitClient;
+import com.linkloving.taiwan.RetrofitUtils.RetrofitApi.OADApi;
 import com.linkloving.taiwan.basic.toolbar.ToolBarActivity;
 import com.linkloving.taiwan.http.basic.CallServer;
 import com.linkloving.taiwan.http.basic.HttpCallback;
 import com.linkloving.taiwan.http.basic.NoHttpRuquestFactory;
 import com.linkloving.taiwan.http.data.DataFromServer;
+import com.linkloving.taiwan.logic.UI.OAD.DfuService;
 import com.linkloving.taiwan.logic.UI.main.PortalActivity;
+import com.linkloving.taiwan.logic.UI.main.bundband.Band3ListActivity;
 import com.linkloving.taiwan.logic.dto.UserEntity;
 import com.linkloving.taiwan.notify.NotificationCollectorService;
 import com.linkloving.taiwan.prefrences.PreferencesToolkits;
@@ -49,21 +54,33 @@ import com.linkloving.taiwan.utils.logUtils.MyLog;
 import com.yolanda.nohttp.Headers;
 import com.yolanda.nohttp.NoHttp;
 import com.yolanda.nohttp.Response;
+import com.yolanda.nohttp.StringRequest;
 import com.yolanda.nohttp.download.DownloadListener;
 import com.yolanda.nohttp.download.DownloadRequest;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import no.nordicsemi.android.dfu.DfuProgressListenerAdapter;
+import no.nordicsemi.android.dfu.DfuServiceInitiator;
+import no.nordicsemi.android.dfu.DfuServiceListenerHelper;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class DeviceActivity extends ToolBarActivity implements View.OnClickListener {
     private static final String TAG = DeviceActivity.class.getSimpleName();
@@ -99,6 +116,8 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
     UserEntity userEntity;
 //    private Blereciver blereciver;
     boolean isRunning = false;
+    private URI uri = null;
+    private File file;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -201,7 +220,31 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
             provider.setBleProviderObserver(observerAdapter);
         }
         super.onResume();
+        DfuServiceListenerHelper.registerProgressListener(this, mDfuProgressListener);
     }
+
+
+    //固件更新
+    private final DfuProgressListenerAdapter mDfuProgressListener = new DfuProgressListenerAdapter() {
+        @Override
+        public void onProgressChanged(String deviceAddress, int percent, float speed, float avgSpeed, int currentPart, int partsTotal) {
+            MyLog.e(TAG, "mDfuProgressListener" + percent + "----");
+        }
+
+        @Override
+        public void onDfuCompleted(String deviceAddress) {
+            super.onDfuCompleted(deviceAddress);
+            MyLog.e(TAG, "mDfuProgressListener" + "---onDfuCompleted-");
+            progressDialog.dismiss();
+        }
+
+        @Override
+        public void onError(String deviceAddress, int error, int errorType, String message) {
+            super.onError(deviceAddress, error, errorType, message);
+            MyLog.e(TAG, "mDfuProgressListener" + "--onError--");
+            progressDialog.dismiss();
+        }
+    };
 
     @Override
     protected void initListeners() {
@@ -311,6 +354,7 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
                 break;
 
             case R.id.activity_own_update:
+                final int device_type = MyApplication.getInstance(DeviceActivity.this).getLocalUserInfoProvider().getDeviceEntity().getDevice_type();
                 AlertDialog dialog = new AlertDialog.Builder(DeviceActivity.this)
                         .setTitle(getString(R.string.update_firmware))
                         .setMessage(getString(R.string.update_firmware)+"?")
@@ -324,10 +368,14 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
                                                 MyToast.showLong(DeviceActivity.this, getString(R.string.bracelet_oad_failed_battery));
                                             } else {
                                                 if (provider.isConnectedAndDiscovered()) {
-                                                    click_oad = true;
-                                                    dialog_syn.show();
-                                                    //会在updateFor_handleSetTime()回调中开始真正的空中升级流程
+                                                    if (device_type==MyApplication.DEVICE_BAND3){
+                                                        downloadZip();
+                                                    }else {
+                                                        click_oad = true;
+                                                        dialog_syn.show();
+                                                        //会在updateFor_handleSetTime()回调中开始真正的空中升级流程
                                                     BleService.getInstance(DeviceActivity.this).syncAllDeviceInfo(DeviceActivity.this);
+                                                    }
                                                 } else {
                                                     //没有连接蓝牙
                                                     MyToast.showLong(DeviceActivity.this, getString(R.string.pay_no_connect));
@@ -401,6 +449,181 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
 
         }
     }
+
+
+    private void downloadZip() {
+        dialog = new ProgressDialog(DeviceActivity.this);
+        dialog.setMessage(getString(R.string.getting_version_information));
+        int version_int = ToolKits.makeShort(vo.version_byte[1], vo.version_byte[0]);
+
+
+
+       /* OADApi oadApi = FirmwareRetrofitClient.getInstance().create(OADApi.class);
+        HashMap<String, Object> objectObjectHashMap = new HashMap<>();
+        objectObjectHashMap.put("model_name",vo.getModelname());
+        objectObjectHashMap.put("version_code",version_int);
+        Call<CheckFirmwareVersionReponse> check = oadApi.check(objectObjectHashMap);
+        check.enqueue(new Callback<CheckFirmwareVersionReponse>() {
+            @Override
+            public void onResponse(Call<CheckFirmwareVersionReponse> call, retrofit2.Response<CheckFirmwareVersionReponse> response) {
+                dialog.dismiss();
+                if (response.body()!=null) {
+                    try {
+                        CheckFirmwareVersionReponse checkVersionReponse = response.body();
+                        if(checkVersionReponse.getModel_name()==null){
+                            MyToast.show(DeviceActivity.this, getString(R.string.bracelet_oad_version_top), Toast.LENGTH_LONG);
+                        }else {
+//                        powerManager = (PowerManager) activity.getSystemService(Service.POWER_SERVICE);
+//                        wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Lock");
+//                        //是否需计算锁的数量
+//                        wakeLock.setReferenceCounted(false);
+//                        //请求屏幕常亮，onResume()方法中执行
+//                        wakeLock.acquire();
+                            downLoadByRetrofit(checkVersionReponse.getModel_name(),
+                                    checkVersionReponse.getFile_name(),Integer.parseInt(checkVersionReponse.getVersion_code()) ,
+                                    "downloaddyh08.zip",false);
+                        }
+                    }catch (Exception e){
+                        dialog.dismiss();
+                        MyToast.show(DeviceActivity.this, getString(R.string.bracelet_oad_version_top), Toast.LENGTH_LONG);
+                    }
+                } else {
+                    dialog.dismiss();
+                    MyToast.show(DeviceActivity.this,  getString(R.string.bracelet_oad_version_top), Toast.LENGTH_LONG);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CheckFirmwareVersionReponse> call, Throwable t) {
+                MyLog.e(TAG,"failed________"+t.toString());
+                dialog.dismiss();
+            }
+        });*/
+
+        CallServer.getRequestInstance().add(DeviceActivity.this, false,
+                CommParams.HTTP_OAD, NoHttpRuquestFactory.creat_New_OAD_Request(vo.getModelname()
+                        ,version_int), newHttpCallback);
+    }
+
+
+    private HttpCallback<String> newHttpCallback = new HttpCallback<String>() {
+        @Override
+        public void onFailed(int what, String url, Object tag, CharSequence message, int responseCode, long networkMillis) {
+            MyLog.e(TAG,"failed________"+message.toString());
+            dialog.dismiss();
+        }
+
+        @Override
+        public void onSucceed(int what, Response<String> response) {
+            dialog.dismiss();
+            MyLog.e(TAG + "devicefragment", response.toString() );
+            if (response.get()!=null&&!response.get().isEmpty()) {
+                try {
+                    CheckFirmwareVersionReponse checkVersionReponse = JSONObject.parseObject(response.get(), CheckFirmwareVersionReponse.class);
+                    if(checkVersionReponse.getModel_name()==null){
+                        MyToast.show(DeviceActivity.this, getString(R.string.bracelet_oad_version_top), Toast.LENGTH_LONG);
+                    }else {
+//                        powerManager = (PowerManager) activity.getSystemService(Service.POWER_SERVICE);
+//                        wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Lock");
+//                        //是否需计算锁的数量
+//                        wakeLock.setReferenceCounted(false);
+//                        //请求屏幕常亮，onResume()方法中执行
+//                        wakeLock.acquire();
+                        downLoadByRetrofit(checkVersionReponse.getModel_name(),
+                                checkVersionReponse.getFile_name(),Integer.parseInt(checkVersionReponse.getVersion_code()) ,
+                                "downloaddyh08.zip",false);
+                    }
+                }catch (Exception e){
+                    dialog.dismiss();
+                    MyToast.show(DeviceActivity.this, getString(R.string.bracelet_oad_version_top), Toast.LENGTH_LONG);
+                }
+            } else {
+                dialog.dismiss();
+                MyToast.show(DeviceActivity.this,  getString(R.string.bracelet_oad_version_top), Toast.LENGTH_LONG);
+            }
+        }
+    };
+
+    public void downLoadByRetrofit(String model_name, String file_name, int version_int, final String saveFileName, final boolean OADDirect) {
+        Log.e(TAG, "下载开始");
+//        String message = getString(R.string.general_uploadingnewfirmware);
+        String message = "下载进度";
+        dialog_connect = new ProgressDialog(DeviceActivity.this);
+        dialog_connect.setMessage(message);
+        dialog_connect.setCancelable(false);
+        dialog_connect.show();
+        OADApi oadApi = FirmwareRetrofitClient.getInstance().create(OADApi.class);
+        HashMap<String, Object> objectObjectHashMap = new HashMap<>();
+        objectObjectHashMap.put("model_name", model_name);
+        objectObjectHashMap.put("file_name", file_name);
+        String versionString = version_int + "";
+        if (versionString.length()%2==1){
+            versionString = "0"+versionString ;
+        }
+        objectObjectHashMap.put("version_code", versionString);
+        Call<ResponseBody> responseBodyCall = oadApi.download_file(objectObjectHashMap);
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                MyLog.e(TAG, response.body().byteStream() + "");
+                try {
+                    InputStream is = response.body().byteStream();
+                    file = getTempFile(DeviceActivity.this, saveFileName);
+                    uri = file.toURI();
+                    FileOutputStream fos = new FileOutputStream(file);
+                    BufferedInputStream bis = new BufferedInputStream(is);
+                    byte[] buffer = new byte[1024];
+                    int len;
+                    while ((len = bis.read(buffer)) != -1) {
+                        fos.write(buffer, 0, len);
+                    }
+                    fos.flush();
+                    fos.close();
+                    bis.close();
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Log.e(TAG, "下载完成" + saveFileName);
+                dialog_connect.dismiss();
+                onUploadClicked();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                MyLog.e(TAG, t.toString());
+                dialog_connect.dismiss();
+                Toast.makeText(DeviceActivity.this, getString(R.string.bracelet_down_file_fail), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void onUploadClicked() {
+        MyLog.e(TAG, "onUploadClicked执行了");
+        progressDialog = new ProgressDialog(DeviceActivity.this);
+        progressDialog.setMessage(getString(R.string.bracelet_oad_version_top));
+        progressDialog.show();
+        DfuServiceInitiator starter = new DfuServiceInitiator(userEntity.getDeviceEntity().getLast_sync_device_id())
+                .setDeviceName("DYH_01")
+                .setKeepBond(false)
+                .setForceDfu(false)
+                .setPacketsReceiptNotificationsEnabled(true)
+                .setPacketsReceiptNotificationsValue(12);
+        starter.setZip(file.getPath());
+        starter.start(this, DfuService.class);
+    }
+
+
+    public File getTempFile(Context context, String name) {
+        File file = null;
+        try {
+            file = new File(context.getCacheDir(),name);
+        } catch (Exception e) {
+            // Error while creating file
+        }
+        return file;
+    }
+
 
     /**
      * 蓝牙观察者实现类.

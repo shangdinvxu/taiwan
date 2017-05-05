@@ -69,13 +69,12 @@ import com.linkloving.taiwan.http.basic.NoHttpRuquestFactory;
 import com.linkloving.taiwan.http.data.DataFromServer;
 import com.linkloving.taiwan.logic.UI.HeartRate.DayView.BarChartView;
 import com.linkloving.taiwan.logic.UI.HeartRate.GreendaoUtils;
-import com.linkloving.taiwan.logic.UI.HeartRate.HeartRateActivity;
+import com.linkloving.taiwan.logic.UI.OAD.DfuService;
 import com.linkloving.taiwan.logic.UI.customerservice.serviceItem.Feedback;
 import com.linkloving.taiwan.logic.UI.device.DeviceActivity;
 import com.linkloving.taiwan.logic.UI.device.FirmwareDTO;
 import com.linkloving.taiwan.logic.UI.main.boundwatch.BoundActivity;
 import com.linkloving.taiwan.logic.UI.main.bundband.Band3ListActivity;
-import com.linkloving.taiwan.logic.UI.main.bundband.BandListActivity;
 import com.linkloving.taiwan.logic.UI.main.datachatactivity.WeightActivity;
 import com.linkloving.taiwan.logic.UI.main.materialmenu.Left_viewVO;
 import com.linkloving.taiwan.logic.UI.main.materialmenu.MenuNewAdapter;
@@ -107,7 +106,10 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import com.yolanda.nohttp.Response;
 import com.zhy.autolayout.AutoLayoutActivity;
 
+import net.hockeyapp.android.CrashManager;
+
 import java.math.BigDecimal;
+import java.security.Provider;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -118,13 +120,16 @@ import java.util.List;
 
 import Trace.GreenDao.DaoMaster;
 import Trace.GreenDao.heartrate;
+import no.nordicsemi.android.dfu.DfuProgressListenerAdapter;
+import no.nordicsemi.android.dfu.DfuServiceInitiator;
+import no.nordicsemi.android.dfu.DfuServiceListenerHelper;
 
 public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter.OnRecyclerViewListener, View.OnClickListener {
 
     private SimpleDateFormat sdf = new SimpleDateFormat(ToolKits.DATE_FORMAT_YYYY_MM_DD);
     private static final String TAG = PortalActivity.class.getSimpleName();
     private static final int REQUSET_FOR_PERSONAL = 1;
-    private static final int LOW_BATTERY = 3;
+    private static final int LOW_BATTERY = 11;
     private static final int JUMP_FRIEND_TAG_TWO = 2;
     private DrawerLayout drawer;
     private Toolbar toolbar;
@@ -197,6 +202,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
 //    };
 //判断是否从后台进入到前台的flag
     private boolean flag = false;
+    private AlertDialog dialog_battery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -261,9 +267,44 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
 
     }
 
+    public void onUploadClicked() {
+        MyLog.e(TAG, "onUploadClicked执行了");
+        DfuServiceInitiator starter = new DfuServiceInitiator(userEntity.getDeviceEntity().getLast_sync_device_id())
+                .setDeviceName(userEntity.getDeviceEntity().getModel_name())
+                .setKeepBond(false)
+                .setForceDfu(false)
+                .setPacketsReceiptNotificationsEnabled(true)
+                .setPacketsReceiptNotificationsValue(12);
+        starter.setZip(R.raw.wisfit);
+        starter.start(this, DfuService.class);
+    }
+
+
+
+    //固件更新
+    private final DfuProgressListenerAdapter mDfuProgressListener = new DfuProgressListenerAdapter() {
+        @Override
+        public void onProgressChanged(String deviceAddress, int percent, float speed, float avgSpeed, int currentPart, int partsTotal) {
+            MyLog.e(TAG, "mDfuProgressListener" + percent + "----");
+        }
+
+        @Override
+        public void onDfuCompleted(String deviceAddress) {
+            super.onDfuCompleted(deviceAddress);
+            MyLog.e(TAG, "mDfuProgressListener" + "---onDfuCompleted-");
+        }
+
+        @Override
+        public void onError(String deviceAddress, int error, int errorType, String message) {
+            super.onError(deviceAddress, error, errorType, message);
+            MyLog.e(TAG, "mDfuProgressListener" + "--onError--");
+        }
+    };
+
     @Override
     protected void onResume() {
         super.onResume();
+        DfuServiceListenerHelper.registerProgressListener(this, mDfuProgressListener);
         inCheckShowHR();
         /**用户性别*/
         if (userEntity!=null) {
@@ -276,9 +317,12 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                 user_head.setImageResource(R.mipmap.default_avatar);
             }
         }
-
-
+        checkForCrashes();
     }
+    private void checkForCrashes() {
+        CrashManager.register(this);
+    }
+
 
     @Override
     protected void onPause() {
@@ -550,6 +594,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                onUploadClicked();
                 final Calendar calendar;// 用来装日期的
                 calendar = Calendar.getInstance();
                 DatePickerDialog dialog1;
@@ -1255,17 +1300,19 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                     MyLog.e(TAG, "LocalInfoVO电量:" + LocalInfoVO.getBattery());
                     if (battery < LOW_BATTERY) {
                         //电量低于30的时候 弹出低电量警告框
-                        AlertDialog dialog_battery = new AlertDialog.Builder(PortalActivity.this)
-                                .setTitle(ToolKits.getStringbyId(PortalActivity.this, R.string.portal_main_battery_low))
-                                .setMessage(ToolKits.getStringbyId(PortalActivity.this, R.string.portal_main_battery_low_msg))
-                                .setPositiveButton(ToolKits.getStringbyId(PortalActivity.this, R.string.general_ok),
-                                        new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                            }
-                                        }).create();
-                        dialog_battery.show();
+                        if (dialog_battery==null||!dialog_battery.isShowing()) {
+                            dialog_battery = new AlertDialog.Builder(PortalActivity.this)
+                                    .setTitle(ToolKits.getStringbyId(PortalActivity.this, R.string.portal_main_battery_low))
+                                    .setMessage(ToolKits.getStringbyId(PortalActivity.this, R.string.portal_main_battery_low_msg))
+                                    .setPositiveButton(ToolKits.getStringbyId(PortalActivity.this, R.string.general_ok),
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            }).create();
+                            dialog_battery.show();
+                        }
                     }
                     text_Battery.setText("Power "+ battery + "%");//根据电量显示不同的文字提示
                     Battery_ProgressBar.setCurProgress((int) (Math.floor(battery * 100 * 1.0f / 100)));
@@ -1429,7 +1476,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         } else if (requestCode == CommParams.REQUEST_CODE_BOUND_BAND && resultCode == Activity.RESULT_OK) {
             MyLog.e(TAG, "手环绑定成功");
 //            provider.setBleProviderObserver(bleProviderObserver);
-//            provider.getAllDeviceInfoNew(this);
+            BleService.getInstance(PortalActivity.this).syncAllDeviceInfo(PortalActivity.this);
         } else if (requestCode == CommParams.REQUEST_CODE_BOUND_WATCH && resultCode == Activity.RESULT_OK) {
 //            if(provider.getBleProviderObserver()==null){
 //                MyLog.e(TAG, "provider.getBleProviderObserver()==null的");
@@ -1480,7 +1527,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                                     dialog.dismiss();
                                 }else if(hrBand.isChecked()) {
                                     //跳转到心率手环绑定界面
-                                   startActivityForResult(new Intent(PortalActivity.this, Band3ListActivity.class),20);
+                                   startActivityForResult(new Intent(PortalActivity.this, Band3ListActivity.class),CommParams.REQUEST_CODE_BOUND_BAND);
                                     dialog.dismiss();
                                 }
                             }
@@ -1582,10 +1629,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                                 provider.resetDefaultState();
                             }
                         }).create().show();
-            }
-
-
-            if (latestDeviceInfo!=null&&latestDeviceInfo.recoderStatus==66){
+            }else if (latestDeviceInfo!=null&&latestDeviceInfo.recoderStatus==66){
                 if (!CommonUtils.isStringEmpty(MyApplication.getInstance(PortalActivity.this)
                         .getLocalUserInfoProvider().getDeviceEntity().getLast_sync_device_id())){
                     if (builder!=null&&!builder.create().isShowing()) {
@@ -1612,9 +1656,10 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                 }else {
                     provider.unBoundDevice(PortalActivity.this);
                 }
+            }else {
+                //保存localvo
+                PreferencesToolkits.updateLocalDeviceInfo(PortalActivity.this, latestDeviceInfo);
             }
-//            //保存localvo
-//            PreferencesToolkits.updateLocalDeviceInfo(PortalActivity.this, latestDeviceInfo);
         }
 
         @Override

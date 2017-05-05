@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
@@ -36,6 +37,10 @@ public class AppStartActivity extends AppCompatActivity {
     private final static String TAG = AppStartActivity.class.getSimpleName();
     public static String SHAREDPREFERENCES_NAME = "first_pref";
     private RelativeLayout startLL = null;
+    /**
+     * Shared preferences key for always send dialog button.
+     */
+    private static final String ALWAYS_SEND_KEY = "always_send_crash_reports";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // FIX: 以下代码是为了解决Android自level 1以来的[安装完成点击“Open”后导致的应用被重复启动]的Bug
@@ -84,6 +89,15 @@ public class AppStartActivity extends AppCompatActivity {
                 }
             }
         }*/
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(AppStartActivity.this);
+        boolean aBoolean = prefs.getBoolean(ALWAYS_SEND_KEY, false);
+        if (!aBoolean ) {
+            SharedPreferences.Editor edit = prefs.edit();
+            edit.putBoolean(ALWAYS_SEND_KEY, true);
+            edit.apply();
+        }
+
         // 渐变展示启动屏
         AlphaAnimation aa = new AlphaAnimation(0.3f, 1.0f);
         aa.setDuration(2000);

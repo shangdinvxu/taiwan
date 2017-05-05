@@ -596,6 +596,11 @@ public abstract class BLEHandler extends Handler {
 	public void handleMessage(Message msg) {
 		super.handleMessage(msg);
 		switch (msg.what) {
+		case BLEProvider.INDEX_GET_EXCEPTION_INFO:
+			if (msg.obj!=null){
+				handleExceptionInfo((byte[]) msg.obj);
+			}
+			break;
 		case BLEProvider.MSG_BLE_CONNECT_FAILED:
 			handleConnectFailedMsg();
 			break;
@@ -927,6 +932,9 @@ public abstract class BLEHandler extends Handler {
 	protected void handleDeviceMsg(BluetoothDevice bluetoothDevice) {
 		if (bleProviderObserver != null)
 			bleProviderObserver.updateFor_notifyForBLEDevice_D(bluetoothDevice);
+	}
+
+	protected void handleExceptionInfo(byte[] bytes) {
 	}
 
 	protected void handleConnectFailedMsg() {

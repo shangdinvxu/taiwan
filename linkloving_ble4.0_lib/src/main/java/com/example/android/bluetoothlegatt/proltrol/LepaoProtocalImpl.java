@@ -212,6 +212,8 @@ public class LepaoProtocalImpl implements LepaoProtocol {
 			return null;
 		}
 	}
+
+
 	
 	//获取 modelname
 	public LPDeviceInfo getModelName() throws BLException, LPException {
@@ -227,6 +229,23 @@ public class LepaoProtocalImpl implements LepaoProtocol {
 			return lpDeviceInfo;
 		}
 	}
+
+
+
+	//获取 异常信息
+	public byte[] getExceptionInfo() throws BLException, LPException {
+		WatchRequset req = new WatchRequset();
+		req.appendByte(seq++).appendByte(LepaoCommand.COMMAND_EXCEPTION_INFO).makeCheckSum();
+		LPUtil.printData(req.getData(), " getExceptionInfo");
+		WatchResponse resp = this.sendData2BLE(req);
+		LPUtil.printData(resp.getData(), " getExceptionInfo接收");
+		if(resp.getData()[4]==0){
+			return resp.getData();
+		}else{
+			return null;
+		}
+	}
+
 
 	// 设置用户信息
 	@Override

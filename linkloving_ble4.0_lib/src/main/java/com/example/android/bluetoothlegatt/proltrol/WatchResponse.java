@@ -154,6 +154,8 @@ public class WatchResponse {
 				lpHeartrateData.setStartTime(startTime);
 				lpHeartrateData.setMaxRate(data[8 * i + 11]&0xff);
 				lpHeartrateData.setAvgRate(data[8 * i + 12]&0xff);
+				lpHeartrateData.setFakeMaxRate(data[8 * i + 13]&0xff);
+				lpHeartrateData.setFakeAvgRate(data[8 * i + 14]&0xff);
 				list.add(lpHeartrateData);
 			}
 		}

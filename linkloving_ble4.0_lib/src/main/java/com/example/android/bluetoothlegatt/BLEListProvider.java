@@ -138,7 +138,7 @@ public class BLEListProvider
 			ParsedAd parsedAd = LPUtil.parseData(scanRecord);
 			if (parsedAd.uuidStrings.contains("fee1")){
 				//**判断是否是手环设备*//
-				Log.i(TAG, " device address.......................... " + device.getAddress());
+				Log.e(TAG, " device address.......................... " + device.getAddress()+"------------"+device.getName());
 				Message msg = mHandler.obtainMessage();
 				msg.what = MSG_BLE_DATA;
 				msg.obj = device;

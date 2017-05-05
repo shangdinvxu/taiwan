@@ -7,7 +7,7 @@ import de.greenrobot.daogenerator.Schema;
 public class Greendao {
     public static void main(String[] args)throws  Exception{
         // 两个参数分别代表：数据库版本号与自动生成代码的包路径。
-        Schema schema = new Schema(11, "Trace.GreenDao");
+        Schema schema = new Schema(15, "Trace.GreenDao");
         // 模式（Schema）同时也拥有两个默认的 flags，分别用来标示 entity 是否是 activie 以及是否使用 keep sections。
         schema.enableActiveEntitiesByDefault();
         schema.enableKeepSectionsByDefault();
@@ -41,6 +41,7 @@ public class Greendao {
         heartrate.addIntProperty("startTime").unique();
         heartrate.addIntProperty("max");
         heartrate.addIntProperty("avg");
-
+        heartrate.addIntProperty("fakeMaxRate");
+        heartrate.addIntProperty("fakeAvgRate");
     }
 }

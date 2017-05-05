@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Environment;
 
 
+import com.example.android.bluetoothlegatt.proltrol.LPUtil;
 import com.linkloving.taiwan.logic.UI.HeartRate.GreendaoUtils;
 import com.linkloving.taiwan.utils.logUtils.MyLog;
 
@@ -86,12 +87,43 @@ public class GetDBInfo {
                         String format = simpleDateFormat.format(instance.getTime());
                         try {
                             if (finalBufferedWriter!=null)
-                            finalBufferedWriter.write("时间"+format+"-----"+"心率数值   "+heartrate.getMax()+"-------"+heartrate.getAvg()+"\n");
+                            finalBufferedWriter.write("时间"+format+"-----"+"心率数值   "+heartrate.getMax()+"-------"+heartrate.getAvg()
+                                    +"-------"+heartrate.getFakeMaxRate()+"-------"+heartrate.getFakeAvgRate() +"\n");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
                 });
+    }
+
+    public static void writeException(byte[] bytes,Context context){
+        String exceptionString = LPUtil.printLogData(bytes, "异常的信息是");
+        final String diskCacheDir = getDiskCacheDir(context);
+        File file = new File(diskCacheDir+"/"+"HeartRate.txt");
+        BufferedWriter bufferedWriter = null ;
+        try {
+            bufferedWriter =  new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        final BufferedWriter finalBufferedWriter = bufferedWriter;
+        try {
+            if (finalBufferedWriter!=null)
+            finalBufferedWriter.write(exceptionString);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            if (finalBufferedWriter != null) {
+                try {
+                    finalBufferedWriter.flush();
+                    finalBufferedWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
     }
 
 
