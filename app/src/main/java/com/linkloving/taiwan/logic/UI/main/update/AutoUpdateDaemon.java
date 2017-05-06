@@ -243,12 +243,17 @@ public class AutoUpdateDaemon {
         CallServer.getDownloadInstance().add(0, downloadRequest, downloadListener);
     }
       private DownloadListener downloadListener = new DownloadListener() {
-        @Override
+     /*   @Override
         public void onDownloadError(int i, int i1, CharSequence charSequence) {
             Toast.makeText(parentActivity, parentActivity.getString(R.string.bracelet_down_file_fail), Toast.LENGTH_SHORT).show();
-        }
+        } */
 
-        @Override
+          @Override
+          public void onDownloadError(int what, Exception exception) {
+              Toast.makeText(parentActivity, parentActivity.getString(R.string.bracelet_down_file_fail), Toast.LENGTH_SHORT).show();
+          }
+
+          @Override
         public void onStart(int what, boolean resume, long preLenght, Headers header, long count) {
             Log.i(TAG, "下载开始");
 

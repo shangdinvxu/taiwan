@@ -17,7 +17,6 @@ import com.linkloving.taiwan.logic.dto.ModifyPasswordDTO;
 import com.linkloving.taiwan.logic.dto.UserBase;
 import com.linkloving.taiwan.utils.logUtils.MyLog;
 import com.yolanda.nohttp.FileBinary;
-import com.yolanda.nohttp.NoHttp;
 import com.yolanda.nohttp.Request;
 
 import java.io.File;
@@ -72,6 +71,7 @@ public class NoHttpRuquestFactory {
         newData.put("user_id", user_id);
         newData.put("user_time", user_time);
         Request<String> request= NoHttp.createStringRequestPost(url_new);
+
         DataFromClientNew dataFromClientNew = new DataFromClientNew();
 
         dataFromClientNew.setActionId(ActionConst.ACTION_18);

@@ -41,6 +41,12 @@ public class HttpResponseListenerImpl<T> implements OnResponseListener<T> {
         //在这里封装方法
     }
 
+    @Override
+    public void onFailed(int what, String url, Object tag, Exception exception, int responseCode, long networkMillis) {
+        if (callback != null)
+            callback.onFailed(what, url, tag, exception.getMessage(), responseCode, networkMillis);
+    }
+
 //    @Override
 //    public void onFailed(int what, String url, Object tag, Exception exception, int responseCode, long networkMillis) {
 //        CharSequence message = "";
@@ -63,11 +69,11 @@ public class HttpResponseListenerImpl<T> implements OnResponseListener<T> {
 //            callback.onFailed(what, url, tag, message, responseCode, networkMillis);
 //    }
 
-    @Override
+/*    @Override
     public void onFailed(int what, String url, Object tag, CharSequence message, int responseCode, long networkMillis) {
         if (callback != null)
             callback.onFailed(what, url, tag, message, responseCode, networkMillis);
-    }
+    }*/
 
     @Override
     public void onFinish(int what) {

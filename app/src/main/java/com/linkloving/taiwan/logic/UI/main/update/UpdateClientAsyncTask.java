@@ -42,11 +42,12 @@ public abstract class UpdateClientAsyncTask extends AsyncTask<Object, Object, Ob
 			String baseUrl = "http://fir.im/api/v2/app/version/%s?token=%s";
 			String checkUpdateUrl = String.format(baseUrl, "572b1b1bf2fc425631000023", "e340c54edf0d774794784c577eecf255");
 
-			Request<String> request= NoHttp.createStringRequestGet(checkUpdateUrl);
-
-			Log.e(TAG, "请求网络的地址:"+checkUpdateUrl);
-
-			CallServer.getRequestInstance().add(activity, false,1000000,request, httpCallback);
+//			Request<String> request= NoHttp.createStringRequestGet(checkUpdateUrl);
+//
+//
+//			Log.e(TAG, "请求网络的地址:"+checkUpdateUrl);
+//
+//			CallServer.getRequestInstance().add(activity, false,1000000,request, httpCallback);
 
 			return responseResult;
 	}

@@ -13,8 +13,8 @@ android {
         applicationId "com.linkloving.taiwan"
         minSdkVersion 18
         targetSdkVersion 22
-        versionCode 21
-        versionName "1.2.1"
+        versionCode 22
+        versionName "1.2.2"
         manifestPlaceholders = [HOCKEYAPP_APP_ID: "ace08a6e5e4f4e578b1ed17172975937"]
     }
     //看起来是因为多个 jar 包里包含了同样的文件（NOTICE.txt），导致打包时因为担心相互覆盖问题而提示出错
@@ -66,7 +66,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.zhy:autolayout:1.4.3'
     compile files('libs/linkloving_band.jar')
-    compile files('libs/nohttp_2.3.1.jar')
+//    compile files('libs/nohttp_2.3.1.jar')
     compile files('libs/fastjson-1.0.4.jar')
 //    compile files('libs/mta-sdk-1.0.0.jar')
     compile project(':PullToRefreshLibrary')
@@ -97,6 +97,7 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.0.2'
     compile 'com.squareup.okhttp3:logging-interceptor:3.2.0'
 
+    compile 'com.yolanda.nohttp:nohttp:1.0.0'
     
 
 }

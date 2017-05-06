@@ -15,7 +15,7 @@ public class MyJsonRequest extends StringRequest {
         setContentTypeJson();
     }
 
-    public MyJsonRequest(String url,RequestMethod method) {
+    public MyJsonRequest(String url, RequestMethod method) {
         super(url,method);
     }
 
@@ -25,7 +25,7 @@ public class MyJsonRequest extends StringRequest {
         this.contentType = "application/json";
     }
 
- /*   @Override
+    @Override
     public String getContentType() {
         return TextUtils.isEmpty(contentType) ? super.getContentType() : contentType;
     }
@@ -33,6 +33,5 @@ public class MyJsonRequest extends StringRequest {
     @Override
     public String getAccept() {
         return "application/json,application/xml,text/html,application/xhtml+xml";
-    }*/
-
+    }
 }

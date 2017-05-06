@@ -11,7 +11,6 @@ import com.linkloving.taiwan.http.data.JobDispatchConst;
 import com.linkloving.taiwan.logic.dto.SportRecordUploadDTO;
 import com.linkloving.taiwan.utils.LanguageHelper;
 import com.linkloving.taiwan.utils.logUtils.MyLog;
-import com.yolanda.nohttp.NoHttp;
 import com.yolanda.nohttp.Request;
 
 import java.util.HashMap;

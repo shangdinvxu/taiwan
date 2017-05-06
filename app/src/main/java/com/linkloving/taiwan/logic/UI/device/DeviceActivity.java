@@ -236,6 +236,7 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
             super.onDfuCompleted(deviceAddress);
             MyLog.e(TAG, "mDfuProgressListener" + "---onDfuCompleted-");
             progressDialog.dismiss();
+            Toast.makeText(DeviceActivity.this,"更新成功",Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -456,8 +457,6 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
         dialog.setMessage(getString(R.string.getting_version_information));
         int version_int = ToolKits.makeShort(vo.version_byte[1], vo.version_byte[0]);
 
-
-
        /* OADApi oadApi = FirmwareRetrofitClient.getInstance().create(OADApi.class);
         HashMap<String, Object> objectObjectHashMap = new HashMap<>();
         objectObjectHashMap.put("model_name",vo.getModelname());
@@ -547,7 +546,7 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
     public void downLoadByRetrofit(String model_name, String file_name, int version_int, final String saveFileName, final boolean OADDirect) {
         Log.e(TAG, "下载开始");
 //        String message = getString(R.string.general_uploadingnewfirmware);
-        String message = "下载进度";
+        String message = "下載中....";
         dialog_connect = new ProgressDialog(DeviceActivity.this);
         dialog_connect.setMessage(message);
         dialog_connect.setCancelable(false);
@@ -601,7 +600,7 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
     public void onUploadClicked() {
         MyLog.e(TAG, "onUploadClicked执行了");
         progressDialog = new ProgressDialog(DeviceActivity.this);
-        progressDialog.setMessage(getString(R.string.bracelet_oad_version_top));
+        progressDialog.setMessage(getString(R.string.updating));
         progressDialog.show();
         DfuServiceInitiator starter = new DfuServiceInitiator(userEntity.getDeviceEntity().getLast_sync_device_id())
                 .setDeviceName("DYH_01")
@@ -920,8 +919,14 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
 
 
 
-        @Override
+     /*   @Override
         public void onDownloadError(int i, int i1, CharSequence charSequence) {
+            dialog_connect.dismiss();
+            Toast.makeText(DeviceActivity.this, getString(R.string.bracelet_down_file_fail), Toast.LENGTH_SHORT).show();
+        }
+*/
+        @Override
+        public void onDownloadError(int what, Exception exception) {
             dialog_connect.dismiss();
             Toast.makeText(DeviceActivity.this, getString(R.string.bracelet_down_file_fail), Toast.LENGTH_SHORT).show();
         }
