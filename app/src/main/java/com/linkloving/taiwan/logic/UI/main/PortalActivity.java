@@ -1818,6 +1818,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
 
                         }
                     });
+
                 }
             }
             int device_type = MyApplication.getInstance(PortalActivity.this).getLocalUserInfoProvider().getDeviceEntity().getDevice_type();
