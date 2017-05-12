@@ -559,7 +559,7 @@ public class PreferencesToolkits
 		boolean heartRate = false;
 		try {
 			sharedPreferences = getAppDefaultSharedPreferences(context, true);
-			heartRate =   sharedPreferences.getBoolean(HEART_RATE_SYNCHRONIZATION, false);//获得设备信息
+			heartRate =   sharedPreferences.getBoolean(HEART_RATE_SYNCHRONIZATION, true);
 		} catch (Exception e) {
 			Log.e(TAG, e.getMessage());
 		}

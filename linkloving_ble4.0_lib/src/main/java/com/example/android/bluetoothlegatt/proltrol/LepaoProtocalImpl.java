@@ -989,17 +989,12 @@ public class LepaoProtocalImpl implements LepaoProtocol {
 	public List<LpHeartrateData> getHeartrate()throws BLException, LPException {
 		List<LpHeartrateData> list = new ArrayList<>();
 		WatchResponse resp = getHeartrate(0xff, 0x7f);
-		int itemLeft;
-		int itemCnt;
 		if (resp.getData()[4]==0){
-			itemLeft = (int)resp.getData()[5];
+			int itemLeft = LPUtil.makeShort(resp.getData()[6], resp.getData()[5]);
 			list.addAll(resp.toLPHeartrateDataList(resp));
-			itemCnt = resp.toLPHeartrateDataList(resp).size();
-			while (itemLeft - itemCnt != 0)
-			{
-			    WatchResponse heartrate = getHeartrate(itemLeft - itemCnt, 0);
-				itemLeft =heartrate.getData()[5];
-				itemCnt = heartrate.toLPHeartrateDataList(heartrate).size();
+			while (itemLeft>10) {
+				WatchResponse heartrate = getHeartrate(itemLeft - 10, 0);
+				itemLeft =LPUtil.makeShort(heartrate.getData()[6], heartrate.getData()[5]);
 				list.addAll(heartrate.toLPHeartrateDataList(heartrate));
 			}
 			getHeartrate(0,0);

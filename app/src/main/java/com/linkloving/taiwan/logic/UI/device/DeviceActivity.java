@@ -224,28 +224,7 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
     }
 
 
-    //固件更新
-    private final DfuProgressListenerAdapter mDfuProgressListener = new DfuProgressListenerAdapter() {
-        @Override
-        public void onProgressChanged(String deviceAddress, int percent, float speed, float avgSpeed, int currentPart, int partsTotal) {
-            MyLog.e(TAG, "mDfuProgressListener" + percent + "----");
-        }
 
-        @Override
-        public void onDfuCompleted(String deviceAddress) {
-            super.onDfuCompleted(deviceAddress);
-            MyLog.e(TAG, "mDfuProgressListener" + "---onDfuCompleted-");
-            progressDialog.dismiss();
-            Toast.makeText(DeviceActivity.this,"更新成功",Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onError(String deviceAddress, int error, int errorType, String message) {
-            super.onError(deviceAddress, error, errorType, message);
-            MyLog.e(TAG, "mDfuProgressListener" + "--onError--");
-            progressDialog.dismiss();
-        }
-    };
 
     @Override
     protected void initListeners() {
@@ -456,49 +435,6 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
         dialog = new ProgressDialog(DeviceActivity.this);
         dialog.setMessage(getString(R.string.getting_version_information));
         int version_int = ToolKits.makeShort(vo.version_byte[1], vo.version_byte[0]);
-
-       /* OADApi oadApi = FirmwareRetrofitClient.getInstance().create(OADApi.class);
-        HashMap<String, Object> objectObjectHashMap = new HashMap<>();
-        objectObjectHashMap.put("model_name",vo.getModelname());
-        objectObjectHashMap.put("version_code",version_int);
-        Call<CheckFirmwareVersionReponse> check = oadApi.check(objectObjectHashMap);
-        check.enqueue(new Callback<CheckFirmwareVersionReponse>() {
-            @Override
-            public void onResponse(Call<CheckFirmwareVersionReponse> call, retrofit2.Response<CheckFirmwareVersionReponse> response) {
-                dialog.dismiss();
-                if (response.body()!=null) {
-                    try {
-                        CheckFirmwareVersionReponse checkVersionReponse = response.body();
-                        if(checkVersionReponse.getModel_name()==null){
-                            MyToast.show(DeviceActivity.this, getString(R.string.bracelet_oad_version_top), Toast.LENGTH_LONG);
-                        }else {
-//                        powerManager = (PowerManager) activity.getSystemService(Service.POWER_SERVICE);
-//                        wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Lock");
-//                        //是否需计算锁的数量
-//                        wakeLock.setReferenceCounted(false);
-//                        //请求屏幕常亮，onResume()方法中执行
-//                        wakeLock.acquire();
-                            downLoadByRetrofit(checkVersionReponse.getModel_name(),
-                                    checkVersionReponse.getFile_name(),Integer.parseInt(checkVersionReponse.getVersion_code()) ,
-                                    "downloaddyh08.zip",false);
-                        }
-                    }catch (Exception e){
-                        dialog.dismiss();
-                        MyToast.show(DeviceActivity.this, getString(R.string.bracelet_oad_version_top), Toast.LENGTH_LONG);
-                    }
-                } else {
-                    dialog.dismiss();
-                    MyToast.show(DeviceActivity.this,  getString(R.string.bracelet_oad_version_top), Toast.LENGTH_LONG);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CheckFirmwareVersionReponse> call, Throwable t) {
-                MyLog.e(TAG,"failed________"+t.toString());
-                dialog.dismiss();
-            }
-        });*/
-
         CallServer.getRequestInstance().add(DeviceActivity.this, false,
                 CommParams.HTTP_OAD, NoHttpRuquestFactory.creat_New_OAD_Request(vo.getModelname()
                         ,version_int), newHttpCallback);
@@ -544,9 +480,8 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
     };
 
     public void downLoadByRetrofit(String model_name, String file_name, int version_int, final String saveFileName, final boolean OADDirect) {
-        Log.e(TAG, "下载开始");
 //        String message = getString(R.string.general_uploadingnewfirmware);
-        String message = "下載中....";
+        String message = getString(R.string.downloading);
         dialog_connect = new ProgressDialog(DeviceActivity.this);
         dialog_connect.setMessage(message);
         dialog_connect.setCancelable(false);
@@ -560,11 +495,12 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
             versionString = "0"+versionString ;
         }
         objectObjectHashMap.put("version_code", versionString);
-        Call<ResponseBody> responseBodyCall = oadApi.download_file(objectObjectHashMap);
+
+        Call<ResponseBody> responseBodyCall = oadApi.download_file("close",objectObjectHashMap);
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                MyLog.e(TAG, response.body().byteStream() + "");
+                MyLog.e(TAG+"length", response.body().byteStream() + "");
                 try {
                     InputStream is = response.body().byteStream();
                     file = getTempFile(DeviceActivity.this, saveFileName);
@@ -601,6 +537,7 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
         MyLog.e(TAG, "onUploadClicked执行了");
         progressDialog = new ProgressDialog(DeviceActivity.this);
         progressDialog.setMessage(getString(R.string.updating));
+        progressDialog.setCancelable(false);
         progressDialog.show();
         DfuServiceInitiator starter = new DfuServiceInitiator(userEntity.getDeviceEntity().getLast_sync_device_id())
                 .setDeviceName("DYH_01")
@@ -611,6 +548,31 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
         starter.setZip(file.getPath());
         starter.start(this, DfuService.class);
     }
+
+    //固件更新
+    private final DfuProgressListenerAdapter mDfuProgressListener = new DfuProgressListenerAdapter() {
+        @Override
+        public void onProgressChanged(String deviceAddress, int percent, float speed, float avgSpeed, int currentPart, int partsTotal) {
+            MyLog.e(TAG, "mDfuProgressListener" + percent + "----");
+        }
+
+        @Override
+        public void onDfuCompleted(String deviceAddress) {
+            super.onDfuCompleted(deviceAddress);
+            MyLog.e(TAG, "mDfuProgressListener" + "---onDfuCompleted-");
+            progressDialog.dismiss();
+            Toast.makeText(DeviceActivity.this,getString(R.string.user_info_update_success),Toast.LENGTH_SHORT).show();
+            provider.connect();
+        }
+
+        @Override
+        public void onError(String deviceAddress, int error, int errorType, String message) {
+            super.onError(deviceAddress, error, errorType, message);
+            MyLog.e(TAG, "mDfuProgressListener" + "--onError--");
+            Toast.makeText(DeviceActivity.this,getString(R.string.user_info_update_failure),Toast.LENGTH_SHORT).show();
+            progressDialog.dismiss();
+        }
+    };
 
 
     public File getTempFile(Context context, String name) {

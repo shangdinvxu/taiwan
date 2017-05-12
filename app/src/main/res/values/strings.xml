@@ -1067,4 +1067,5 @@
     <string name="no">拒絕</string>
     <string name="dfu_service_title">nRF Toolbox DFU Proxy</string>
     <string name="updating">更新中</string>
+    <string name="downloading">下载中</string>
 </resources>

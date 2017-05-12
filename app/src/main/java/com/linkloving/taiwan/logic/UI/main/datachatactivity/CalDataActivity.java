@@ -56,6 +56,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class CalDataActivity extends ToolBarActivity implements View.OnClickListener {
@@ -411,6 +412,17 @@ public class CalDataActivity extends ToolBarActivity implements View.OnClickList
                 //获取当前时间的小时数和分钟数
                 SimpleDateFormat s1 = new SimpleDateFormat("HH");
                 SimpleDateFormat s2 = new SimpleDateFormat("mm");
+                ToolKits toolKits = new ToolKits();
+                int calorieseveryday = toolKits.getCalories(CalDataActivity.this);
+                Date dateToday = new Date();
+                SimpleDateFormat hh = new SimpleDateFormat("HH", Locale.getDefault());
+                String HH = hh.format(dateToday);
+                SimpleDateFormat mm = new SimpleDateFormat("mm", Locale.getDefault());
+                String MM = mm.format(dateToday);
+                int caloriesNow = calorieseveryday * (Integer.parseInt(HH) * 60 + Integer.parseInt(MM)) / 1440;
+                MyLog.e("caloriesNow",caloriesNow+"caloriesNow");
+
+
                 //找到当前的所在时间的下标
                 int h = Integer.parseInt(s1.format(new Date()));
                 int m = Integer.parseInt(s2.format(new Date()));

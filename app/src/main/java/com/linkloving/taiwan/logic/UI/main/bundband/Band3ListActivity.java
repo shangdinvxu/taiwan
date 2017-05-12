@@ -65,7 +65,7 @@ public class Band3ListActivity extends ToolBarActivity {
     private BLEProvider provider;
     private BLEListHandler handler;
 
-    public  String modelName = null;
+    public String modelName = null;
 
     public static final int sendcount_MAX = 15;
     private int sendcount = 0;
@@ -108,9 +108,9 @@ public class Band3ListActivity extends ToolBarActivity {
                     if (v.mac.equals(device.getAddress()))
                         return;
                 }
-                Log.e(TAG,device.getAddress()+"获取的地址是多少？"+device.getName());
+                Log.e(TAG, device.getAddress() + "获取的地址是多少？" + device.getName());
                 DeviceVO vo = new DeviceVO();
-                vo.mac = device.getAddress() ;
+                vo.mac = device.getAddress();
                 vo.name = device.getName();
                 vo.bledevice = device;
                 macList.add(vo);
@@ -177,7 +177,7 @@ public class Band3ListActivity extends ToolBarActivity {
                 provider.setCurrentDeviceMac(macList.get(index).mac);
                 provider.setmBluetoothDevice(macList.get(index).bledevice);
                 provider.connect_mac(macList.get(index).mac);
-                if (progressDialog != null && !progressDialog.isShowing()){
+                if (progressDialog != null && !progressDialog.isShowing()) {
                     progressDialog.setMessage(getString(R.string.portal_main_state_connecting));
                     progressDialog.show();
                 }
@@ -351,7 +351,7 @@ public class Band3ListActivity extends ToolBarActivity {
         @Override
         public void updateFor_notifyFor0x13ExecSucess_D(LPDeviceInfo latestDeviceInfo) {
             super.updateFor_notifyFor0x13ExecSucess_D(latestDeviceInfo);
-            if(latestDeviceInfo!=null && latestDeviceInfo.recoderStatus==5){
+            if (latestDeviceInfo != null && latestDeviceInfo.recoderStatus == 5) {
                 Log.i("BandListActivity", "用户非法");
                 new AlertDialog.Builder(Band3ListActivity.this)
                         .setTitle(R.string.portal_main_gobound)
@@ -361,6 +361,12 @@ public class Band3ListActivity extends ToolBarActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 provider.unBoundDevice(Band3ListActivity.this);
+                                try {
+                                    Thread.sleep(1000);
+                                    BleService.getInstance(Band3ListActivity.this).releaseBLE();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                                 dialog.dismiss();
                                 finish();
                             }
@@ -382,7 +388,7 @@ public class Band3ListActivity extends ToolBarActivity {
                                 finish();
                             }
                         }).create().show();
-            }else if(latestDeviceInfo != null && latestDeviceInfo.recoderStatus == 6){
+            } else if (latestDeviceInfo != null && latestDeviceInfo.recoderStatus == 6) {
                 Log.e("BluetoothActivity", "设备未授权");
                 Toast.makeText(Band3ListActivity.this, "设备未授权", Toast.LENGTH_SHORT).show();
                 provider.release();
@@ -391,8 +397,8 @@ public class Band3ListActivity extends ToolBarActivity {
                 provider.resetDefaultState();
                 provider.clearProess();
                 finish();
-            }else if (latestDeviceInfo!=null&&latestDeviceInfo.recoderStatus==66){
-                if (builder!=null&&!builder.create().isShowing()) {
+            } else if (latestDeviceInfo != null && latestDeviceInfo.recoderStatus == 66) {
+                if (builder != null && !builder.create().isShowing()) {
                     builder.setPositiveButton(R.string.general_ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -410,7 +416,7 @@ public class Band3ListActivity extends ToolBarActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     provider.disConnect();
-                                    if (progressDialog != null && progressDialog.isShowing()){
+                                    if (progressDialog != null && progressDialog.isShowing()) {
                                         progressDialog.dismiss();
                                     }
                                 }
@@ -418,12 +424,11 @@ public class Band3ListActivity extends ToolBarActivity {
                             .setCancelable(false)
                             .show();
                 }
-            } else{
+            } else {
                 provider.requestbound_fit(Band3ListActivity.this);
             }
 
         }
-
 
 
         //非法用户
@@ -493,7 +498,7 @@ public class Band3ListActivity extends ToolBarActivity {
 //                        timer.schedule(new TimerTask() {
 //                            @Override
 //                            public void run() {
-                                boundhandler.post(butttonRunnable);
+            boundhandler.post(butttonRunnable);
 //                                button_txt_count--;
 //                                MyLog.e(TAG, "Timer开始了");
 //                                if (button_txt_count < 0) {
@@ -518,11 +523,11 @@ public class Band3ListActivity extends ToolBarActivity {
 
         @Override
         public void updateFor_BoundSucess() {
-            if(progressDialog!=null && progressDialog.isShowing() )
+            if (progressDialog != null && progressDialog.isShowing())
                 progressDialog.dismiss();
             provider.SetDeviceTime(Band3ListActivity.this);
-            if (dialog_bound != null && dialog_bound.isShowing()){
-                if(timer!=null)
+            if (dialog_bound != null && dialog_bound.isShowing()) {
+                if (timer != null)
                     timer.cancel();
                 dialog_bound.dismiss();
             }
@@ -537,13 +542,13 @@ public class Band3ListActivity extends ToolBarActivity {
 
         @Override
         public void updateFor_notifyForModelName(LPDeviceInfo latestDeviceInfo) {
-            if(latestDeviceInfo==null){
+            if (latestDeviceInfo == null) {
                 //未获取成功  重新获取
                 provider.getModelName(Band3ListActivity.this);
-            }else{
+            } else {
                 modelName = latestDeviceInfo.modelName;
-                if (dialog_bound != null && dialog_bound.isShowing()){
-                    if(timer!=null)
+                if (dialog_bound != null && dialog_bound.isShowing()) {
+                    if (timer != null)
                         timer.cancel();
                     dialog_bound.dismiss();
                 }
@@ -619,11 +624,12 @@ public class Band3ListActivity extends ToolBarActivity {
     private void startBound() {
         // 绑定设备时必须保证首先从服务端取来标准UTC时间，以便给设备校时(要看看网络是否连接)
         MyLog.e(TAG, "startBound()");
-        if(progressDialog!=null && !progressDialog.isShowing())
+        if (progressDialog != null && !progressDialog.isShowing()) {
             progressDialog.setMessage(getString(R.string.general_submitting));
             progressDialog.show();
+        }
 //        if (ToolKits.isNetworkConnected(BandListActivity.this)) {
-            if (true) {
+        if (true) {
             UserEntity ue = MyApplication.getInstance(getApplicationContext()).getLocalUserInfoProvider();
             String user_id = ue.getUser_id() + "";
             if (ue != null && provider != null && provider.getCurrentDeviceMac() != null) {
@@ -656,7 +662,7 @@ public class Band3ListActivity extends ToolBarActivity {
     private void submitBoundMACToServer(String user_id, String Mac) {
         if (MyApplication.getInstance(this).isLocalDeviceNetworkOk()) {
             String last_sync_device_id2 = MyApplication.getInstance(Band3ListActivity.this).getLocalUserInfoProvider().getDeviceEntity().getLast_sync_device_id2();
-            CallServer.getRequestInstance().add(getApplicationContext(), false, CommParams.HTTP_BOUND, NoHttpRuquestFactory.submitBoundMACToServer(user_id, Mac, MyApplication.DEVICE_BAND,modelName), HttpCallback);
+            CallServer.getRequestInstance().add(getApplicationContext(), false, CommParams.HTTP_BOUND, NoHttpRuquestFactory.submitBoundMACToServer(user_id, Mac, MyApplication.DEVICE_BAND, modelName), HttpCallback);
             MyLog.e(TAG, "=====user_id=======" + user_id + "==Mac==" + Mac + "===last_sync_device_id2===" + last_sync_device_id2);
         } else {
             MyToast.show(Band3ListActivity.this, getString(R.string.main_more_sycn_fail), Toast.LENGTH_LONG);
@@ -675,8 +681,8 @@ public class Band3ListActivity extends ToolBarActivity {
             String value = dataFromServer.getReturnValue().toString();
             if (dataFromServer.getErrorCode() == 1) {
                 //获取了服务器的设备信息 并且保存到本地
-                ModelInfo modelInfo=JSONObject.parseObject(response.get(), ModelInfo.class);
-                PreferencesToolkits.saveInfoBymodelName(Band3ListActivity.this,modelName,modelInfo);
+                ModelInfo modelInfo = JSONObject.parseObject(response.get(), ModelInfo.class);
+                PreferencesToolkits.saveInfoBymodelName(Band3ListActivity.this, modelName, modelInfo);
                 MyApplication.getInstance(getApplicationContext()).getLocalUserInfoProvider().getDeviceEntity().setModel_name(modelName);
                 MyApplication.getInstance(getApplicationContext()).getLocalUserInfoProvider().getDeviceEntity().setLast_sync_device_id(provider.getCurrentDeviceMac());
                 MyApplication.getInstance(getApplicationContext()).getLocalUserInfoProvider().getDeviceEntity().setDevice_type(MyApplication.DEVICE_BAND3);

@@ -620,10 +620,8 @@ public class BleService extends Service {
             protected void notifyforgerHeartList(ArrayList<com.example.android.bluetoothlegatt.bean.LpHeartrateData> obj) {
                 MyLog.e(TAG,"notifyforgerHeartListsuccess");
                 super.notifyforgerHeartList(obj);
-//                greendaoUtils.add(1491456945,55,55);
                 for (LpHeartrateData obj1: obj){
                     if (obj1.getAvgRate()<=0||obj1.getMaxRate()<=0) continue;
-//                    if (obj1.getAvgRate()>220||obj1.getMaxRate()>220) continue;
                     greendaoUtils.addwhole(obj1.getStartTime(),obj1.getAvgRate(),obj1.getMaxRate(),
                             obj1.getFakeAvgRate(),obj1.getFakeMaxRate());
                 }

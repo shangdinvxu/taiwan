@@ -1059,4 +1059,6 @@ e
     <string name="long_sit_step_toast">步数不能大于200</string>
     <string name="Need_format">该手环在手环端解绑,是否重置</string>
     <string name="Need_before">是否需要重新绑定前一个装置</string>
+    <string name="downloading">下载中</string>
+    <string name="updating">更新中</string>
 </resources>

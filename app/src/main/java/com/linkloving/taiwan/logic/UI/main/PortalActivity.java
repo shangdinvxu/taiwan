@@ -57,6 +57,9 @@ import com.linkloving.taiwan.CommParams;
 import com.linkloving.taiwan.IntentFactory;
 import com.linkloving.taiwan.MyApplication;
 import com.linkloving.taiwan.R;
+import com.linkloving.taiwan.RetrofitUtils.Bean.CheckFirmwareVersionReponse;
+import com.linkloving.taiwan.RetrofitUtils.FirmwareRetrofitClient;
+import com.linkloving.taiwan.RetrofitUtils.RetrofitApi.OADApi;
 import com.linkloving.taiwan.basic.AppManager;
 import com.linkloving.taiwan.basic.CustomProgressBar;
 import com.linkloving.taiwan.db.sport.UserDeviceRecord;
@@ -88,6 +91,7 @@ import com.linkloving.taiwan.prefrences.devicebean.LocalInfoVO;
 import com.linkloving.taiwan.prefrences.devicebean.ModelInfo;
 import com.linkloving.taiwan.utils.CommonUtils;
 import com.linkloving.taiwan.utils.IsBackgroundUtils;
+import com.linkloving.taiwan.utils.MyToast;
 import com.linkloving.taiwan.utils.SwitchUnit;
 import com.linkloving.taiwan.utils.ToolKits;
 import com.linkloving.taiwan.utils.UnitTookits;
@@ -108,7 +112,13 @@ import com.zhy.autolayout.AutoLayoutActivity;
 
 import net.hockeyapp.android.CrashManager;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.security.Provider;
 import java.text.MessageFormat;
 import java.text.ParseException;
@@ -116,13 +126,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import Trace.GreenDao.DaoMaster;
 import Trace.GreenDao.heartrate;
 import no.nordicsemi.android.dfu.DfuProgressListenerAdapter;
 import no.nordicsemi.android.dfu.DfuServiceInitiator;
 import no.nordicsemi.android.dfu.DfuServiceListenerHelper;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter.OnRecyclerViewListener, View.OnClickListener {
 
@@ -176,7 +191,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
     private Handler mScrollViewRefreshingHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (mScrollView.isRefreshing())
+            if (mScrollView.isRefreshing()&&needTocheck)
                 mScrollView.onRefreshComplete();
             super.handleMessage(msg);
         }
@@ -203,6 +218,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
 //判断是否从后台进入到前台的flag
     private boolean flag = false;
     private AlertDialog dialog_battery;
+    private boolean needTocheck = false ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -211,7 +227,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         AppManager.getAppManager().addActivity(this);
         //主界面开始运行
         isRunning = true;
-
+        needTocheck = true ;
 
 //        心率工具
         DaoMaster.DevOpenHelper heartrateHelper = new DaoMaster.DevOpenHelper(PortalActivity.this, "heartrate", null);
@@ -267,39 +283,6 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
 
     }
 
-    public void onUploadClicked() {
-        MyLog.e(TAG, "onUploadClicked执行了");
-        DfuServiceInitiator starter = new DfuServiceInitiator(userEntity.getDeviceEntity().getLast_sync_device_id())
-                .setDeviceName(userEntity.getDeviceEntity().getModel_name())
-                .setKeepBond(false)
-                .setForceDfu(false)
-                .setPacketsReceiptNotificationsEnabled(true)
-                .setPacketsReceiptNotificationsValue(12);
-        starter.setZip(R.raw.wisfit);
-        starter.start(this, DfuService.class);
-    }
-
-
-
-    //固件更新
-    private final DfuProgressListenerAdapter mDfuProgressListener = new DfuProgressListenerAdapter() {
-        @Override
-        public void onProgressChanged(String deviceAddress, int percent, float speed, float avgSpeed, int currentPart, int partsTotal) {
-            MyLog.e(TAG, "mDfuProgressListener" + percent + "----");
-        }
-
-        @Override
-        public void onDfuCompleted(String deviceAddress) {
-            super.onDfuCompleted(deviceAddress);
-            MyLog.e(TAG, "mDfuProgressListener" + "---onDfuCompleted-");
-        }
-
-        @Override
-        public void onError(String deviceAddress, int error, int errorType, String message) {
-            super.onError(deviceAddress, error, errorType, message);
-            MyLog.e(TAG, "mDfuProgressListener" + "--onError--");
-        }
-    };
 
     @Override
     protected void onResume() {
@@ -427,7 +410,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
             //查询是null的时候代表一条记录也没有
             return;
         }
-        String weight = userWeight.getWeight();
+            String weight = userWeight.getWeight();
         String lastdateStr = userWeight.getTime();
         if (lastdateStr.equals(nowdateStr)) {
             //最后一天是今天 就什么都不做了
@@ -1131,15 +1114,22 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                 LocalInfoVO localvo = PreferencesToolkits.getLocalDeviceInfo(PortalActivity.this);
                 String money = localvo.getMoney();
                 //=============计算基础卡路里=====START========//
-                int cal_base = 0;
-                if (timeNow.equals(sdf.format(new Date()))) {
+
+                ToolKits toolKits = new ToolKits();
+                int calorieseveryday = toolKits.getCalories(PortalActivity.this);
+                Date dateToday = new Date();
+                SimpleDateFormat hh = new SimpleDateFormat("HH", Locale.getDefault());
+                String HH = hh.format(dateToday);
+                SimpleDateFormat mm = new SimpleDateFormat("mm", Locale.getDefault());
+                String MM = mm.format(dateToday);
+                int cal_base = calorieseveryday * (Integer.parseInt(HH) * 60 + Integer.parseInt(MM)) / 1440;
+            /*    if (timeNow.equals(sdf.format(new Date()))) {
                     int hour = Integer.parseInt(new SimpleDateFormat("HH").format(new Date()));
                     int minute = Integer.parseInt(new SimpleDateFormat("mm").format(new Date()));
                     cal_base = (int) ((hour * 60 + minute) * 1.15);//当前时间今天的卡路里
-
                 } else {
                     cal_base = 1656;
-                }
+                }*/
                 //查询体重,获得体重的集合
                 List<UserWeight> list=WeightTable.queryWeights(PortalActivity.this,userEntity.getUser_id()+"",endDateString,endDateString);
                 double weight ;
@@ -1592,8 +1582,10 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         @Override
         public void updateFor_handleConnectLostMsg() {
             MyLog.e(TAG, "updateFor_handleConnectLostMsg");
-            if(mScrollView!=null&&mScrollView.isRefreshing()){
-                mScrollView.onRefreshComplete();
+            if (needTocheck) {
+                if (mScrollView != null && mScrollView.isRefreshing()) {
+                    mScrollView.onRefreshComplete();
+                }
             }
             refreshBatteryUI();
         }
@@ -1774,8 +1766,6 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
 //                refreshVISIBLE();
 //            }
 
-
-
             if((System.currentTimeMillis()/1000)-PreferencesToolkits.getOADUpdateTime(getActivity())>86400)
             {
                 // 查询是否要更新固件
@@ -1830,8 +1820,19 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                     });
                 }
             }
-
+            int device_type = MyApplication.getInstance(PortalActivity.this).getLocalUserInfoProvider().getDeviceEntity().getDevice_type();
+            if (device_type==MyApplication.DEVICE_BAND3&&needTocheck){
+                userEntity.getDeviceEntity().setModel_name(latestDeviceInfo.modelName);
+                needTocheck = false ;
+                downloadZip();
+            }else {
+                mScrollView.onRefreshComplete();
+            }
+            if (needTocheck) {
+                mScrollView.onRefreshComplete();
+            }
         }
+
 
         /**********闹钟提醒设置成功*********/
         @Override
@@ -1915,7 +1916,9 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
 //                CallServer.getRequestInstance().add(PortalActivity.this, false, CommParams.HTTP_UPDATA_CARDNUMBER, HttpHelper.createUpCardNumberRequest(userEntity.getUser_id() + "", cardId), httpCallback);
                 /******************拿到卡号后存储过程OVER*******************/
             }
-            mScrollView.onRefreshComplete();
+            // TODO: 2017/5/11
+            //自动检查更新
+
         }
 
 
@@ -1990,5 +1993,170 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         }
     }
 
+    LocalInfoVO vo;
+    private ProgressDialog dialog;
+    private ProgressDialog dialog_connect;//下载进度
+    private URI uri = null;
+    private File file;
+
+    private void downloadZip() {
+        vo = PreferencesToolkits.getLocalDeviceInfo(PortalActivity.this);
+        userEntity = MyApplication.getInstance(PortalActivity.this).getLocalUserInfoProvider();
+        dialog = new ProgressDialog(PortalActivity.this);
+        dialog.setMessage(getString(R.string.getting_version_information));
+        int version_int = ToolKits.makeShort(vo.version_byte[1], vo.version_byte[0]);
+//        int version_int = 500 ;
+        CallServer.getRequestInstance().add(PortalActivity.this, false,
+                CommParams.HTTP_OAD, NoHttpRuquestFactory.creat_New_OAD_Request(userEntity.getDeviceEntity().getModel_name()
+                        ,version_int), newHttpCallback);
+    }
+
+    private HttpCallback<String> newHttpCallback = new HttpCallback<String>() {
+        @Override
+        public void onFailed(int what, String url, Object tag, CharSequence message, int responseCode, long networkMillis) {
+            MyLog.e(TAG,"failed________"+message.toString());
+            dialog.dismiss();
+            mScrollView.onRefreshComplete();
+
+        }
+
+        @Override
+        public void onSucceed(int what, Response<String> response) {
+            dialog.dismiss();
+            MyLog.e(TAG + "devicefragment", response.toString() );
+            if (response.get()!=null&&!response.get().isEmpty()) {
+                try {
+                    CheckFirmwareVersionReponse checkVersionReponse = JSONObject.parseObject(response.get(), CheckFirmwareVersionReponse.class);
+                    if(checkVersionReponse.getModel_name()==null){
+                        mScrollView.onRefreshComplete();
+//                        MyToast.show(PortalActivity.this, getString(R.string.bracelet_oad_version_top), Toast.LENGTH_LONG);
+                    }else {
+                        downLoadByRetrofit(checkVersionReponse.getModel_name(),
+                                checkVersionReponse.getFile_name(),Integer.parseInt(checkVersionReponse.getVersion_code()) ,
+                                "downloaddyh08.zip",false);
+                    }
+                }catch (Exception e){
+                    dialog.dismiss();
+                    mScrollView.onRefreshComplete();
+//                    MyToast.show(PortalActivity.this, getString(R.string.bracelet_oad_version_top), Toast.LENGTH_LONG);
+                }
+            } else {
+                dialog.dismiss();
+                mScrollView.onRefreshComplete();
+//                MyToast.show(PortalActivity.this,  getString(R.string.bracelet_oad_version_top), Toast.LENGTH_LONG);
+            }
+        }
+    };
+
+
+
+    public void downLoadByRetrofit(String model_name, String file_name, int version_int, final String saveFileName, final boolean OADDirect) {
+        String message = getString(R.string.downloading);
+        dialog_connect = new ProgressDialog(PortalActivity.this);
+        dialog_connect.setMessage(message);
+        dialog_connect.setCancelable(false);
+        dialog_connect.show();
+        OADApi oadApi = FirmwareRetrofitClient.getInstance().create(OADApi.class);
+        HashMap<String, Object> objectObjectHashMap = new HashMap<>();
+        objectObjectHashMap.put("model_name", model_name);
+        objectObjectHashMap.put("file_name", file_name);
+        String versionString = version_int + "";
+        if (versionString.length()%2==1){
+            versionString = "0"+versionString ;
+        }
+        objectObjectHashMap.put("version_code", versionString);
+
+        Call<ResponseBody> responseBodyCall = oadApi.download_file("close",objectObjectHashMap);
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                MyLog.e(TAG+"length", response.body().byteStream() + "");
+                try {
+                    InputStream is = response.body().byteStream();
+                    file = getTempFile(PortalActivity.this, saveFileName);
+                    uri = file.toURI();
+                    FileOutputStream fos = new FileOutputStream(file);
+                    BufferedInputStream bis = new BufferedInputStream(is);
+                    byte[] buffer = new byte[1024];
+                    int len;
+                    while ((len = bis.read(buffer)) != -1) {
+                        fos.write(buffer, 0, len);
+                    }
+                    fos.flush();
+                    fos.close();
+                    bis.close();
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Log.e(TAG, "下载完成" + saveFileName);
+                dialog_connect.dismiss();
+                onUploadClicked();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                MyLog.e(TAG, t.toString());
+                dialog_connect.dismiss();
+                mScrollView.onRefreshComplete();
+                Toast.makeText(PortalActivity.this, getString(R.string.bracelet_down_file_fail), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void onUploadClicked() {
+        MyLog.e(TAG, "onUploadClicked执行了");
+        if(mScrollView.isRefreshing()){
+            String second_txt = getString(R.string.updating);
+            mScrollView.getHeaderLayout().getmHeaderText().setText(second_txt);
+        }
+        DfuServiceInitiator starter = new DfuServiceInitiator(userEntity.getDeviceEntity().getLast_sync_device_id())
+                .setDeviceName("DYH_01")
+                .setKeepBond(false)
+                .setForceDfu(false)
+                .setPacketsReceiptNotificationsEnabled(true)
+                .setPacketsReceiptNotificationsValue(12);
+        starter.setZip(file.getPath());
+        starter.start(this, DfuService.class);
+    }
+
+    //固件更新
+    private final DfuProgressListenerAdapter mDfuProgressListener = new DfuProgressListenerAdapter() {
+        @Override
+        public void onProgressChanged(String deviceAddress, int percent, float speed, float avgSpeed, int currentPart, int partsTotal) {
+            MyLog.e(TAG, "mDfuProgressListener" + percent + "----");
+
+        }
+
+        @Override
+        public void onDfuCompleted(String deviceAddress) {
+            super.onDfuCompleted(deviceAddress);
+            MyLog.e(TAG, "mDfuProgressListener" + "---onDfuCompleted-");
+            progressDialog.dismiss();
+            Toast.makeText(PortalActivity.this,getString(R.string.user_info_update_success),Toast.LENGTH_SHORT).show();
+            provider.connect();
+            needTocheck = true ;
+        }
+
+        @Override
+        public void onError(String deviceAddress, int error, int errorType, String message) {
+            super.onError(deviceAddress, error, errorType, message);
+            MyLog.e(TAG, "mDfuProgressListener" + "--onError--");
+            Toast.makeText(PortalActivity.this,getString(R.string.user_info_update_failure),Toast.LENGTH_SHORT).show();
+            progressDialog.dismiss();
+            mScrollView.onRefreshComplete();
+            needTocheck = true ;
+        }
+    };
+
+    public File getTempFile(Context context, String name) {
+        File file = null;
+        try {
+            file = new File(context.getCacheDir(),name);
+        } catch (Exception e) {
+            // Error while creating file
+        }
+        return file;
+    }
 
 }

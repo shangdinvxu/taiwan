@@ -978,7 +978,6 @@ private final static String TAG = ToolKits.class.getSimpleName();
 			case 1:
 				if (localUnit == ToolKits.UNIT_YING) {
 					dayCalories = (int) (66 + 6.2 * user_weight + 12.7 * user_height - 6.76 * age);
-
 				} else {
 					dayCalories = (int) (66 + 13.75 * user_weight + 5.0003 * user_height - 6.755 * age);
 				}
