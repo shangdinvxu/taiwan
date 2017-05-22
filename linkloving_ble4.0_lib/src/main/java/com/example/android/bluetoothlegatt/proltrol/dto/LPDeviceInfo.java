@@ -57,7 +57,7 @@ public class LPDeviceInfo {
 	 */
 	public int charge10;
 	public int charge100;
-	public int charge;
+	public int charge  ;
 
 
 	public byte open = 0x01;

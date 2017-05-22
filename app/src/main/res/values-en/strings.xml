@@ -1124,4 +1124,7 @@
     <string name="Need_before">Whether you need to re-bind the previous device</string>
     <string name="downloading">Downloading</string>
     <string name="updating">updating</string>
+    <string name="firmware_updating">firmware updating</string>
+    <string name="Hint">Hint</string>
+    <string name="please_stay_in">please stay in this page until update completed</string>
 </resources>

@@ -13,8 +13,8 @@ android {
         applicationId "com.linkloving.taiwan"
         minSdkVersion 18
         targetSdkVersion 22
-        versionCode 23
-        versionName "1.2.3"
+        versionCode 25
+        versionName "1.2.5"
         manifestPlaceholders = [HOCKEYAPP_APP_ID: "ace08a6e5e4f4e578b1ed17172975937"]
     }
     //看起来是因为多个 jar 包里包含了同样的文件（NOTICE.txt），导致打包时因为担心相互覆盖问题而提示出错
@@ -98,6 +98,8 @@ dependencies {
     compile 'com.squareup.okhttp3:logging-interceptor:3.2.0'
 
     compile 'com.yolanda.nohttp:nohttp:1.0.0'
+    compile 'org.greenrobot:eventbus:3.0.0'
+    provided 'de.greenrobot:eventbus-annotation-processor:3.0.0-beta1'
     
 
 }

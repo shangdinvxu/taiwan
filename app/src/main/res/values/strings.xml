@@ -1068,4 +1068,7 @@
     <string name="dfu_service_title">nRF Toolbox DFU Proxy</string>
     <string name="updating">更新中</string>
     <string name="downloading">下载中</string>
+    <string name="firmware_updating">firmware updating</string>
+    <string name="Hint">提示</string>
+    <string name="please_stay_in">please stay in this page until update completed</string>
 </resources>

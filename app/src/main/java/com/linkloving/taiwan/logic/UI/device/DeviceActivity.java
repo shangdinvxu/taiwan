@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -118,6 +119,9 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
     boolean isRunning = false;
     private URI uri = null;
     private File file;
+    private ProgressBar progressbar;
+    private TextView progressInt;
+    private AlertDialog downloadingProgressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -535,10 +539,14 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
 
     public void onUploadClicked() {
         MyLog.e(TAG, "onUploadClicked执行了");
-        progressDialog = new ProgressDialog(DeviceActivity.this);
-        progressDialog.setMessage(getString(R.string.updating));
-        progressDialog.setCancelable(false);
-        progressDialog.show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(DeviceActivity.this);
+        View view = LayoutInflater.from(DeviceActivity.this).inflate(R.layout.progress_dialog, null);
+        progressbar = (ProgressBar) view.findViewById(R.id.progressbar);
+        progressInt = (TextView) view.findViewById(R.id.progressInt);
+        builder.setView(view);
+        downloadingProgressDialog = builder.create();
+        downloadingProgressDialog.setCancelable(false);
+        downloadingProgressDialog.show();
         DfuServiceInitiator starter = new DfuServiceInitiator(userEntity.getDeviceEntity().getLast_sync_device_id())
                 .setDeviceName("DYH_01")
                 .setKeepBond(false)
@@ -553,6 +561,8 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
     private final DfuProgressListenerAdapter mDfuProgressListener = new DfuProgressListenerAdapter() {
         @Override
         public void onProgressChanged(String deviceAddress, int percent, float speed, float avgSpeed, int currentPart, int partsTotal) {
+            progressbar.setProgress(percent);
+            progressInt.setText(percent+"%");
             MyLog.e(TAG, "mDfuProgressListener" + percent + "----");
         }
 
@@ -560,7 +570,7 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
         public void onDfuCompleted(String deviceAddress) {
             super.onDfuCompleted(deviceAddress);
             MyLog.e(TAG, "mDfuProgressListener" + "---onDfuCompleted-");
-            progressDialog.dismiss();
+            downloadingProgressDialog.dismiss();
             Toast.makeText(DeviceActivity.this,getString(R.string.user_info_update_success),Toast.LENGTH_SHORT).show();
             provider.connect();
         }
@@ -569,8 +579,8 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
         public void onError(String deviceAddress, int error, int errorType, String message) {
             super.onError(deviceAddress, error, errorType, message);
             MyLog.e(TAG, "mDfuProgressListener" + "--onError--");
+            downloadingProgressDialog.dismiss();
             Toast.makeText(DeviceActivity.this,getString(R.string.user_info_update_failure),Toast.LENGTH_SHORT).show();
-            progressDialog.dismiss();
         }
     };
 

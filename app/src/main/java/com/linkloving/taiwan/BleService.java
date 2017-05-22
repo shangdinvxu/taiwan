@@ -26,6 +26,8 @@ import com.linkloving.taiwan.db.summary.DaySynopicTable;
 import com.linkloving.taiwan.logic.UI.HeartRate.GreendaoUtils;
 import com.linkloving.taiwan.logic.UI.device.GetDBInfo;
 import com.linkloving.taiwan.logic.UI.device.incomingtel.IncomingTelActivity;
+import com.linkloving.taiwan.logic.UI.main.GetHeartEvent;
+import com.linkloving.taiwan.logic.UI.main.HeartrateFinishEvent;
 import com.linkloving.taiwan.logic.dto.UserEntity;
 import com.linkloving.taiwan.prefrences.LocalUserSettingsToolkits;
 import com.linkloving.taiwan.prefrences.PreferencesToolkits;
@@ -38,6 +40,8 @@ import com.linkloving.taiwan.utils.ToolKits;
 import com.linkloving.taiwan.utils.logUtils.MyLog;
 import com.linkloving.taiwan.utils.sportUtils.SportDataHelper;
 import com.linkloving.taiwan.utils.sportUtils.TimeUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -433,7 +437,7 @@ public class BleService extends Service {
             @Override
             protected void notifyForDeviceUnboundSucess_D() {
                 // 解绑成功时，无条件保证重置本地用户存储的mac地址
-                MyApplication.getInstance(BleService.this).getLocalUserInfoProvider().getDeviceEntity().setLast_sync_device_id(null);
+//                MyApplication.getInstance(BleService.this).getLocalUserInfoProvider().getDeviceEntity().setLast_sync_device_id(null);
                 super.notifyForDeviceUnboundSucess_D();
                 MyLog.e(TAG, "设备解绑成功");
             }
@@ -581,6 +585,7 @@ public class BleService extends Service {
                 //设置时间指令
                 provider.SetDeviceTime(BleService.this);
                 provider.GetHeartrate(BleService.this);
+                EventBus.getDefault().post(new GetHeartEvent());
             }
 
             //时间设置成功--基本流程完毕
@@ -625,6 +630,7 @@ public class BleService extends Service {
                     greendaoUtils.addwhole(obj1.getStartTime(),obj1.getAvgRate(),obj1.getMaxRate(),
                             obj1.getFakeAvgRate(),obj1.getFakeMaxRate());
                 }
+                EventBus.getDefault().post(new HeartrateFinishEvent());
                 provider.get_exceptionInfo(BleService.this);
             }
 

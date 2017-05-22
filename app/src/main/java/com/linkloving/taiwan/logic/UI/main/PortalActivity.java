@@ -37,6 +37,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -112,6 +113,10 @@ import com.zhy.autolayout.AutoLayoutActivity;
 
 import net.hockeyapp.android.CrashManager;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -129,6 +134,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import Trace.GreenDao.DaoMaster;
 import Trace.GreenDao.heartrate;
@@ -184,6 +191,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
     //目标值
     private int money_goal, step_goal, distace_goal, cal_goal, runtime_goal;
     private float sleeptime_goal, weight_goal;
+    public static final int sendcount_time = 2000;
 
     /**
      * 下拉同步ui的超时复位延迟执行handler （防止意外情况下，一直处于“同步中”的状态）
@@ -191,8 +199,8 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
     private Handler mScrollViewRefreshingHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (mScrollView.isRefreshing()&&needTocheck)
-                mScrollView.onRefreshComplete();
+//            if (mScrollView.isRefreshing())
+//                mScrollView.onRefreshComplete();
             super.handleMessage(msg);
         }
     };
@@ -219,6 +227,9 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
     private boolean flag = false;
     private AlertDialog dialog_battery;
     private boolean needTocheck = false ;
+    private ProgressBar progressbar;
+    private TextView progressInt;
+    private AlertDialog downloadingProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -228,12 +239,10 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         //主界面开始运行
         isRunning = true;
         needTocheck = true ;
-
 //        心率工具
         DaoMaster.DevOpenHelper heartrateHelper = new DaoMaster.DevOpenHelper(PortalActivity.this, "heartrate", null);
         SQLiteDatabase readableDatabase = heartrateHelper.getReadableDatabase();
         greendaoUtils = new GreendaoUtils(PortalActivity.this, readableDatabase);
-
         userEntity = MyApplication.getInstance(this).getLocalUserInfoProvider();
         provider = BleService.getInstance(this).getCurrentHandlerProvider();
         bleProviderObserver = new BLEProviderObserverAdapterImpl();
@@ -266,14 +275,10 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         //结束时间
         endDateString = new SimpleDateFormat(ToolKits.DATE_FORMAT_YYYY_MM_DD).format(new Date());
         //检查绑定
-        String s = userEntity.getDeviceEntity().getLast_sync_device_id();
-//        if (CommonUtils.isStringEmpty(s))
-////            showBundDialog();
-//        else{
-//            provider.setCurrentDeviceMac(s);
-//        }
+
+        EventBus.getDefault().register(this);
+
         UserWeight userWeight = WeightTable.queryWeightByDay(this,Integer.toString(MyApplication.getInstance(this).getLocalUserInfoProvider().getUser_id()) , null);
-        MyLog.e("userWeight",userWeight+"");
 
         //自动下拉刷新
         mScrollView.autoRefresh();
@@ -331,6 +336,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);//反注册EventBus
         isRunning = false;
         unregisterReceiver(blereciver);
         provider.setBleProviderObserver(null);
@@ -1288,7 +1294,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                 if (!LocalInfoVO.userId.equals("-1")) {
                     int battery = LocalInfoVO.getBattery() >= 100 ? 100 : LocalInfoVO.getBattery() ;
                     MyLog.e(TAG, "LocalInfoVO电量:" + LocalInfoVO.getBattery());
-                    if (battery < LOW_BATTERY) {
+                    if (battery < LOW_BATTERY&&battery>0) {
                         //电量低于30的时候 弹出低电量警告框
                         if (dialog_battery==null||!dialog_battery.isShowing()) {
                             dialog_battery = new AlertDialog.Builder(PortalActivity.this)
@@ -1527,6 +1533,43 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         dialog.show();
     }
 
+
+    @Subscribe (threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(HeartrateFinishEvent event){
+        if (mScrollView != null && mScrollView.isRefreshing()) {
+            mScrollView.onRefreshComplete();
+        }
+    }
+
+    @Subscribe (threadMode = ThreadMode.MAIN)
+    public void onGetHeaert(GetHeartEvent event){
+        if (mScrollView!=null) {
+            mScrollView.getHeaderLayout().getmHeaderText().setText("获取心率中");
+        }
+
+    }
+
+
+    Runnable boundRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Message msg = new Message();
+            msg.what = 0x333;
+            boundhandler.sendMessage(msg);
+        }
+    };
+
+    Handler boundhandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0x333:
+                    provider.requestbound_recy(PortalActivity.this);
+                    break;
+            }
+        }
+    };
+
+
     /**
      * 蓝牙观察者实现类.
      */
@@ -1543,6 +1586,9 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
             //用户未打开蓝牙
             Log.i(TAG, "updateFor_handleNotEnableMsg");
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            if (mScrollView != null && mScrollView.isRefreshing()) {
+                mScrollView.onRefreshComplete();
+            }
             getActivity().startActivityForResult(enableBtIntent, BleService.REQUEST_ENABLE_BT);
         }
 
@@ -1563,6 +1609,9 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         @Override
         public void updateFor_handleScanTimeOutMsg() {
             MyLog.e(TAG, "updateFor_handleScanTimeOutMsg");
+            if (mScrollView != null && mScrollView.isRefreshing()) {
+                mScrollView.onRefreshComplete();
+            }
         }
 
         /**********BLE连接失败*********/
@@ -1570,6 +1619,9 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         public void updateFor_handleConnectFailedMsg() {
             //连接失败
             MyLog.e(TAG, "updateFor_handleConnectFailedMsg");
+            if (mScrollView != null && mScrollView.isRefreshing()) {
+                mScrollView.onRefreshComplete();
+            }
         }
 
         /**********BLE连接成功*********/
@@ -1582,11 +1634,9 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         @Override
         public void updateFor_handleConnectLostMsg() {
             MyLog.e(TAG, "updateFor_handleConnectLostMsg");
-            if (needTocheck) {
                 if (mScrollView != null && mScrollView.isRefreshing()) {
                     mScrollView.onRefreshComplete();
                 }
-            }
             refreshBatteryUI();
         }
 
@@ -1629,12 +1679,13 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 provider.unBoundDevice(PortalActivity.this);
-                                try {
-                                    Thread.sleep(1000);
-                                    BleService.getInstance(PortalActivity.this).releaseBLE();
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
+                                provider.requestbound_fit(PortalActivity.this);
+//                                try {
+//                                    Thread.sleep(1000);
+//                                    BleService.getInstance(PortalActivity.this).releaseBLE();
+//                                } catch (InterruptedException e) {
+//                                    e.printStackTrace();
+//                                }
 //                                IntentFactory.start_Bluetooth(PortalActivity.this);
                             }
                         }).setMessage(getString(R.string.Need_before))
@@ -1652,6 +1703,18 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                 //保存localvo
                 PreferencesToolkits.updateLocalDeviceInfo(PortalActivity.this, latestDeviceInfo);
             }
+        }
+
+
+        @Override
+        public void updateFor_BoundContinue() {
+            super.updateFor_BoundContinue();
+            boundhandler.postDelayed(boundRunnable, sendcount_time);
+        }
+
+        @Override
+        public void updateFor_BoundSucess() {
+            BleService.getInstance(PortalActivity.this).syncAllDeviceInfo(PortalActivity.this);
         }
 
         @Override
@@ -1826,11 +1889,6 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                 userEntity.getDeviceEntity().setModel_name(latestDeviceInfo.modelName);
                 needTocheck = false ;
                 downloadZip();
-            }else {
-                mScrollView.onRefreshComplete();
-            }
-            if (needTocheck) {
-                mScrollView.onRefreshComplete();
             }
         }
 
@@ -1867,14 +1925,17 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         @Override
         public void updateFor_handleSetTime() {
             MyLog.e(TAG, "updateFor_handleSetTime");
-            mScrollView.getHeaderLayout().getmHeaderText().setText(getString(R.string.refresh_time));
+//            mScrollView.getHeaderLayout().getmHeaderText().setText(getString(R.string.refresh_time));
             getInfoFromDB();
         }
-//        @Override
-//        public void updateFor_notifyForDeviceFullSyncSucess_D(LPDeviceInfo deviceInfo) {
-//            PreferencesToolkits.updateLocalDeviceInfo(PortalActivity.this, deviceInfo);
-//            MyLog.e(TAG, "updateFor_notifyForDeviceFullSyncSucess_D");
-//        }
+
+        @Override
+        public void updateFor_handleSendDataError() {
+            super.updateFor_handleSendDataError();
+            if ( mScrollView!= null && mScrollView.isRefreshing())
+                mScrollView.onRefreshComplete();
+        }
+
 
         /**********获取设备ID*********/
         @Override
@@ -1944,6 +2005,8 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                 provider.PINSmartCard(PortalActivity.this, deviceInfo);
             }
         }
+
+
 
         /**********校验PIN*********/
         @Override
@@ -2017,7 +2080,6 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         public void onFailed(int what, String url, Object tag, CharSequence message, int responseCode, long networkMillis) {
             MyLog.e(TAG,"failed________"+message.toString());
             dialog.dismiss();
-            mScrollView.onRefreshComplete();
 
         }
 
@@ -2029,8 +2091,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                 try {
                     CheckFirmwareVersionReponse checkVersionReponse = JSONObject.parseObject(response.get(), CheckFirmwareVersionReponse.class);
                     if(checkVersionReponse.getModel_name()==null){
-                        mScrollView.onRefreshComplete();
-//                        MyToast.show(PortalActivity.this, getString(R.string.bracelet_oad_version_top), Toast.LENGTH_LONG);
+                        MyToast.show(PortalActivity.this, getString(R.string.bracelet_oad_version_top), Toast.LENGTH_LONG);
                     }else {
                         downLoadByRetrofit(checkVersionReponse.getModel_name(),
                                 checkVersionReponse.getFile_name(),Integer.parseInt(checkVersionReponse.getVersion_code()) ,
@@ -2038,13 +2099,11 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                     }
                 }catch (Exception e){
                     dialog.dismiss();
-                    mScrollView.onRefreshComplete();
-//                    MyToast.show(PortalActivity.this, getString(R.string.bracelet_oad_version_top), Toast.LENGTH_LONG);
+                    MyToast.show(PortalActivity.this, getString(R.string.bracelet_oad_version_top), Toast.LENGTH_LONG);
                 }
             } else {
                 dialog.dismiss();
-                mScrollView.onRefreshComplete();
-//                MyToast.show(PortalActivity.this,  getString(R.string.bracelet_oad_version_top), Toast.LENGTH_LONG);
+                MyToast.show(PortalActivity.this,  getString(R.string.bracelet_oad_version_top), Toast.LENGTH_LONG);
             }
         }
     };
@@ -2099,18 +2158,23 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 MyLog.e(TAG, t.toString());
                 dialog_connect.dismiss();
-                mScrollView.onRefreshComplete();
                 Toast.makeText(PortalActivity.this, getString(R.string.bracelet_down_file_fail), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+
+
     public void onUploadClicked() {
         MyLog.e(TAG, "onUploadClicked执行了");
-        if(mScrollView.isRefreshing()){
-            String second_txt = getString(R.string.updating);
-            mScrollView.getHeaderLayout().getmHeaderText().setText(second_txt);
-        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(PortalActivity.this);
+        View view = LayoutInflater.from(PortalActivity.this).inflate(R.layout.progress_dialog, null);
+        progressbar = (ProgressBar) view.findViewById(R.id.progressbar);
+        progressInt = (TextView) view.findViewById(R.id.progressInt);
+        builder.setView(view);
+        downloadingProgressDialog = builder.create();
+        downloadingProgressDialog.setCancelable(false);
+        downloadingProgressDialog.show();
         DfuServiceInitiator starter = new DfuServiceInitiator(userEntity.getDeviceEntity().getLast_sync_device_id())
                 .setDeviceName("DYH_01")
                 .setKeepBond(false)
@@ -2125,28 +2189,26 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
     private final DfuProgressListenerAdapter mDfuProgressListener = new DfuProgressListenerAdapter() {
         @Override
         public void onProgressChanged(String deviceAddress, int percent, float speed, float avgSpeed, int currentPart, int partsTotal) {
+            progressbar.setProgress(percent);
+            progressInt.setText(percent+"%");
             MyLog.e(TAG, "mDfuProgressListener" + percent + "----");
-
         }
 
         @Override
         public void onDfuCompleted(String deviceAddress) {
             super.onDfuCompleted(deviceAddress);
             MyLog.e(TAG, "mDfuProgressListener" + "---onDfuCompleted-");
-            progressDialog.dismiss();
+            downloadingProgressDialog.dismiss();
             Toast.makeText(PortalActivity.this,getString(R.string.user_info_update_success),Toast.LENGTH_SHORT).show();
             provider.connect();
-            needTocheck = true ;
         }
 
         @Override
         public void onError(String deviceAddress, int error, int errorType, String message) {
             super.onError(deviceAddress, error, errorType, message);
             MyLog.e(TAG, "mDfuProgressListener" + "--onError--");
+            downloadingProgressDialog.dismiss();
             Toast.makeText(PortalActivity.this,getString(R.string.user_info_update_failure),Toast.LENGTH_SHORT).show();
-            progressDialog.dismiss();
-            mScrollView.onRefreshComplete();
-            needTocheck = true ;
         }
     };
 
@@ -2159,5 +2221,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
         }
         return file;
     }
+
+
 
 }

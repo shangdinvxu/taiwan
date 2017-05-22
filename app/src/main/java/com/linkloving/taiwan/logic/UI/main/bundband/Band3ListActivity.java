@@ -403,7 +403,7 @@ public class Band3ListActivity extends ToolBarActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             provider.unBoundDevice(Band3ListActivity.this);
-                            provider.connect();
+                            provider.requestbound_fit(Band3ListActivity.this);
 //                            try {
 //                                Thread.sleep(1000);
 //                                BleService.getInstance(Band3ListActivity.this).releaseBLE();

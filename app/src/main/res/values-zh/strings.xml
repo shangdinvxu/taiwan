@@ -1061,4 +1061,7 @@ e
     <string name="Need_before">是否需要重新绑定前一个装置</string>
     <string name="downloading">下载中</string>
     <string name="updating">更新中</string>
+    <string name="firmware_updating">固件更新中</string>
+    <string name="Hint">提示</string>
+    <string name="please_stay_in">韧体更新中，请勿操作。</string>
 </resources>

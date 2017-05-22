@@ -1060,4 +1060,7 @@
     <string name="Need_before">是否需要重新綁定前一個裝置</string>
     <string name="downloading">下載中</string>
     <string name="updating">更新中</string>
+    <string name="firmware_updating">韌體更新中</string>
+    <string name="Hint">提示</string>
+    <string name="please_stay_in">韌體更新中，請勿操作.</string>
 </resources>
