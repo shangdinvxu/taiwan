@@ -82,6 +82,7 @@ public class HeartRateActivity extends ToolBarActivity implements View.OnClickLi
         //显示今天的平均心率。
         initAvgHeartrate();
 //        initTestData();
+
     }
 
     /**
@@ -94,11 +95,12 @@ public class HeartRateActivity extends ToolBarActivity implements View.OnClickLi
                 DaoMaster.DevOpenHelper heartrateHelper = new DaoMaster.DevOpenHelper(HeartRateActivity.this, "heartrate", null);
                 SQLiteDatabase readableDatabase = heartrateHelper.getReadableDatabase();
                 GreendaoUtils greendaoUtils = new GreendaoUtils(HeartRateActivity.this, readableDatabase);
-                greendaoUtils.deleteAll();
-                for (int i = 0; i < 10000; i++) {
-                    greendaoUtils.addwhole(1492235115 + i * 60, (int) (Math.random()*100),  (int) (Math.random()*200),
-                    (int) (Math.random()*100),  (int) (Math.random()*200));
-                }
+                greendaoUtils.clean();
+//                greendaoUtils.deleteAll();
+//                for (int i = 0; i < 10000; i++) {
+//                    greendaoUtils.addwhole(1492235115 + i * 60, (int) (Math.random()*100),  (int) (Math.random()*200),
+//                    (int) (Math.random()*100),  (int) (Math.random()*200));
+//                }
             }
         }).start();
     }

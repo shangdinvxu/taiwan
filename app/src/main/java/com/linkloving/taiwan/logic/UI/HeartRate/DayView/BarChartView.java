@@ -146,7 +146,7 @@ public class BarChartView extends RelativeLayout {
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) framelayout.getLayoutParams();
         layoutParams.topMargin = (int) (screenH * 0.05);
         layoutParams.leftMargin = (int) (screenW * 0.198);
-        layoutParams.width = (int) (screenW * 0.724);
+        layoutParams.width = (int) (screenW * 0.727);
         layoutParams.height = (int) (screenH * 0.43);
         MyLog.e(TAG, "-----topMargin+" + layoutParams.topMargin + "-----leftMargin+" + layoutParams.leftMargin + "-----width+" + layoutParams.width + "-----height+" + layoutParams.height);
         framelayout.setLayoutParams(layoutParams);
@@ -208,9 +208,11 @@ public class BarChartView extends RelativeLayout {
             if (rawX < (locationXList.get(i) - screenW * 0.2 + 4) && rawX > (locationXList.get(i) - screenW * 0.2 - 1)) {
                 isShowPopupWindow = true;
                 listPostion = i;
-                MyLog.e(TAG, "isShowPopupWindow = true");
+                MyLog.e(TAG+"true", "isShowPopupWindow = true");
+                break;
             }
         }
+        MyLog.e(TAG+"true", "下面的执行");
         if (isShowPopupWindow) {
             maxView.setText((int) mItems.get(listPostion).itemLightValue + "");
             avgView.setText((int) mItems.get(listPostion).itemDeepValue + "");

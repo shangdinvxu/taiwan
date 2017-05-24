@@ -1096,7 +1096,6 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                     //跑步 步数
                     int runStep = (int) (CommonUtils.getScaledDoubleValue(Double.valueOf(mDaySynopic.getRun_step()), 0));
                     int step = walkStep + runStep;
-                    MyApplication.getInstance(PortalActivity.this).setOld_step(step);
                     /****************今天的步数给到 方便OAD完成后回填步数 的变量里面去****************/
                 } else {
                     ArrayList<DaySynopic> mDaySynopicArrayList = DaySynopicTable.findDaySynopicRange(PortalActivity.this, userEntity.getUser_id() + "", endDateString, endDateString, String.valueOf(TimeZoneHelper.getTimeZoneOffsetMinute()));
@@ -1294,7 +1293,7 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                 if (!LocalInfoVO.userId.equals("-1")) {
                     int battery = LocalInfoVO.getBattery() >= 100 ? 100 : LocalInfoVO.getBattery() ;
                     MyLog.e(TAG, "LocalInfoVO电量:" + LocalInfoVO.getBattery());
-                    if (battery < LOW_BATTERY&&battery>0) {
+                    if (battery < LOW_BATTERY&&battery>=10) {
                         //电量低于30的时候 弹出低电量警告框
                         if (dialog_battery==null||!dialog_battery.isShowing()) {
                             dialog_battery = new AlertDialog.Builder(PortalActivity.this)
@@ -1701,7 +1700,14 @@ public class PortalActivity extends AutoLayoutActivity implements MenuNewAdapter
                 }
             }else {
                 //保存localvo
-                PreferencesToolkits.updateLocalDeviceInfo(PortalActivity.this, latestDeviceInfo);
+                if(latestDeviceInfo!=null){
+                    PreferencesToolkits.updateLocalDeviceInfo(PortalActivity.this, latestDeviceInfo);
+                }else {
+                    if(mScrollView!=null&&mScrollView.isRefreshing()){
+                        mScrollView.onRefreshComplete();
+                    }
+                }
+
             }
         }
 

@@ -10,6 +10,8 @@ import Trace.GreenDao.DaoSession;
 import Trace.GreenDao.heartrate;
 import Trace.GreenDao.heartrateDao;
 import de.greenrobot.dao.query.Query;
+import rx.Observable;
+import rx.functions.Action1;
 
 
 /**
@@ -77,6 +79,20 @@ public class GreendaoUtils {
         heartrate heartrate = new heartrate(null, starttime,  avg,max,fakeAvg,fakeMax);
         getHeartrateDao().insertOrReplace(heartrate);
 
+    }
+
+
+
+    public void clean(){
+        List<heartrate> list = getHeartrateDao().queryBuilder()
+                .where(heartrateDao.Properties.StartTime.lt(1492271839)).build().list();
+        Observable.from(list)
+                .subscribe(new Action1<heartrate>() {
+                    @Override
+                    public void call(heartrate heartrate) {
+                        getHeartrateDao().delete(heartrate);
+                    }
+                });
     }
 
     /**

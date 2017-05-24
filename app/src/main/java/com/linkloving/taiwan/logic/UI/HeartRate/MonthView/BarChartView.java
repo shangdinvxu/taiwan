@@ -305,7 +305,7 @@ public class BarChartView extends RelativeLayout {
                 canvas.drawLine((float) (screenW * (0.2 + i * 0.072)), (float) (oneHourHight * 28),(float) (screenW * (0.2 + i * 0.072)),(float) (oneHourHight * 27) , linePaint);
             }
         }
-        textPaint.setTextSize(ScreenUtils.dp2px(getContext(), 16));
+        textPaint.setTextSize(ScreenUtils.dp2px(getContext(), 11));
         /* 先调用一下下面这方法将开始时间装换成相应的百分比*/
         transformToPoint();
         linePaint.setColor( Color.rgb(217, 173, 18));

@@ -439,6 +439,7 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
         dialog = new ProgressDialog(DeviceActivity.this);
         dialog.setMessage(getString(R.string.getting_version_information));
         int version_int = ToolKits.makeShort(vo.version_byte[1], vo.version_byte[0]);
+//        int  version_int = 500 ;
         CallServer.getRequestInstance().add(DeviceActivity.this, false,
                 CommParams.HTTP_OAD, NoHttpRuquestFactory.creat_New_OAD_Request(vo.getModelname()
                         ,version_int), newHttpCallback);
