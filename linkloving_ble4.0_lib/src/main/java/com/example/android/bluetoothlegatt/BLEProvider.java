@@ -242,6 +242,9 @@ public  class BLEProvider
 	public static final int INDEX_OPEN_SYNC_HEART= INDEX_CLOSE_SYNC_HEART + 1;
 	/**获取异常信息的指令*/
 	public static final int INDEX_GET_EXCEPTION_INFO= INDEX_OPEN_SYNC_HEART + 1;
+	public static final int INDEX_UNITSETTING_SUCCESS= INDEX_GET_EXCEPTION_INFO + 1;
+	public static final int INDEX_UNITSETTING_FAILDE= INDEX_UNITSETTING_SUCCESS + 1;
+	public static final int INDEX_UNITSETTING= INDEX_UNITSETTING_FAILDE + 1;
 	// Stops scanning after 10 seconds.
 	private static final long SCAN_PERIOD = 10000;
 
@@ -977,8 +980,14 @@ public  class BLEProvider
 	  OwnLog.i(TAG, "..................keepstate Thread........................");
 	   runIndexProess(context, INDEX_SEND_0X5F);
    }
-   
-   /* 获取卡号*/
+
+	public void setUnitSetting(Context context,LPDeviceInfo deviceinfo){
+		OwnLog.i(TAG, "..................GetHeartrate Thread........................");
+		runIndexProess(context,INDEX_UNITSETTING,deviceinfo);
+	}
+
+
+	/* 获取卡号*/
    public void get_cardnum(Context context)
    {
 	  OwnLog.i(TAG, "..................get_cardnum Thread........................");
@@ -1818,6 +1827,15 @@ public  class BLEProvider
 				    	msg.obj = mLepaoProtocalImpl.get_cardnum();
 				    	msg.sendToTarget();
 				    	break;
+
+					case INDEX_UNITSETTING:
+						Log.d(TAG, ".................INDEX_GET_MODEL................");
+						msg = mHandler.obtainMessage();
+						msg.what = MSG_BLE_DATA;
+						msg.arg1 = INDEX_UNITSETTING;
+						msg.obj = mLepaoProtocalImpl.setUnitSetting(serverDeviceInfo.unitSetting);
+						msg.sendToTarget();
+						break;
 				    case INDEX_SET_NAME:  //
 				    	Log.d(TAG, ".................INDEX_SET_NAME................");
 				    	msg = mHandler.obtainMessage();

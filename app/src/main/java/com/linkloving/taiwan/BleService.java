@@ -28,6 +28,7 @@ import com.linkloving.taiwan.logic.UI.device.GetDBInfo;
 import com.linkloving.taiwan.logic.UI.device.incomingtel.IncomingTelActivity;
 import com.linkloving.taiwan.logic.UI.main.GetHeartEvent;
 import com.linkloving.taiwan.logic.UI.main.HeartrateFinishEvent;
+import com.linkloving.taiwan.logic.UI.more.MoreActivity;
 import com.linkloving.taiwan.logic.dto.UserEntity;
 import com.linkloving.taiwan.prefrences.LocalUserSettingsToolkits;
 import com.linkloving.taiwan.prefrences.PreferencesToolkits;
@@ -490,6 +491,8 @@ public class BleService extends Service {
                         //BLE--->设置运动目标
                         startSetSportGoal();
 
+                        startHeartrateSet();
+
                         MyLog.e(TAG, "notifyFor0x13ExecSucess_D======进入了");
                     } else {
                         //返回的latestDeviceInfo是null的时候 重新获取一次
@@ -499,6 +502,16 @@ public class BleService extends Service {
                     }
                 }
 
+            }
+
+            private void startHeartrateSet() {
+                boolean heartrateSync = PreferencesToolkits.getHeartrateSync(BleService.this);
+                LPDeviceInfo lpDeviceInfo = new LPDeviceInfo();
+                if (heartrateSync){
+                    provider.openSyncoHeart(BleService.this,lpDeviceInfo);
+                }else {
+                    provider.closeSyncoHeart(BleService.this,lpDeviceInfo);
+                }
             }
 
             /**
@@ -627,6 +640,7 @@ public class BleService extends Service {
                 super.notifyforgerHeartList(obj);
                 for (LpHeartrateData obj1: obj){
                     if (obj1.getAvgRate()<=0||obj1.getMaxRate()<=0) continue;
+
                     greendaoUtils.addwhole(obj1.getStartTime(),obj1.getAvgRate(),obj1.getMaxRate(),
                             obj1.getFakeAvgRate(),obj1.getFakeMaxRate());
                 }

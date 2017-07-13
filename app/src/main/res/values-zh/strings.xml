@@ -75,10 +75,10 @@
 
     <string name="effective_time_is_invalid">生效时间无效</string>
     <string name="AutomaticHR">心率自动测量设定</string>
-    <string name="realtime">自动同步</string>
-    <string name="Thedevicewill">自动开启心率测量</string>
-    <string name="wearabledevice">手环设置</string>
-    <string name="Pressthedecive">长按萤幕可开启心率测量</string>
+    <string name="realtime">一般模式</string>
+    <string name="Thedevicewill">24HR自动节电量测模式</string>
+    <string name="wearabledevice">运动模式</string>
+    <string name="Pressthedecive">在手环心率界面长按开启即时量测，当开始动作前，请确保心率数值显示。</string>
     <string name="Restingbpm">静息心率</string>
     <string name="Average">平均心率</string>
 
@@ -844,7 +844,7 @@ e
     <string name="Day_View">Day View</string>
     <string name="bound_link_HR_band">WisFit HR 手环</string>
     <string name="D">D</string>
-    <string name="menu_heartrate">心率</string>
+    <string name="menu_heartrate">心率量测</string>
 
     <string name="Week_View">Week View</string>
     <string name="keepthe">请保持连接设备</string>
@@ -1064,4 +1064,5 @@ e
     <string name="firmware_updating">固件更新中</string>
     <string name="Hint">提示</string>
     <string name="please_stay_in">韧体更新中，请勿操作。</string>
+    <string name="Intervals">间隔时间</string>
 </resources>

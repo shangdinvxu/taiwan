@@ -130,10 +130,8 @@
     <string name="changeinfo">正在提交到伺服器</string>
     <string name="changeinfook">修改成功</string>
     <string name="AutomaticHR">心率自動量測</string>
-    <string name="realtime">自動同步</string>
-    <string name="Thedevicewill">選擇開啟時，將會開始自動偵測心率</string>
-    <string name="wearabledevice">手環裝置</string>
-    <string name="Pressthedecive">選擇開啟時，長按手環螢幕兩秒，開啟自動心率量測。</string>
+    <string name="realtime">一般模式</string>
+    <string name="Pressthedecive">在手環心率界面長按開啟即時量測，當開始動作前，請確保心率數值顯示。</string>
     <string name="keepthe">請保持連接設備</string>
     <string name="Restingbpm">靜息心率</string>
     <string name="Average">平均心率</string>
@@ -721,7 +719,7 @@
     <string name="bracelet_sync_format">MM月dd日 HH:mm:ss</string>
     <string name="bracelet_sync_none"> [從未同步過]</string>
     <string name="bracelet_unbound">解除綁定</string>
-    <string name="bracelet_unbound_msg">是否確解除綁定？</string>
+    <string name="bracelet_unbound_msg">是否解除綁定？</string>
     <string name="bracelet_unbound_failed">無法解除綁定</string>
     <string name="bracelet_unbound_failed_msg">解除綁定需要手機在有網路的情況下進行，請確保手機網路正常！</string>
     <string name="share_content_short">一起分享運動狀況!</string>
@@ -794,7 +792,7 @@
 
     <string name="Month_View">Month View</string>
     <string name="bound_link_HR_band">WisFit HR 手環</string>
-    <string name="menu_heartrate">心率</string>
+    <string name="menu_heartrate">心率量测</string>
     <string name="M">M</string>
 
     <!-- Heart Rate-->
@@ -1063,4 +1061,7 @@
     <string name="firmware_updating">韌體更新中</string>
     <string name="Hint">提示</string>
     <string name="please_stay_in">韌體更新中，請勿操作.</string>
+    <string name="Intervals">間隔時間</string>
+    <string name="Thedevicewill">24HR自動節電量測模式</string>
+    <string name="wearabledevice">運動模式</string>
 </resources>

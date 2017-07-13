@@ -48,6 +48,9 @@
                 android:textSize="20sp" />
 
             <Switch
+                android:track="@drawable/switch_track"
+                android:thumb="@android:color/transparent"
+                android:switchMinWidth="50dp"
                 android:id="@+id/realtime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -80,15 +83,20 @@
                 android:gravity="center_horizontal"
                 android:padding="10dp"
                 android:text="@string/wearabledevice"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:id="@+id/textView4" />
 
             <Switch
+                android:track="@drawable/switch_track"
+                android:thumb="@android:color/transparent"
                 android:id="@+id/wearable"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp" />
+                android:layout_height="20dp"
+                android:switchMinWidth="50dp"
+                android:layout_marginEnd="14dp"
+                android:layout_alignBaseline="@+id/textView4"
+                android:layout_alignBottom="@+id/textView4"
+                android:layout_alignParentEnd="true" />
         </RelativeLayout>
 
         <ImageView
@@ -103,6 +111,9 @@
             android:gravity="center"
             android:textSize="12sp"
             android:text="@string/Pressthedecive" />
+
+
+
 
     </LinearLayout>
 

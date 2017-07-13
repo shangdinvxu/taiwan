@@ -6,6 +6,7 @@ import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -31,11 +33,18 @@ import com.linkloving.taiwan.prefrences.LocalUserSettingsToolkits;
 import com.linkloving.taiwan.prefrences.devicebean.DeviceSetting;
 import com.linkloving.taiwan.utils.DeviceInfoHelper;
 import com.linkloving.taiwan.utils.ToolKits;
+import com.linkloving.taiwan.utils.ViewUtils.WheelView;
 import com.linkloving.taiwan.utils.logUtils.MyLog;
+
+import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 
 public class LongSitActivity extends ToolBarActivity implements View.OnClickListener {
     private static final String TAG = LongSitActivity.class.getSimpleName();
@@ -75,16 +84,24 @@ public class LongSitActivity extends ToolBarActivity implements View.OnClickList
     //    同步提醒
     Button BLE_Button;
     private LinearLayout Synchronize_device;
+    private View totalView;
+    private int Intervalstime = 60;
+    @InjectView(R.id.intervals)
+    TextView intervals ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_long_sit);
+        totalView = LayoutInflater.from(LongSitActivity.this).inflate(R.layout.activity_long_sit, null);
+        ButterKnife.inject(this);
         userEntity = MyApplication.getInstance(getApplicationContext()).getLocalUserInfoProvider();
         provider = BleService.getInstance(this).getCurrentHandlerProvider();
         bleProviderObserver = new BLEProviderObserverAdapterImpl();
         provider.setBleProviderObserver(bleProviderObserver);
         initData();
     }
+
     @Override
     protected void onPostResume() {
         super.onPostResume();
@@ -92,11 +109,13 @@ public class LongSitActivity extends ToolBarActivity implements View.OnClickList
             provider.setBleProviderObserver(bleProviderObserver);
         }
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         provider.setBleProviderObserver(null);
     }
+
     @Override
     protected void getIntentforActivity() {
 
@@ -110,8 +129,8 @@ public class LongSitActivity extends ToolBarActivity implements View.OnClickList
         mCheckBox = (CheckBox) findViewById(R.id.longsit_switch_checkbox);
         mTextView = (TextView) findViewById(R.id.tv_longsit);
 
-        BLE_Button= (Button) findViewById(R.id.longsit_btn_Synchronize_device);
-        Synchronize_device= (LinearLayout) findViewById(R.id.longsit_Synchronize_device);
+        BLE_Button = (Button) findViewById(R.id.longsit_btn_Synchronize_device);
+        Synchronize_device = (LinearLayout) findViewById(R.id.longsit_Synchronize_device);
 
         long_sit_start_time_one_linear = (LinearLayout) findViewById(R.id.long_sit_start_time_one_linear);
         long_sit_end_time_one_linear = (LinearLayout) findViewById(R.id.long_sit_end_time_one_linear);
@@ -124,13 +143,13 @@ public class LongSitActivity extends ToolBarActivity implements View.OnClickList
         long_sit_end_time_two = (TextView) findViewById(R.id.long_sit_end_time_two);
         long_sit_step_edit = (EditText) findViewById(R.id.long_sit_step_edit);
 
-        view= LayoutInflater.from(this).inflate(R.layout.toast_synchronize, null);
+        view = LayoutInflater.from(this).inflate(R.layout.toast_synchronize, null);
         int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
         int result = getResources().getDimensionPixelSize(resourceId);
         //得到Toast对象
         toast = new Toast(LongSitActivity.this);
         //设置Toast对象的位置，3个参数分别为位置，X轴偏移，Y轴偏
-        toast.setGravity(Gravity.TOP, 0, result+50);
+        toast.setGravity(Gravity.TOP, 0, result + 50);
         //设置Toast对象的显示时间
         toast.setDuration(Toast.LENGTH_LONG);
         //设置Toast对象所要展示的视图
@@ -148,8 +167,10 @@ public class LongSitActivity extends ToolBarActivity implements View.OnClickList
     }
 
     private void initData() {
-        deviceSetting = LocalUserSettingsToolkits.getLocalSetting(LongSitActivity.this, userEntity.getUser_id()+"");
+        deviceSetting = LocalUserSettingsToolkits.getLocalSetting(LongSitActivity.this, userEntity.getUser_id() + "");
         String[] LongsitData = deviceSetting.getLongsit_time().split("-");
+        Intervalstime = deviceSetting.getLongsit_intervals();
+        intervals.setText(Intervalstime+":00");
         long_sit_start_time_one.setText(LongsitData[0]);
         long_sit_end_time_one.setText(LongsitData[1]);
         long_sit_start_time_two.setText(LongsitData[2]);
@@ -233,6 +254,63 @@ public class LongSitActivity extends ToolBarActivity implements View.OnClickList
                 break;
         }
     }
+
+    //设置间隔时间
+    @OnClick(R.id.intervalsFramelayout)
+    void setIntervals(View view) {
+
+        int longsit_intervals = deviceSetting.getLongsit_intervals();
+        int i = longsit_intervals / 15 - 1;
+        View longsit_popupwindow = LayoutInflater.from(LongSitActivity.this).inflate(R.layout.longsitpopupwindow, null);
+        final PopupWindow longsitTimePopupwindow = new PopupWindow(longsit_popupwindow, LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT, true);
+        longsitTimePopupwindow.setTouchable(true);
+        longsitTimePopupwindow.setBackgroundDrawable(new ColorDrawable(0xffD3D3D3));
+        longsitTimePopupwindow.showAtLocation(totalView, Gravity.BOTTOM, 0, 0);
+        final WheelView longsitWheelview = (WheelView) longsit_popupwindow.findViewById(R.id.longsitWheelview);
+        ImageView dismiss = (ImageView) longsit_popupwindow.findViewById(R.id.dismiss);
+        dismiss.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                longsitTimePopupwindow.dismiss();
+            }
+        });
+
+        Button buttonOK = (Button) longsit_popupwindow.findViewById(R.id.okBtn);
+        buttonOK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                longsitTimePopupwindow.dismiss();
+            }
+        });
+        ArrayList<String> strings = new ArrayList<>();
+        strings.add("15 min");
+        strings.add("30 min");
+        strings.add("45 min");
+        strings.add("60 min");
+        longsitWheelview.setItems(strings);
+        longsitWheelview.setSeletion(i);
+        longsitTimePopupwindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                int seletedIndex = longsitWheelview.getSeletedIndex();
+                Intervalstime = (seletedIndex + 1) * 15;
+                String time = start_time_one_hour + ":" + start_time_one_minute + "-" + end_time_one_hour + ":" + end_time_one_minute + "-" + "00" + ":"
+                        + "00" + "-" + "00" + ":" + "00";
+                deviceSetting.setLongsit_time(time);
+                deviceSetting.setLongsit_step("60");
+                deviceSetting.setLongsit_intervals(Intervalstime);
+                LocalUserSettingsToolkits.updateLocalSetting(LongSitActivity.this,
+                        deviceSetting);
+                intervals.setText(Intervalstime+":00");
+
+
+            }
+        });
+
+
+    }
+
 
     private void ShowPopupWindow(String Hour, String Minute, int TagTime) {
         View layout = LayoutInflater.from(LongSitActivity.this).inflate(R.layout.dialog_layout, null);
@@ -323,9 +401,9 @@ public class LongSitActivity extends ToolBarActivity implements View.OnClickList
         ContentResolver cv = this.getContentResolver();
 //        String strTimeFromat = android.provider.Settings.System.getString(cv, Settings.System.TIME_12_24);//获取当前系统显示时间的格式，此方法放在此处不妥
 //        if (strTimeFromat != null&&strTimeFromat.equals("24")) {
-            for (int i = 0; i < 24; i++) {
-                hourData.add(i < 10 ? "0" + i : "" + i);//设置显示小时数据
-            }
+        for (int i = 0; i < 24; i++) {
+            hourData.add(i < 10 ? "0" + i : "" + i);//设置显示小时数据
+        }
 //        } else {
 //            for (int i = 1; i < 13; i++) {
 //                hourData.add(i < 10 ? "0" + i : "" + i);//设置显示小时数据
@@ -377,10 +455,10 @@ public class LongSitActivity extends ToolBarActivity implements View.OnClickList
      * 根据传入的参数 保存更新数据
      ****/
     private void setNotificition() throws ParseException {
-        if (long_sit_step_edit.getText().toString()!=null&&long_sit_step_edit.getText().toString().length()>0){
+        if (long_sit_step_edit.getText().toString() != null && long_sit_step_edit.getText().toString().length() > 0) {
             int i = Integer.parseInt(long_sit_step_edit.getText().toString());
-            if (i>200){
-                Toast.makeText(LongSitActivity.this,R.string.long_sit_step_toast,Toast.LENGTH_SHORT).show();
+            if (i > 200) {
+                Toast.makeText(LongSitActivity.this, R.string.long_sit_step_toast, Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -394,14 +472,14 @@ public class LongSitActivity extends ToolBarActivity implements View.OnClickList
         MyLog.e(TAG, "存入的本地数据为：" + start_time_one_hour + ":" + start_time_one_minute + "-"
                 + end_time_one_hour + ":" + end_time_one_minute + "-" + start_time_two_hour + ":"
                 + start_time_two_minute + "-" + end_time_two_hour + ":" + end_time_two_minute + deviceSetting.getLongsit_vaild());
-       //判断蓝牙是否连接
+        //判断蓝牙是否连接
         if (provider.isConnectedAndDiscovered()) {
             //同步到设备
             provider.SetLongSit(LongSitActivity.this, DeviceInfoHelper.fromUserEntity(LongSitActivity.this, userEntity));
             Synchronize_device.setVisibility(View.VISIBLE);
             BLE_Button.setText(getString(R.string.saved_to_local));
             toast.show();
-        }else{
+        } else {
             android.support.v7.app.AlertDialog dialog = new android.support.v7.app.AlertDialog.Builder(LongSitActivity.this)
                     .setTitle(ToolKits.getStringbyId(LongSitActivity.this, R.string.portal_main_unbound))
                     .setMessage(ToolKits.getStringbyId(LongSitActivity.this, R.string.portal_main_unbound_msg))
@@ -414,6 +492,7 @@ public class LongSitActivity extends ToolBarActivity implements View.OnClickList
             dialog.show();
         }
     }
+
     /**
      * 蓝牙观察者实现类.
      */

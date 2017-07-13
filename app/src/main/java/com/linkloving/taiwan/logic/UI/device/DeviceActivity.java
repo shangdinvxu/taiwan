@@ -28,6 +28,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.android.bluetoothlegatt.BLEHandler;
 import com.example.android.bluetoothlegatt.BLEProvider;
 import com.example.android.bluetoothlegatt.proltrol.LepaoProtocalImpl;
+import com.example.android.bluetoothlegatt.proltrol.dto.LPDeviceInfo;
 import com.linkloving.taiwan.BleService;
 import com.linkloving.taiwan.CommParams;
 import com.linkloving.taiwan.IntentFactory;
@@ -273,6 +274,11 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
         GetDBInfo.getDBInfoToFile(DeviceActivity.this,"HeartRate.txt");
     }
 
+    @OnClick(R.id.textView3)
+    void sendException(View view){
+        GetDBInfo.toSendEmail(DeviceActivity.this,GetDBInfo.getDiskCacheDir(DeviceActivity.this)+"/"+"except.txt");
+    }
+
 
     @Override
     protected void onPostResume() {
@@ -353,7 +359,10 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
                                             } else {
                                                 if (provider.isConnectedAndDiscovered()) {
                                                     if (device_type==MyApplication.DEVICE_BAND3){
-                                                        downloadZip();
+//                                                        downloadZip();
+                                                        BleService.getInstance(DeviceActivity.this).syncAllDeviceInfo(DeviceActivity.this);
+                                                        dialog_connect = new ProgressDialog(DeviceActivity.this);
+                                                        dialog_connect.show();
                                                     }else {
                                                         click_oad = true;
                                                         dialog_syn.show();
@@ -398,6 +407,8 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
                                         if (provider.isConnectedAndDiscovered()) {
                                             //连接才去下这个指令
                                             provider.unBoundDevice(DeviceActivity.this);
+                                        }else {
+                                            BleService.getInstance(DeviceActivity.this).releaseBLE();
                                         }
                                         if (userEntity.getDeviceEntity().getDevice_type() == MyApplication.DEVICE_WATCH && ToolKits.isEnabled(DeviceActivity.this)) {
                                             startActivity(new Intent(NotificationCollectorService.ACTION_NOTIFICATION_LISTENER_SETTINGS));
@@ -417,7 +428,6 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }
-                                    BleService.getInstance(DeviceActivity.this).releaseBLE();
                                         finish();
                                 }
                             })
@@ -435,13 +445,14 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
     }
 
 
-    private void downloadZip() {
+    private void downloadZip(String modelname) {
+        if (modelname==null) return;
         dialog = new ProgressDialog(DeviceActivity.this);
         dialog.setMessage(getString(R.string.getting_version_information));
+        vo = PreferencesToolkits.getLocalDeviceInfo(DeviceActivity.this);
         int version_int = ToolKits.makeShort(vo.version_byte[1], vo.version_byte[0]);
-//        int  version_int = 500 ;
         CallServer.getRequestInstance().add(DeviceActivity.this, false,
-                CommParams.HTTP_OAD, NoHttpRuquestFactory.creat_New_OAD_Request(vo.getModelname()
+                CommParams.HTTP_OAD, NoHttpRuquestFactory.creat_New_OAD_Request(modelname
                         ,version_int), newHttpCallback);
     }
 
@@ -619,6 +630,13 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
             }
 
         }
+
+        @Override
+        public void updateFor_notifyForDeviceUnboundSucess_D() {
+            super.updateFor_notifyForDeviceUnboundSucess_D();
+            BleService.getInstance(DeviceActivity.this).releaseBLE();
+        }
+
         /************************OAD头发送成功*************************/
 
         /************************
@@ -692,6 +710,16 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
             }
         }
 
+
+        @Override
+        public void updateFor_notifyForModelName(LPDeviceInfo latestDeviceInfo) {
+            super.updateFor_notifyForModelName(latestDeviceInfo);
+            if (dialog_connect!=null&&dialog_connect.isShowing()) {
+                dialog_connect.dismiss();
+            }
+            downloadZip(latestDeviceInfo.modelName);
+        }
+
         @Override
         public void updatefor_notifyforsendGoalSuccess() {
 
@@ -709,6 +737,9 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
             BleService.getInstance(DeviceActivity.this).setCANCLE_ANCS(false);
             if (dialog_syn != null || dialog_syn.isShowing())
                 dialog_syn.dismiss();
+            if (dialog_connect!=null&&dialog_connect.isShowing()) {
+                dialog_connect.dismiss();
+            }
         }
 
         /**************************
@@ -725,6 +756,9 @@ public class DeviceActivity extends ToolBarActivity implements View.OnClickListe
               /*  progessWidget.msg.setText(ToolKits.getStringbyId(DeviceActivity.this, R.string.bracelet_oad_failed));
                 progessWidget.syncFinish(false);*/
                 canoad = false;
+            }
+            if (dialog_connect!=null&&dialog_connect.isShowing()) {
+                dialog_connect.dismiss();
             }
         }
         /**************************连接失败***********************/

@@ -51,4 +51,5 @@ public interface LepaoCommand {
 	static final byte COMMAND_EXCEPTION_INFO = (byte) 0xf5;         // 获取异常信息的指令
 	
 	static final byte COMMAND_FACTORY_TEST = 0x00;          // 工厂测试命令
+	static final byte COMMANDUNITSETTING = (byte)0x17 ; //  公英制单位切换
 }

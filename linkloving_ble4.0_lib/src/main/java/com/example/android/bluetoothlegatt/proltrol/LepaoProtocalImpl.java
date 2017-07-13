@@ -646,14 +646,34 @@ public class LepaoProtocalImpl implements LepaoProtocol {
 		return  BLEProvider.INDEX_SET_DEVICE_CLOCK_FAIL;
 	}
 
+	/**消息提醒*/
+
+	public int setUnitSetting(byte data) throws BLException,LPException {
+		WatchRequset req = new WatchRequset();
+		req.appendByte(seq++).appendByte(LepaoCommand.COMMANDUNITSETTING).appendByte(data).makeCheckSum();
+		LPUtil.printData(req.getData(), "设置单位");
+		WatchResponse resp = this.sendData2BLE(req);
+		if(resp.getData()[4]==1)
+			return BLEProvider.INDEX_UNITSETTING_SUCCESS;
+		return BLEProvider.INDEX_UNITSETTING_FAILDE;
+	}
+
+
 	@Override
 	public int setLongSitRemind(LPDeviceInfo deviceInfo)
 			throws BLException, LPException {
 		WatchRequset req = new WatchRequset();
+		if (deviceInfo.timeWindow==0){
+			deviceInfo.timeWindow=60 ;
+		}
+		deviceInfo.startTime2_H = 0;
+		deviceInfo.startTime2_M = 0 ;
+		deviceInfo.endTime2_H =0 ;
+		deviceInfo.endTime2_M=0;
 		req.appendByte(seq++)
 				.appendByte(LepaoCommand.COMMAND_SET_MOTION_REMIND)
+				.appendByte((byte) deviceInfo.timeWindow)
 				.appendByte((byte) 60)
-				.appendByte((byte) deviceInfo.longsit_step)
 				.appendByte((byte) deviceInfo.startTime1_H)
 				.appendByte((byte) deviceInfo.startTime1_M)
 				.appendByte((byte) deviceInfo.endTime1_H)
@@ -996,6 +1016,7 @@ public class LepaoProtocalImpl implements LepaoProtocol {
 				WatchResponse heartrate = getHeartrate(itemLeft - 10, 0);
 				itemLeft =LPUtil.makeShort(heartrate.getData()[6], heartrate.getData()[5]);
 				list.addAll(heartrate.toLPHeartrateDataList(heartrate));
+				Log.e(TAG,list.size()+"list的长度是");
 			}
 			getHeartrate(0,0);
 		}
@@ -1005,8 +1026,8 @@ public class LepaoProtocalImpl implements LepaoProtocol {
 
 	public WatchResponse getHeartrate(int offset, int length)throws BLException, LPException{
 		WatchRequset req = new WatchRequset();
-		req.appendByte(seq++).appendByte(LepaoCommand.COMMAND_GET_HEARTRATE).appendByte((byte) offset)
-				.appendByte((byte) length).makeCheckSum();
+		req.appendByte(seq++).appendByte(LepaoCommand.COMMAND_GET_HEARTRATE).appendShort((short) offset)
+				.appendShort((byte) length).makeCheckSum();
 		LPUtil.printData(req.getData(), " getHeartrate");
 		WatchResponse resp = this.sendData2BLE(req);
 		LPUtil.printData(resp.getData(), " 接收到的Heartrate");

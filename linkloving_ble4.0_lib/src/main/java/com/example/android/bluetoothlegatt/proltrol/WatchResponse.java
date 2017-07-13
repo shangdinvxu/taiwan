@@ -147,13 +147,16 @@ public class WatchResponse {
 	public List<LpHeartrateData> toLPHeartrateDataList (WatchResponse response)throws LPException{
 		byte[] data = response.getData();
 		ArrayList<LpHeartrateData> list = new ArrayList<>();
-		for (int i=0;i<data[5];i++){
+		int itemLeft = LPUtil.makeShort(data[6], data[5]);
+		for (int i=0;i<itemLeft;i++){
 			if (i < 10) {
 				LpHeartrateData lpHeartrateData = new LpHeartrateData();
 				int startTime = LPUtil.makeInt(data[8 * i + 10], data[8 * i + 9], data[8 * i + 8], data[8 * i + 7]);
 				lpHeartrateData.setStartTime(startTime);
 				lpHeartrateData.setMaxRate(data[8 * i + 11]&0xff);
+				Log.e(TAG,"max是"+(data[8 * i + 11]&0xff));
 				lpHeartrateData.setAvgRate(data[8 * i + 12]&0xff);
+				Log.e(TAG,"min是"+(data[8 * i + 12]&0xff));
 				lpHeartrateData.setFakeMaxRate(data[8 * i + 13]&0xff);
 				lpHeartrateData.setFakeAvgRate(data[8 * i + 14]&0xff);
 				list.add(lpHeartrateData);

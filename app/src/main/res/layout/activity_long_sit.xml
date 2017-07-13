@@ -59,9 +59,10 @@
         android:id="@+id/longsit_time_ll"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="visible"
+        android:orientation="vertical"
         android:layout_below="@+id/longsit_framelayout"
-        android:orientation="vertical">
+        android:layout_alignParentStart="true">
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -144,6 +145,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:visibility="gone"
             android:layout_width="fill_parent"
             android:layout_height="100dp"
             android:layout_marginLeft="@dimen/m00_btn_load_20_more_margin"
@@ -225,6 +227,7 @@
         </LinearLayout>
 
         <FrameLayout
+            android:visibility="gone"
             android:layout_width="fill_parent"
             android:layout_height="50dp"
             android:layout_marginLeft="@dimen/m00_btn_load_20_more_margin"
@@ -253,6 +256,37 @@
                 android:textColor="@color/portal_progress_blue"
                 android:text="60" />
         </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/intervalsFramelayout"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/m00_btn_load_20_more_margin"
+            android:layout_marginRight="@dimen/m00_btn_load_20_more_margin"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/alarm_setting_content_bg"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:paddingRight="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:text="@string/Intervals"
+                android:textColor="@color/portal_progress_blue" />
+
+            <TextView
+                android:id="@+id/intervals"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|right"
+                android:background="@null"
+                android:paddingRight="20dp"
+                android:text="60"
+                android:textColor="@color/portal_progress_blue" />
+        </FrameLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

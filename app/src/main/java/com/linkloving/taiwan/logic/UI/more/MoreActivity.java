@@ -122,7 +122,7 @@ public class MoreActivity extends ToolBarActivity implements View.OnClickListene
         if (CommonUtils.isStringEmpty(s)){
             automatic.setVisibility(View.GONE);
         }else {
-            automatic.setVisibility(View.VISIBLE);
+            automatic.setVisibility(View.GONE);
         }
     }
 
@@ -181,10 +181,27 @@ public class MoreActivity extends ToolBarActivity implements View.OnClickListene
                                             tv_more_unit.setText(metric_system.getText().toString());
                                             //存储值到本地
                                             PreferencesToolkits.setLocalSettingUnitInfo(MoreActivity.this, ToolKits.UNIT_GONG);
+                                            if (provider.isConnectedAndDiscovered()) {
+                                            LPDeviceInfo lpDeviceInfo = new LPDeviceInfo();
+                                            lpDeviceInfo.unitSetting=0x00;
+                                            provider.setUnitSetting(MoreActivity.this,lpDeviceInfo);
+                                            } else {
+                                                Toast.makeText(MoreActivity.this, getString(R.string.keepthe), Toast.LENGTH_SHORT).show();
+                                            }
+
                                         }else {
                                             tv_more_unit.setText(more_inch.getText().toString());
+
+                                            if (provider.isConnectedAndDiscovered()) {
+                                                LPDeviceInfo lpDeviceInfo = new LPDeviceInfo();
+                                                lpDeviceInfo.unitSetting=0x01;
+                                                provider.setUnitSetting(MoreActivity.this,lpDeviceInfo);
+                                            } else {
+                                                Toast.makeText(MoreActivity.this, getString(R.string.keepthe), Toast.LENGTH_SHORT).show();
+                                            }
                                             //存储值到本地
                                             PreferencesToolkits.setLocalSettingUnitInfo(MoreActivity.this, ToolKits.UNIT_YING);
+
                                         }
 
                                     }

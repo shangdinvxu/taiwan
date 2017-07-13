@@ -9,15 +9,24 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.android.bluetoothlegatt.BLEProvider;
+import com.example.android.bluetoothlegatt.proltrol.dto.LPDeviceInfo;
+import com.linkloving.taiwan.BleService;
 import com.linkloving.taiwan.IntentFactory;
 import com.linkloving.taiwan.MyApplication;
 import com.linkloving.taiwan.R;
 import com.linkloving.taiwan.logic.UI.customerservice.serviceItem.Feedback;
+import com.linkloving.taiwan.logic.UI.device.DeviceActivity;
+import com.linkloving.taiwan.logic.UI.more.MoreActivity;
 import com.linkloving.taiwan.logic.dto.UserEntity;
+import com.linkloving.taiwan.prefrences.PreferencesToolkits;
 import com.linkloving.taiwan.utils.CommonUtils;
 import com.linkloving.taiwan.utils.ToolKits;
 
@@ -37,6 +46,7 @@ public class MenuNewAdapter extends RecyclerView.Adapter {
     UserEntity userEntity;
     private Context mContext;
     private OnRecyclerViewListener onRecyclerViewListener;
+    private BLEProvider provider ;
     public void setOnRecyclerViewListener(OnRecyclerViewListener onRecyclerViewListener) {
         this.onRecyclerViewListener = onRecyclerViewListener;
     }
@@ -49,6 +59,7 @@ public class MenuNewAdapter extends RecyclerView.Adapter {
     public MenuNewAdapter(Context context, List<MenuVO> list) {
         this.mContext = context;
         this.list = list;
+        provider = BleService.getInstance(context).getCurrentHandlerProvider();
 //        userEntity = MyApplication.getInstance(mContext).getLocalUserInfoProvider();
     }
     @Override
@@ -110,11 +121,11 @@ public class MenuNewAdapter extends RecyclerView.Adapter {
                         IntentFactory.startGoalActivityIntent((Activity) mContext, MyApplication.getInstance((Activity) mContext).getLocalUserInfoProvider());
                         break;
 
-                    case 2:
+                    case 3:
                         IntentFactory.start_CustomerService_ActivityIntent((Activity) mContext, Feedback.PAGE_INDEX_ONE);
                         break;
 
-                    case 3:
+                    case 2:
                         userEntity = MyApplication.getInstance(mContext).getLocalUserInfoProvider();
                         String s = userEntity.getDeviceEntity().getLast_sync_device_id();
                         if (CommonUtils.isStringEmpty(s)) {
@@ -132,8 +143,14 @@ public class MenuNewAdapter extends RecyclerView.Adapter {
                             mContext.startActivity(IntentFactory.start_AlarmActivityIntent((Activity) mContext));
                         }
                         break;
-
                     case 4:
+                        IntentFactory.start_LongSitActivityIntent((Activity) mContext);
+                        break;
+                    case 5:
+                       initAutomaticHR();
+                        break;
+
+                    case 6:
                         /*AlertDialog dialog = new AlertDialog.Builder(mContext)
                                 .setTitle(ToolKits.getStringbyId(mContext, R.string.main_more_sycn_title))
                                 .setMessage(ToolKits.getStringbyId(mContext, R.string.main_more_sycn_message))
@@ -154,13 +171,79 @@ public class MenuNewAdapter extends RecyclerView.Adapter {
                                 .setNegativeButton(ToolKits.getStringbyId(mContext, R.string.general_no), null)
                                 .create();
                         dialog.show();*/
-//        跳转到更多界面
+//                      跳转到更多界面
                         mContext.startActivity(IntentFactory.start_MoreActivityIntent((Activity) mContext));
                         break;
                     default :
                 }
             }
         }
+
+        private void initAutomaticHR() {
+
+            View view = LayoutInflater.from(mContext).inflate(R.layout.automatichrpopupwindow, null);
+            final Switch realtime = (Switch) view.findViewById(R.id.realtime);
+            final Switch wearable = (Switch) view.findViewById(R.id.wearable);
+            boolean handRingSet = PreferencesToolkits.getHandRingSet(mContext);
+            boolean heartrateSync = PreferencesToolkits.getHeartrateSync(mContext);
+            realtime.setChecked(heartrateSync);
+            wearable.setChecked(handRingSet);
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setView(view);
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            }).setPositiveButton(R.string.general_ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    PreferencesToolkits.setHandRingSet(mContext,wearable.isChecked());
+                    PreferencesToolkits.setHeartrateSync(mContext,realtime.isChecked());
+                }
+            }).show();
+            realtime.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (provider.isConnectedAndDiscovered()){
+                        LPDeviceInfo lpDeviceInfo = new LPDeviceInfo();
+                        if (isChecked){
+                            provider.openSyncoHeart(mContext,lpDeviceInfo);
+                            wearable.setChecked(false);
+                        }else {
+                            provider.closeSyncoHeart(mContext,lpDeviceInfo);
+                            wearable.setChecked(true);
+                        }
+                    }else {
+                        Toast.makeText(mContext,mContext.getString(R.string.keepthe),Toast.LENGTH_SHORT).show();
+                        realtime.setChecked(!isChecked);
+                    }
+                }
+            });
+
+            wearable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (provider.isConnectedAndDiscovered()){
+                        LPDeviceInfo lpDeviceInfo = new LPDeviceInfo();
+                        if (isChecked){
+                            provider.closeSyncoHeart(mContext,lpDeviceInfo);
+                            realtime.setChecked(false);
+                        }else {
+                            provider.openSyncoHeart(mContext,lpDeviceInfo);
+                            realtime.setChecked(true);
+                        }
+                    }else {
+                        Toast.makeText(mContext,mContext.getString(R.string.keepthe),Toast.LENGTH_SHORT).show();
+                        wearable.setChecked(!isChecked);
+                    }
+                }
+            });
+
+
+        }
+
+
 
 //        private ProgressDialog initDialog() {
 //            //this表示该对话框是针对当前Activity的

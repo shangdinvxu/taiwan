@@ -51,6 +51,8 @@ public class LPDeviceInfo {
 	public String version;
 	public byte[] version_byte=new byte[2];
 	public String modelName;
+	/**单位设置*/
+	public byte unitSetting ;
 
 	/**
 	 * 电量

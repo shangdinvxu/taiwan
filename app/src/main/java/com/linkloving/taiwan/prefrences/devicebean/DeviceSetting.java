@@ -35,6 +35,16 @@ public class DeviceSetting {
     /**目标更新*/
     private long goal_update;
 
+    public int getLongsit_intervals() {
+        return longsit_intervals;
+    }
+
+    public void setLongsit_intervals(int longsit_intervals) {
+        this.longsit_intervals = longsit_intervals;
+    }
+
+    private int longsit_intervals = 60 ;
+
     public String getUser_id() {
         return user_id;
     }

@@ -383,7 +383,7 @@
     <string name="menu_body">身體資訊</string>
     <string name="menu_sport_data">運動數據</string>
     <string name="menu_goal">運動目標設置</string>
-    <string name="menu_heartrate">心率</string>
+    <string name="menu_heartrate">心率量测</string>
     <string name="AutomaticHR">Automatic HR measurement</string>
     <string name="menu_ranking">排行榜</string>
     <string name="menu_wxsport">微信運動</string>
@@ -392,10 +392,9 @@
     <!-- 剩餘 -->
     <string name="menu_exit_app">退出應用</string>
     <string name="menu_exit_mode">請選擇退出方式</string>
-    <string name="Thedevicewill">The device will measure heart rate automatically until it\'s closed</string>
-    <string name="wearabledevice">Wearable Device</string>
-    <string name="Pressthedecive">Press the devices\'s display for two seconds to switch the heart rate measurement automatically</string>
-    <string name="realtime">Realtime</string>
+    <string name="Thedevicewill">24HR自動節電量測模式</string>
+    <string name="wearabledevice">運動模式</string>
+    <string name="realtime">一般模式</string>
     <!-- 剩餘 -->
 
     <!-- 錢包-->
@@ -603,6 +602,7 @@
     <string name="notifications_no_res">消息不提醒？</string>
     <string name="alarm_help">鬧鐘不提醒？</string>
     <string name="reminder_step">最少運動步數</string>
+    <string name="Intervals">间隔时间</string>
 
     <!-- 單位 -->
 
@@ -736,7 +736,7 @@
     <string name="bracelet_sync_format">MM月dd日 HH:mm:ss</string>
     <string name="bracelet_sync_none"> [從未同步過]</string>
     <string name="bracelet_unbound">解除綁定</string>
-    <string name="bracelet_unbound_msg">是否確解除綁定？</string>
+    <string name="bracelet_unbound_msg">是否解除綁定？</string>
     <string name="bracelet_unbound_failed">無法解除綁定</string>
     <string name="bracelet_unbound_failed_msg">解除綁定需要手機在有網路的情況下進行，請確保手機網路正常！</string>
     <string name="share_content_short">一起分享運動狀況!</string>
@@ -1071,4 +1071,5 @@
     <string name="firmware_updating">firmware updating</string>
     <string name="Hint">提示</string>
     <string name="please_stay_in">please stay in this page until update completed</string>
+    <string name="Pressthedecive">在手環心率界面長按開啟即時量測，當開始動作前，請確保心率數值顯示。</string>
 </resources>

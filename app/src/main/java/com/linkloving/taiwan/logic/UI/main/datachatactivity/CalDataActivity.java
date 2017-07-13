@@ -553,7 +553,7 @@ public class CalDataActivity extends ToolBarActivity implements View.OnClickList
             SimpleDateFormat s2 = new SimpleDateFormat("mm");
             int h = Integer.parseInt(s1.format(new Date()));
             int m = Integer.parseInt(s2.format(new Date()));
-            int cal = (int) ((h * 60 + m) * 1.15);//当前时间今天的卡路里
+            int cal = getTodayCalNow();
             MyLog.i(TAG, "当前的卡路里=" + cal);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(new Date());
@@ -695,7 +695,7 @@ public class CalDataActivity extends ToolBarActivity implements View.OnClickList
         SimpleDateFormat s2 = new SimpleDateFormat("mm");
         int h = Integer.parseInt(s1.format(new Date()));
         int m = Integer.parseInt(s2.format(new Date()));
-        int cal = (int) ((h * 60 + m) * 1.15);//当前时间今天的卡路里
+        int cal = getTodayCalNow();
         MyLog.i(TAG, "当前的卡路里=" + cal);
         SimpleDateFormat sim1 = new SimpleDateFormat("dd");
         int day = Integer.parseInt(sim1.format(new Date()));//当前日期是几号
@@ -895,7 +895,7 @@ public class CalDataActivity extends ToolBarActivity implements View.OnClickList
         SimpleDateFormat s2 = new SimpleDateFormat("mm");
         int h = Integer.parseInt(s1.format(new Date()));
         int m = Integer.parseInt(s2.format(new Date()));
-        int cal = (int) ((h * 60 + m) * 1.15);//当前时间今天的卡路里
+        int cal = getTodayCalNow();
         Date date1 = ToolKits.getDayFromDate(new Date(0), position + 1);
         if (dayButton.isChecked()) {
             LayoutInflater inflater = getLayoutInflater();
@@ -947,7 +947,10 @@ public class CalDataActivity extends ToolBarActivity implements View.OnClickList
         int h = Integer.parseInt(s1.format(new Date()));
         int m = Integer.parseInt(s2.format(new Date()));
 
-        int cal = (int) ((h * 60 + m) * 1.15);//当前时间今天的卡路里
+
+//        int cal = (int) ((h * 60 + m) * 1.15);//当前时间今天的卡路里
+        int cal = getTodayCalNow();
+
         Date date1 = ToolKits.getDayFromDate(new Date(0), position + 1);
 
         if (dayButton.isChecked()) {
@@ -1056,7 +1059,7 @@ public class CalDataActivity extends ToolBarActivity implements View.OnClickList
         SimpleDateFormat s2 = new SimpleDateFormat("mm");
         int h = Integer.parseInt(s1.format(new Date()));
         int m = Integer.parseInt(s2.format(new Date()));
-        int cal = (int) ((h * 60 + m) * 1.15);//当前时间今天的卡路里
+        int cal = getTodayCalNow();
         MyLog.i(TAG, "当前的卡路里=" + cal);
         List<Calory> list = new ArrayList<>();
         //1将每天的基础值加上,还要去掉当前日期之后的日期
@@ -1827,4 +1830,18 @@ public class CalDataActivity extends ToolBarActivity implements View.OnClickList
         }
 
     }
+
+    private int getTodayCalNow(){
+        ToolKits toolKits = new ToolKits();
+        int calorieseveryday = toolKits.getCalories(CalDataActivity.this);
+        Date dateToday = new Date();
+        SimpleDateFormat hh = new SimpleDateFormat("HH", Locale.getDefault());
+        String HH = hh.format(dateToday);
+        SimpleDateFormat mm = new SimpleDateFormat("mm", Locale.getDefault());
+        String MM = mm.format(dateToday);
+        int cal = calorieseveryday * (Integer.parseInt(HH) * 60 + Integer.parseInt(MM)) / 1440;
+        return cal;
+
+    }
+
 }

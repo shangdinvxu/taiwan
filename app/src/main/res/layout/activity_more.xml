@@ -131,6 +131,7 @@
 
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/AutomaticHR"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/m00_tv_20_more_height"
