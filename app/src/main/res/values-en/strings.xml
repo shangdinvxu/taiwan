@@ -724,7 +724,7 @@
 
     <string name="Thedevicewill">24HR auto saving battery mode</string>
     <string name="wearabledevice">Sports</string>
-    <string name="Pressthedecive">please ensure that it shows the digit before your physical action.</string>
+    <string name="Pressthedecive">Press the device\'s display for 2 seconds toswitch the heart rate measurement on.</string>
     <string name="realtime">Normal</string>
     <string name="Week_View">Week View</string>
     <string name="Restingbpm">Resting bpm</string>
@@ -1128,4 +1128,6 @@
     <string name="Hint">Hint</string>
     <string name="please_stay_in">please stay in this page until update completed</string>
     <string name="Intervals">Intervals</string>
+    <string name="Pressthedecive_english">※Please ensure that it shows the digit before your
+physical action.</string>
 </resources>

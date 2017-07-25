@@ -344,12 +344,12 @@ public class LongSitActivity extends ToolBarActivity implements View.OnClickList
                 if (
                     //时间段1中起始时间小于结束时间
                         (startHour1 < endHour1 || (startHour1 == endHour1 && startMinute1 < endMinute1))
-                                &&
-                                //时间段2中起始时间小于结束时间
-                                (startHour2 < endHour2 || (startHour2 == endHour2 && startMinute2 < endMinute2))
-                                &&
-                                //时间段2中的起始时间小于时间段1中的结束时间
-                                (endHour1 < startHour2 || (endHour1 == startHour2 && startMinute1 < startMinute2))
+//                                &&
+//                                //时间段2中起始时间小于结束时间
+//                                (startHour2 < endHour2 || (startHour2 == endHour2 && startMinute2 < endMinute2))
+//                                &&
+//                                //时间段2中的起始时间小于时间段1中的结束时间
+//                                (endHour1 < startHour2 || (endHour1 == startHour2 && startMinute1 < startMinute2))
                         ) {
                     long_sit_start_time_one.setText(start_time_one_hour + ":" + start_time_one_minute);
                     long_sit_end_time_one.setText(end_time_one_hour + ":" + end_time_one_minute);

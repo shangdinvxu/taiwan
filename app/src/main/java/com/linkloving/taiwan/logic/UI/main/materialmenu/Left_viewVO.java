@@ -30,8 +30,8 @@ public class Left_viewVO {
             R.mipmap.ic_menu_goal,
 //            R.mipmap.ic_menu_kefu,
             R.mipmap.ic_menu_device,
-            R.mipmap.long_sit_on,
             R.mipmap.heartrate_menu,
+            R.mipmap.icon_menu_longsit,
             R.mipmap.ic_menu_more
     };
     public static int[] menuTextwithHR = {
@@ -41,8 +41,8 @@ public class Left_viewVO {
             R.string.menu_goal,
 //            R.string.service_center_title,
             R.string.alarm_notify,
-            R.string.long_sit_text,
             R.string.menu_heartrate,
+            R.string.long_sit_text,
             R.string.general_more
     };
 
@@ -52,8 +52,8 @@ public class Left_viewVO {
             R.mipmap.ic_menu_goal,
 //            R.mipmap.ic_menu_kefu,
             R.mipmap.ic_menu_device,
-            R.mipmap.ic_menu_more,
             R.mipmap.heartrate_menu,
+            R.mipmap.icon_menu_longsit,
             R.mipmap.ic_menu_more
     };
     public static int[] menuText = {
@@ -62,8 +62,8 @@ public class Left_viewVO {
             R.string.menu_goal,
 //            R.string.service_center_title,
             R.string.alarm_notify,
-            R.string.long_sit_text,
             R.string.menu_heartrate,
+            R.string.long_sit_text,
             R.string.general_more
     };
 }

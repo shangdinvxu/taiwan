@@ -1072,4 +1072,6 @@
     <string name="Hint">提示</string>
     <string name="please_stay_in">please stay in this page until update completed</string>
     <string name="Pressthedecive">在手環心率界面長按開啟即時量測，當開始動作前，請確保心率數值顯示。</string>
+    <string name="Pressthedecive_english"></string>
+
 </resources>

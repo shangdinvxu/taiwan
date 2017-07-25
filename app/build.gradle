@@ -13,8 +13,8 @@ android {
         applicationId "com.linkloving.taiwan"
         minSdkVersion 18
         targetSdkVersion 22
-        versionCode 30
-        versionName "1.3.0"
+        versionCode 32
+        versionName "1.3.2"
         manifestPlaceholders = [HOCKEYAPP_APP_ID: "ace08a6e5e4f4e578b1ed17172975937"]
     }
     //看起来是因为多个 jar 包里包含了同样的文件（NOTICE.txt），导致打包时因为担心相互覆盖问题而提示出错

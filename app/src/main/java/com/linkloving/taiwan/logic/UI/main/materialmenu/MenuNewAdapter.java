@@ -143,10 +143,10 @@ public class MenuNewAdapter extends RecyclerView.Adapter {
                             mContext.startActivity(IntentFactory.start_AlarmActivityIntent((Activity) mContext));
                         }
                         break;
-                    case 4:
+                    case 5:
                         IntentFactory.start_LongSitActivityIntent((Activity) mContext);
                         break;
-                    case 5:
+                    case 4:
                        initAutomaticHR();
                         break;
 
